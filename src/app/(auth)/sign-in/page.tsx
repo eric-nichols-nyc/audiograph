@@ -1,6 +1,7 @@
 // app/auth/signin/page.tsx
 'use client';
 
+import { Suspense } from 'react';
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -12,7 +13,30 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, AlertCircle } from 'lucide-react';
 
+// Main page component that doesn't directly use useSearchParams
 export default function SignInPage() {
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
+      <Suspense fallback={<LoadingCard />}>
+        <SignInForm />
+      </Suspense>
+    </div>
+  );
+}
+
+// Loading fallback component
+function LoadingCard() {
+  return (
+    <Card className="w-full max-w-md p-8">
+      <div className="flex justify-center">
+        <div className="h-6 w-6 animate-spin rounded-full border-b-2 border-gray-900"></div>
+      </div>
+    </Card>
+  );
+}
+
+// Component that uses useSearchParams wrapped in Suspense
+function SignInForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -77,8 +101,7 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
-      <Card className="w-full max-w-md">
+    <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">Sign in to your account</CardTitle>
           <CardDescription className="text-center">
@@ -176,13 +199,12 @@ export default function SignInPage() {
         </CardContent>
         <CardFooter className="flex justify-center">
           <div className="text-sm text-gray-500">
-            Don`&apos;&quot;`t have an account?{' '}
+            Don&apos;t have an account?{' '}
             <Link href="/auth/signup" className="font-medium text-blue-600 hover:text-blue-500">
               Sign up
             </Link>
           </div>
         </CardFooter>
       </Card>
-    </div>
   );
 }
