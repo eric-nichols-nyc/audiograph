@@ -13,7 +13,7 @@ export default async function SignInPage(props: { searchParams: Promise<Message>
         <div className="space-y-2 text-center">
           <h1 className="text-2xl font-bold">Sign in</h1>
           <p className="text-sm text-muted-foreground">
-            Don't have an account?{" "}
+            Don`&apos;t have an account?{" "}
             <Link className="text-primary font-medium underline" href="/sign-up">
               Sign up
             </Link>

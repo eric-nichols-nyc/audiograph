@@ -48,7 +48,12 @@ export async function POST(request: Request) {
   
   try {
     body = await request.json();
-  } catch (err) {
+  } catch (err:unknown) {
+    if (err instanceof Error) {
+      console.error(err.message);
+    } else {
+      console.error("An unknown error occurred");
+    }
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
   
