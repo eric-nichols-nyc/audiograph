@@ -153,3 +153,33 @@ flowchart TD
     style SupabaseClient fill:#bbf,stroke:#333,stroke-width:2px
     style Middleware fill:#bfb,stroke:#333,stroke-width:2px
 ```
+
+## APIs
+
+```mermaid
+flowchart TD
+    subgraph "Server-Side"
+        A[Edge Function / API Route] -->|Logs activity| B[activity_logs table]
+        C[Supabase Realtime Service] -->|Broadcasts changes| D[Supabase Client]
+    end
+
+    subgraph "Client-Side"
+        E[ActivityLogContent Component] -->|Initial fetch| F["/api/admin/activity-logs" API]
+        F -->|Returns data| E
+        D -->|Real-time updates| G[Supabase Channel]
+        G -->|Notifies of new activities| H[React Query Cache]
+        H -->|Updates UI| E
+    end
+
+    B -->|Triggers| C
+    
+    subgraph "User Actions"
+        I[User Action] -->|Triggers| A
+        J[Background Job] -->|Triggers| A
+    end
+
+    subgraph "UI Components"
+        E -->|Renders in| K[MetricsAdminPage]
+        K -->|Uses Suspense| L[ActivityLogSkeleton]
+    end
+```
