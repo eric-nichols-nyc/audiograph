@@ -27,8 +27,12 @@ export default function useFetchNotification() {
         }
         const data: Notification[] = await res.json();
         setNotifications(data);
-      } catch (error: any) {
-        console.error(error.message);
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          console.error(e.message);
+        } else {
+          console.error("An unknown error occurred");
+        }
       } finally {
         setLoading(false);
       }
