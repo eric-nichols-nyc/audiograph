@@ -21,7 +21,14 @@ import {
 } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { MetricDisplay } from './metrics-data';
 import { ArtistMetric , Artist } from '@/types/artist';
+
+
+interface ArtistMetricsTableProps {
+  initialArtists: Artist[];
+  artistMetrics: Record<string, ArtistMetric[]>;
+}
 
 // Define the combined data type
 interface ArtistWithMetrics {
@@ -30,16 +37,31 @@ interface ArtistWithMetrics {
   imageUrl: string;
   genres: string[];
   country: string;
-  spotifyFollowers?: number;
-  monthlyListeners?: number;
-  youtubeSubscribers?: number;
-  instagramFollowers?: number;
-  popularity?: number;
-}
-
-interface ArtistMetricsTableProps {
-  initialArtists: Artist[];
-  artistMetrics: Record<string, ArtistMetric[]>;
+  spotifyFollowers: {
+    current: number;
+    change: number;
+    percentChange: number;
+  };
+  monthlyListeners: {
+    current: number;
+    change: number;
+    percentChange: number;
+  };
+  youtubeSubscribers: {
+    current: number;
+    change: number;
+    percentChange: number;
+  };
+  instagramFollowers: {
+    current: number;
+    change: number;
+    percentChange: number;
+  };
+  popularity: {
+    current: number;
+    change: number;
+    percentChange: number;
+  };
 }
 
 export function ArtistMetricsTable({ initialArtists, artistMetrics }: ArtistMetricsTableProps) {
@@ -49,31 +71,48 @@ export function ArtistMetricsTable({ initialArtists, artistMetrics }: ArtistMetr
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
 
-
-
-
-
   // Combine the data
    // Combine the data for display
    const data = useMemo(() => {
 
-      // Get the most recent metric value for an artist
-  const getLatestMetric = (artistId: string, platform: string, metricType: string): number => {
-    const metrics = artistMetrics[artistId] || [];
-    const metric = metrics.find(m => m.platform === platform && m.metric_type === metricType);
-    return metric?.value || 0;
-  };
+    const getMetricWithChange = (artistId: string, platform: string, metricType: string) => {
+      const metrics = artistMetrics[artistId] || [];
+      
+      // Filter metrics for this specific platform and type, sorted by date (newest first)
+      const filteredMetrics = metrics
+        .filter(m => m.platform === platform && m.metric_type === metricType)
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      
+      if (filteredMetrics.length === 0) {
+        return { current: 0, change: 0, percentChange: 0 };
+      }
+      
+      // Current value is the most recent
+      const current = filteredMetrics[0].value;
+      
+      // If we have older metrics, calculate change
+      if (filteredMetrics.length > 1) {
+        const oldest = filteredMetrics[filteredMetrics.length - 1].value;
+        const change = current - oldest;
+        const percentChange = oldest > 0 ? (change / oldest) * 100 : 0;
+        
+        return { current, change, percentChange };
+      }
+      
+      // No change data available
+      return { current, change: 0, percentChange: 0 };
+    };
     return artists.map(artist => ({
       id: artist.id,
       name: artist.name,
       imageUrl: artist.image_url,
       genres: artist.genres,
       country: artist.country,
-      spotifyFollowers: getLatestMetric(artist.id, 'spotify', 'followers'),
-      monthlyListeners: getLatestMetric(artist.id, 'spotify', 'monthly_listeners'),
-      youtubeSubscribers: getLatestMetric(artist.id, 'youtube', 'subscribers'),
-      instagramFollowers: getLatestMetric(artist.id, 'instagram', 'followers'),
-      popularity: getLatestMetric(artist.id, 'spotify', 'popularity'),
+      spotifyFollowers: getMetricWithChange(artist.id, 'spotify', 'followers'),
+      monthlyListeners: getMetricWithChange(artist.id, 'spotify', 'monthly_listeners'),
+      youtubeSubscribers: getMetricWithChange(artist.id, 'youtube', 'subscribers'),
+      instagramFollowers: getMetricWithChange(artist.id, 'instagram', 'followers'),
+      popularity: getMetricWithChange(artist.id, 'spotify', 'popularity'),
     }));
   }, [artists, artistMetrics]);
 
@@ -89,23 +128,23 @@ export function ArtistMetricsTable({ initialArtists, artistMetrics }: ArtistMetr
     }),
     columnHelper.accessor('spotifyFollowers', {
       header: 'Spotify Followers',
-      cell: info => info.getValue()?.toLocaleString() || 'N/A',
+      cell: info => <MetricDisplay value={info.getValue()} />,
     }),
     columnHelper.accessor('monthlyListeners', {
       header: 'Monthly Listeners',
-      cell: info => info.getValue()?.toLocaleString() || 'N/A',
+      cell: info => <MetricDisplay value={info.getValue()} />,
     }),
     columnHelper.accessor('youtubeSubscribers', {
       header: 'YouTube Subscribers',
-      cell: info => info.getValue()?.toLocaleString() || 'N/A',
+      cell: info => <MetricDisplay value={info.getValue()} />,
     }),
     columnHelper.accessor('instagramFollowers', {
       header: 'Instagram Followers',
-      cell: info => info.getValue()?.toLocaleString() || 'N/A',
+      cell: info => <MetricDisplay value={info.getValue()} />,
     }),
     columnHelper.accessor('popularity', {
       header: 'Popularity',
-      cell: info => info.getValue() || 'N/A',
+      cell: info => <MetricDisplay value={info.getValue()} />,
     }),
   ], [columnHelper]);
   
