@@ -32,7 +32,7 @@ export function NotificationItem({ notification }: NotificationItemProps) {
     <>
       <li className="flex items-center justify-between p-3 my-2 rounded-lg shadow-sm bg-[#e6f0ff] border-l-4 border-[#3b82f6] hover:shadow-md transition-all duration-200">
         <div className="flex-1">
-          <h4 className="font-medium text-[#1e40af] mb-1">{notification.title}</h4>
+          <h4 className="text-sm text-[#1e40af] mb-1">{notification.title}</h4>
           <p className="text-sm text-gray-700 mb-1">{notification.message}</p>
           <p className="text-xs text-gray-500 italic">{timeAgo(notification.created_at)}</p>
         </div>
