@@ -1,4 +1,4 @@
-import { chromium } from 'playwright';
+import { chromium, Page } from 'playwright';
 
 export interface SpotifyListenerData {
   artist: string;
@@ -63,7 +63,7 @@ export class BrightDataService {
     throw new Error(`Failed to scrape after ${maxRetries} attempts.`);
   }
 
-  private async extractTableData(page: any): Promise<SpotifyListenerData[]> {
+  private async extractTableData(page: Page): Promise<SpotifyListenerData[]> {
     return await page.evaluate(() => {
       const rows = document.querySelectorAll('.addpos.sortable tbody tr');
 

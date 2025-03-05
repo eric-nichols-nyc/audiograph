@@ -8,7 +8,6 @@ import {
   getPaginationRowModel,
   useReactTable,
   createColumnHelper,
-  type ColumnDef,
   type SortingState,
 } from '@tanstack/react-table';
 import { 
@@ -121,7 +120,7 @@ export function ArtistMetricsTable({ initialArtists, artistMetrics }: ArtistMetr
   const columnHelper = createColumnHelper<ArtistWithMetrics>();
   
   // Define columns
-  const columns = useMemo<ColumnDef<ArtistWithMetrics, any>[]>(() => [
+  const columns = useMemo(() => [
     columnHelper.accessor('name', {
       header: 'Artist',
       cell: info => info.getValue(),

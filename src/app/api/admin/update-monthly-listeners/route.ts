@@ -1,10 +1,9 @@
 // app/api/spotify-listeners/route.ts
-import { chromium } from 'playwright';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { brightDataService } from '@/services/bright-data.service';
-import { createServiceClient } from '@/utils/supabase/server';
-
-export async function GET(request: NextRequest) {
+import { createClient } from '@/lib/supabase/server';
+import {ArtistPlatformIds, ArtistMetric} from '@/types/artist'; // Assuming the correct import path for types
+export async function GET() {
   try {
     // Step 1: Scrape data from Kworb
     console.log('Starting Kworb Spotify listeners scraping...');
@@ -18,10 +17,10 @@ export async function GET(request: NextRequest) {
 
     // Step 2: Get Supabase client (using service client for API routes)
     console.log('Initializing Supabase service client...');
-    const supabase = createServiceClient();
+    const supabase = await createClient();
 
     // Verify Supabase connection
-    const { data: healthCheck, error: healthError } = await supabase
+    const { error: healthError } = await supabase
       .from('artists')
       .select('count')
       .limit(1);
@@ -54,7 +53,7 @@ export async function GET(request: NextRequest) {
 
     artists.forEach(artist => {
       if (artist.artist_platform_ids && Array.isArray(artist.artist_platform_ids)) {
-        artist.artist_platform_ids.forEach((platformId: any) => {
+        artist.artist_platform_ids.forEach((platformId: ArtistPlatformIds) => {
           if (platformId.platform === 'spotify' && platformId.platform_id) {
             spotifyIdToArtistMap.set(platformId.platform_id, artist.id);
           }
@@ -66,7 +65,7 @@ export async function GET(request: NextRequest) {
 
     // Step 5: Match scraped data with artists and prepare metrics
     console.log('Matching scraped data with artists...');
-    const metricsToUpdate = [];
+    const metricsToUpdate  = [] as Omit<ArtistMetric, "id">[];
     let matchCount = 0;
 
     scrapedData.forEach(item => {
@@ -79,6 +78,7 @@ export async function GET(request: NextRequest) {
           platform: 'spotify',
           metric_type: 'monthly_listeners',
           value: item.listeners,
+          date: new Date()
         });
 
         matchCount++;
@@ -134,8 +134,9 @@ export async function GET(request: NextRequest) {
       metrics_inserted: insertedCount,
       data: scrapedData,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error during scraping or data update:', error);
+    if(error instanceof  Error) {
     return NextResponse.json(
       {
         success: false,
@@ -145,43 +146,5 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
-}
-
-async function extractTableData(page: any) {
-  return await page.evaluate(() => {
-    const rows = document.querySelectorAll('.addpos.sortable tbody tr');
-
-    return Array.from(rows).map(row => {
-      const cells = row.querySelectorAll('td');
-
-      // Get artist name and URL
-      const artistElement = cells[0].querySelector('a');
-      const artistName = artistElement ? artistElement.textContent || '' : '';
-      const artistUrl = artistElement ? artistElement.getAttribute('href') || '' : '';
-
-      // Extract Spotify ID from the URL
-      // URL format: artist/0du5cEVh5yTK9QJze8zA0C_songs.html
-      let spotifyId = '';
-      if (artistUrl) {
-        const match = artistUrl.match(/artist\/([^_]+)_songs\.html/);
-        if (match && match[1]) {
-          spotifyId = match[1];
-        }
-      }
-
-      // Format numbers by removing commas
-      const formatNumber = (text: string) => {
-        return parseInt(text.replace(/,/g, '')) || 0;
-      };
-
-      return {
-        artist: artistName,
-        spotify_id: spotifyId,
-        listeners: formatNumber(cells[1] ? cells[1].textContent || '0' : '0'),
-        dailyTrend: parseInt((cells[2] ? cells[2].textContent || '0' : '0').replace(/,/g, '')),
-        peak: parseInt(cells[3] ? cells[3].textContent || '0' : '0'),
-        peakListeners: formatNumber(cells[4] ? cells[4].textContent || '0' : '0'),
-      };
-    });
-  });
+  }
 }
