@@ -6,7 +6,6 @@ import { redirect } from "next/navigation";
 export const signInAction = async (formData: FormData) => {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
-    console.log('formData = ',email, password)
 
     const supabase = await createClient();
   

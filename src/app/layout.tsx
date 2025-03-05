@@ -31,6 +31,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  // Prefetch the user data on the server side (SSR) to avoid loading delays.
   const queryClient = new QueryClient();
 
   return (

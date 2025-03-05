@@ -65,7 +65,7 @@ interface ArtistWithMetrics {
 }
 
 export function ArtistMetricsTable({ initialArtists, artistMetrics }: ArtistMetricsTableProps) {
-  console.log('metrics data ', artistMetrics);
+  console.log('artistMetrics = ', artistMetrics);
   // State for table
   const [artists] = useState(initialArtists);
   const [sorting, setSorting] = useState<SortingState>([]);

@@ -66,7 +66,6 @@ function UserProfile() {
     async function fetchUser() {
       try {
         const userData = await getUser()
-        console.log('userDAta',userData)
         setUser(userData)
       } catch (error) {
         console.error("Error fetching user:", error)
