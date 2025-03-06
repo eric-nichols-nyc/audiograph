@@ -67,7 +67,7 @@ export class BrightDataService {
     return await page.evaluate(() => {
       const rows = document.querySelectorAll('.addpos.sortable tbody tr');
 
-      return Array.from(rows).map(row => {
+      return Array.from(rows).slice(0,150).map(row => {
         const cells = row.querySelectorAll('td');
 
         // Get artist name and URL
