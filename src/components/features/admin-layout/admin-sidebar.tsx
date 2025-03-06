@@ -1,41 +1,46 @@
-"use client"
+"use client";
 
-import React from "react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { 
-  LayoutDashboard, 
-  Users, 
-  Settings, 
-  BarChart, 
+import React from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import {
+  LayoutDashboard,
+  Users,
+  BarChart,
   FileText,
   Music,
-  ChevronLeft
-} from "lucide-react"
-import { cn } from "@/lib/utils"
-import { 
-  Accordion, 
-  AccordionContent, 
-  AccordionItem, 
-  AccordionTrigger 
-} from "@/components/ui/accordion"
+  ChevronLeft,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 interface SidebarItemProps {
-  href: string
-  icon: React.ReactNode
-  title: string
-  active?: boolean
-  sidebarOpen: boolean
+  href: string;
+  icon: React.ReactNode;
+  title: string;
+  active?: boolean;
+  sidebarOpen: boolean;
 }
 
-function SidebarItem({ href, icon, title, active, sidebarOpen }: SidebarItemProps) {
+function SidebarItem({
+  href,
+  icon,
+  title,
+  active,
+  sidebarOpen,
+}: SidebarItemProps) {
   return (
-    <Link 
+    <Link
       href={href}
       className={cn(
         "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
-        active 
-          ? "bg-secondary text-secondary-foreground" 
+        active
+          ? "bg-secondary text-secondary-foreground"
           : "hover:bg-secondary/50",
         !sidebarOpen && "justify-center px-0"
       )}
@@ -43,59 +48,66 @@ function SidebarItem({ href, icon, title, active, sidebarOpen }: SidebarItemProp
       {icon}
       {sidebarOpen && <span>{title}</span>}
     </Link>
-  )
+  );
 }
 
 interface AdminSidebarProps {
-  open: boolean
-  onClose?: () => void
+  open: boolean;
+  onClose?: () => void;
 }
 
 export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
-  const pathname = usePathname()
-  
+  const pathname = usePathname();
+
   return (
     <div className="relative flex h-[calc(100vh-4rem)]">
-      <aside 
+      <aside
         className={cn(
           "h-full overflow-y-auto transition-all duration-300 border-r",
-          open 
-            ? "w-64 bg-blue-50/50 dark:bg-blue-950/30" 
+          open
+            ? "w-64 bg-blue-50/50 dark:bg-blue-950/30"
             : "w-16 bg-blue-50 dark:bg-blue-950"
         )}
       >
         <div className={cn("space-y-4", open ? "p-4" : "p-2")}>
-          <SidebarItem 
-            href="/dashboard" 
-            icon={<LayoutDashboard className="h-5 w-5" />} 
-            title="Dashboard" 
+          <SidebarItem
+            href="/dashboard"
+            icon={<LayoutDashboard className="h-5 w-5" />}
+            title="Dashboard"
             active={pathname === "/dashboard"}
             sidebarOpen={open}
           />
-          
+
           {open ? (
             <Accordion type="single" collapsible className="border-none">
               <AccordionItem value="content" className="border-none">
                 <AccordionTrigger className="py-2 hover:no-underline">
                   <div className="flex items-center gap-3">
-                    <FileText className="h-5 w-5" />
-                    <span>Content</span>
+                    <BarChart className="h-5 w-5" />
+                    <span>Admin</span>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent>
                   <div className="pl-7 space-y-1">
-                    <SidebarItem 
-                      href="/content/artists" 
-                      icon={<Music className="h-5 w-5" />} 
-                      title="Artists" 
-                      active={pathname.startsWith("/content/artists")}
+                    <SidebarItem
+                      href="/admin/artists"
+                      icon={<Users className="h-5 w-5" />}
+                      title="Artists"
+                      active={pathname.startsWith("/admin/artists")}
                       sidebarOpen={open}
                     />
-                    <SidebarItem 
-                      href="/content/albums" 
-                      icon={<FileText className="h-5 w-5" />} 
-                      title="Albums" 
-                      active={pathname.startsWith("/content/albums")}
+                    <SidebarItem
+                      href="/admin/tracks"
+                      icon={<Music className="h-5 w-5" />}
+                      title="Albums"
+                      active={pathname.startsWith("/admin/tracks")}
+                      sidebarOpen={open}
+                    />
+                       <SidebarItem
+                      href="/admin/videos"
+                      icon={<FileText className="h-5 w-5" />}
+                      title="Videos"
+                      active={pathname.startsWith("/admin/videos")}
                       sidebarOpen={open}
                     />
                   </div>
@@ -103,40 +115,37 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
               </AccordionItem>
             </Accordion>
           ) : (
-            <Link 
-              href="/content"
-              className="flex justify-center py-2"
-            >
+            <Link href="/content" className="flex justify-center py-2">
               <FileText className="h-5 w-5" />
             </Link>
           )}
-          
-          <SidebarItem 
-            href="/analytics" 
-            icon={<BarChart className="h-5 w-5" />} 
-            title="Analytics" 
-            active={pathname === "/analytics"}
+
+          <SidebarItem
+            href="/artists"
+            icon={<Users className="h-5 w-5" />}
+            title="Artists"
+            active={pathname === "/artists"}
             sidebarOpen={open}
           />
-          
-          <SidebarItem 
-            href="/users" 
-            icon={<Users className="h-5 w-5" />} 
-            title="Users" 
-            active={pathname === "/users"}
+
+          <SidebarItem
+            href="/tracks"
+            icon={<Music className="h-5 w-5" />}
+            title="Tracks"
+            active={pathname === "/tracks"}
             sidebarOpen={open}
           />
-          
-          <SidebarItem 
-            href="/settings" 
-            icon={<Settings className="h-5 w-5" />} 
-            title="Settings" 
-            active={pathname === "/settings"}
+
+          <SidebarItem
+            href="/videos"
+            icon={<FileText className="h-5 w-5" />}
+            title="Videos"
+            active={pathname === "/videos"}
             sidebarOpen={open}
           />
         </div>
       </aside>
-      
+
       {open && onClose && (
         <button
           onClick={onClose}
@@ -147,5 +156,5 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
         </button>
       )}
     </div>
-  )
+  );
 }
