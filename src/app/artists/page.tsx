@@ -1,8 +1,6 @@
 
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ThemeToggle } from '@/components/theme-toggle';
-
+import { ContentLayout } from '@/components/features/content-layout';
 export default function ArtistsPage() {
   // Mock data for artists
   const artists = [
@@ -15,25 +13,8 @@ export default function ArtistsPage() {
   ];
 
   return (
+    <ContentLayout title="Artists">
     <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-40 border-b bg-background">
-        <div className="container flex h-16 items-center justify-between py-4">
-          <div className="flex items-center gap-2">
-            <Link href="/">
-              <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">AudioGPraph</h1>
-            </Link>
-          </div>
-          <nav className="flex items-center gap-4">
-            <ThemeToggle />
-            <Link href="/sign-in">
-              <Button variant="outline">Login</Button>
-            </Link>
-            <Link href="/sign-up">
-              <Button>Sign Up</Button>
-            </Link>
-          </nav>
-        </div>
-      </header>
       <main className="flex-1 container py-8">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Top Artists</h1>
@@ -81,5 +62,6 @@ export default function ArtistsPage() {
         </div>
       </footer>
     </div>
+    </ContentLayout>
   );
 }
