@@ -10,7 +10,7 @@ export default async function AdminRouteLayout({
 }) {
 
 const user = await getUser ()
-console.log('adminlaoyt:user',user)
+// console.log('adminlaoyt:user',user)
 if (!user) {
   throw new Error("User not found")
 }
