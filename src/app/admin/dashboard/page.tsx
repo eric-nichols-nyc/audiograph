@@ -35,10 +35,28 @@ export default async function Dashboard() {
     return acc;
   }, {} as Record<string, ArtistMetric[]>);
 
+  // Fetch counts for metrics overview
+  const [
+    { count: songCount },
+    { count: artistCount },
+    { count: videoCount },
+    { count: articleCount }
+  ] = await Promise.all([
+    supabase.from("tracks").select("*", { count: "exact", head: true }),
+    supabase.from("artists").select("*", { count: "exact", head: true }),
+    supabase.from("videos").select("*", { count: "exact", head: true }),
+    supabase.from("artist_articles").select("*", { count: "exact", head: true })
+  ]);
+
   return (
     <AdminLayout title="Dashboard">
       <div className="space-y-4">
-        <MetricsOverview />
+        <MetricsOverview 
+          songCount={songCount || 0}
+          artistCount={artistCount || 0}
+          videoCount={videoCount || 0}
+          articleCount={articleCount || 0}
+        />
 
         <ActivityLogContent />
         <ArtistMetricsTable
