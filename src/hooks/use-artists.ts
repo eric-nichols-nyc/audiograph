@@ -1,6 +1,9 @@
+'use client';
+
 // hooks/use-artists.ts
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getArtists } from '@/actions/artists/artist';
+import { Artist } from '@/types/artist';
 
 export function useArtists() {
   const queryClient = useQueryClient();
@@ -17,8 +20,12 @@ export function useArtists() {
     }
   });
 
+  // Safely extract artists data
+  const artistsData = query?.data?.data?.data;
+  const artists = Array.isArray(artistsData) ? artistsData as Artist[] : [];
+
   return {
-    data: query.data?.data || [],
+    data: artists,
     isLoading: query.isLoading,
     error: query.error,
     mutate: () => queryClient.invalidateQueries({ queryKey: ['artists'] })
