@@ -25,3 +25,26 @@ export const getArtists = actionClient
       data: Array.isArray(data) ? data : [] 
     };
   });
+
+
+export async function getArtistBySlug(slug: string) {
+  const supabase = await createClient();
+  
+  // Get basic artist info
+  const { data: artist } = await supabase
+    .from('artists')
+    .select('*')
+    .eq('slug', slug)
+    .single()
+
+  // Get platform IDs
+  const { data: platformIds } = await supabase
+    .from('artist_platform_ids')
+    .select('*')
+    .eq('artist_id', artist.id)
+
+  return {
+    artist,
+    platformIds
+  }
+}

@@ -70,8 +70,7 @@
   --background: oklch(0.15 0.05 260);
   --foreground: oklch(0.985 0 0);
   /* Slightly lighter card background for contrast */
-  --card: oklch(0.17 0.06 260);
-  --card-foreground: oklch(0.985 0 0);
+  --card: 233 50% 0%;  --card-foreground: oklch(0.985 0 0);
   /* Popover with same color as cards for consistency */
   --popover: oklch(0.17 0.06 260);
   --popover-foreground: oklch(0.985 0 0);
