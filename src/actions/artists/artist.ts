@@ -12,9 +12,7 @@ export const getArtists = actionClient
     
     const { data, error } = await supabase
       .from("artists")
-      .select(`
-        *,
-      `);
+      .select(`*`);
     
     // console.log('Artists data:', data); // Debug log
     
