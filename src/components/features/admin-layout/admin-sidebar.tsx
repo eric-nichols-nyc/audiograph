@@ -5,12 +5,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
 import {
-  LayoutDashboard,
   Users,
   BarChart,
   FileText,
   Music,
+  Search,
   ChevronLeft,
+  Compass
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -76,10 +77,10 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
       >
         <div className={cn("space-y-4", open ? "p-4" : "p-2")}>
           <SidebarItem
-            href="/dashboard"
-            icon={<LayoutDashboard className="h-5 w-5" />}
-            title="Dashboard"
-            active={pathname === "/dashboard"}
+            href="/search"
+            icon={<Search className="h-5 w-5" />}
+            title="Search"
+            active={pathname === "/search"}
             sidebarOpen={open}
           />
 
@@ -129,30 +130,67 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
             </>
           )}
 
-          <SidebarItem
-            href="/artists"
-            icon={<Users className="h-5 w-5" />}
-            title="Artists"
-            active={pathname === "/artists"}
-            sidebarOpen={open}
-          />
-
-          <SidebarItem
-            href="/tracks"
-            icon={<Music className="h-5 w-5" />}
-            title="Tracks"
-            active={pathname === "/tracks"}
-            sidebarOpen={open}
-          />
-
-          <SidebarItem
-            href="/videos"
-            icon={<FileText className="h-5 w-5" />}
-            title="Videos"
-            active={pathname === "/videos"}
-            sidebarOpen={open}
-          />
+          {open ? (
+            <Accordion type="single" collapsible className="border-none">
+              <AccordionItem value="discover" className="border-none">
+                <AccordionTrigger className="py-2 hover:no-underline">
+                  <div className="flex items-center gap-3">
+                    <Compass className="h-5 w-5" />
+                    <span>Discover</span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="pl-7 space-y-1">
+                    <SidebarItem
+                      href="/artists"
+                      icon={<Users className="h-5 w-5" />}
+                      title="Artists"
+                      active={pathname === "/artists"}
+                      sidebarOpen={open}
+                    />
+                    <SidebarItem
+                      href="/tracks" 
+                      icon={<Music className="h-5 w-5" />}
+                      title="Tracks"
+                      active={pathname === "/tracks"}
+                      sidebarOpen={open}
+                    />
+                    <SidebarItem
+                      href="/videos"
+                      icon={<FileText className="h-5 w-5" />}
+                      title="Videos" 
+                      active={pathname === "/videos"}
+                      sidebarOpen={open}
+                    />
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          ) : (
+            <Link href="/discover" className="flex justify-center py-2">
+              <Compass className="h-5 w-5" />
+            </Link>
+          )}
         </div>
+
+          <Accordion type="single" defaultValue="tools">
+            <AccordionItem value="tools">
+              <AccordionTrigger className={cn("px-3", !open && "justify-center")}>
+                {open ? "Tools" : <BarChart className="h-5 w-5" />}
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="flex flex-col gap-1">
+                  <SidebarItem
+                    href="/compare"
+                    icon={<Users className="h-5 w-5" />}
+                    title="Compare"
+                    active={pathname === "/compare"}
+                    sidebarOpen={open}
+                  />
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
       </aside>
 
       {open && onClose && (
