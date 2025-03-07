@@ -28,7 +28,7 @@ export function ArtistNavbar({ artist }: ArtistNavProps) {
   const displayGenres = artist?.genres?.slice(0, 2).join(', ') || 'Unknown Genre'
 
   return (
-    <div className="z-20 bg-background w-full border-b">
+    <div className="z-20 bg-background w-full border-b sticky top-0">
       <div className="flex flex-col">
         <div className="flex items-center gap-4 px-6 py-3">
           <Avatar className="w-12 h-12">

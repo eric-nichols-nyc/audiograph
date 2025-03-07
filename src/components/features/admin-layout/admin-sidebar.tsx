@@ -20,7 +20,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-
+import { Button } from "@/components/ui/button";
 interface SidebarItemProps {
   href: string;
   icon: React.ReactNode;
@@ -75,6 +75,10 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
             : "w-16 bg-blue-50 dark:bg-blue-950"
         )}
       >
+
+        <Button className="w-full justify-start text-2xl font-bold">
+        🎧 Audiograph
+        </Button>
         <div className={cn("space-y-4", open ? "p-4" : "p-2")}>
           <SidebarItem
             href="/search"
@@ -196,7 +200,7 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
       {open && onClose && (
         <button
           onClick={onClose}
-          className="h-12 w-6 absolute -right-6 top-1/2 -translate-y-1/2 flex items-center justify-center bg-blue-100 hover:bg-blue-200 dark:bg-blue-900 dark:hover:bg-blue-800 rounded-r-md"
+          className="h-12 w-6 absolute -right-6 top-10 -translate-y-1/2 flex items-center justify-center bg-blue-100 hover:bg-blue-200 dark:bg-blue-900 dark:hover:bg-blue-800 rounded-r-md z-50"
           aria-label="Close sidebar"
         >
           <ChevronLeft className="h-4 w-4" />

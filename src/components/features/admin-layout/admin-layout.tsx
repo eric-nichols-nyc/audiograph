@@ -28,7 +28,7 @@ export function AdminLayout({ title, children, className }: AdminLayoutProps) {
         />
         <main
           className={cn(
-            "flex-1 overflow-y-auto p-6 transition-all duration-300",
+            "flex-1 overflow-y-auto transition-all duration-300",
             className
           )}
         >
