@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getArtists } from "@/actions/artists/actions";
+import { getArtists } from "@/actions/artists/artist";
 
 
 export const GET = async () => {

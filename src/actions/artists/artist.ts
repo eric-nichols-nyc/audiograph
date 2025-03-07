@@ -14,10 +14,6 @@ export const getArtists = actionClient
       .from("artists")
       .select(`
         *,
-        artist_platform_ids (
-          platform,
-          platform_id
-        )
       `);
     
     // console.log('Artists data:', data); // Debug log
