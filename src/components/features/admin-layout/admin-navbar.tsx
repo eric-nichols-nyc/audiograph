@@ -10,13 +10,11 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 //import {useAuth} from '@/hooks/use-auth';
 
 interface AdminNavbarProps {
-  title: string
   sidebarOpen: boolean
   setSidebarOpen: (open: boolean) => void
 }
 
 export function AdminNavbar({ 
-  title, 
   sidebarOpen, 
   setSidebarOpen 
 }: AdminNavbarProps) {
@@ -47,7 +45,6 @@ useEffect(() => {
             <Menu className="h-5 w-5" />
           </button>
         )}
-        <h1 className="text-xl font-semibold">{title}</h1>
       </div>
       <div className="flex items-center gap-4">
         <Notifications />

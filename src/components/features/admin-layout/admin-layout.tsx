@@ -6,7 +6,7 @@ import { AdminSidebar } from "./admin-sidebar"
 import { cn } from "@/lib/utils"
 
 interface AdminLayoutProps {
-  title: string
+  title?: string
   children: React.ReactNode
   className?: string
 }
@@ -15,18 +15,18 @@ export function AdminLayout({ title, children, className }: AdminLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
 
   return (
-    <div className="flex h-screen flex-col">
-      <AdminNavbar 
-        title={title} 
-        sidebarOpen={sidebarOpen} 
-        setSidebarOpen={setSidebarOpen} 
+    <div className="flex h-screen">
+      <AdminSidebar
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
       />
-      <div className="flex flex-1 overflow-hidden">
-        <AdminSidebar 
-          open={sidebarOpen} 
-          onClose={() => setSidebarOpen(false)} 
+      <div className="flex flex-col h-full w-full overflow-hidden">
+        <AdminNavbar
+          title={title || ""}
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
         />
-        <main 
+        <main
           className={cn(
             "flex-1 overflow-y-auto p-6 transition-all duration-300",
             className
@@ -35,6 +35,6 @@ export function AdminLayout({ title, children, className }: AdminLayoutProps) {
           {children}
         </main>
       </div>
-    </div>
+      </div>
   )
 }
