@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { SpotifyArtist, SpotifyTrack } from '@/types/spotify';
+// import { SpotifyArtist, SpotifyTrack } from '@/types/spotify';
 import { unstable_cache } from 'next/cache';
 
 export class SpotifyService {
@@ -68,7 +68,7 @@ export class SpotifyService {
       });
 
       const artistData = await artistResponse.json();
-      return artist_id;
+      return artistData;
     },
     ['spotify-search-artist'],
     { tags: ['spotify-search-artist'], revalidate: 60 * 60 * 24 }

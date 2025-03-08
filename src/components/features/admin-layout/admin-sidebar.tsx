@@ -11,7 +11,8 @@ import {
   Music,
   Search,
   ChevronLeft,
-  Compass
+  Compass,
+  LogOut
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -66,7 +67,7 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
   // console.log('admin sidebar: ', user)
 
   return (
-    <div className="relative flex h-[calc(100vh-4rem)]">
+    <div className="relative flex h-[calc(100vh-4rem)] pt-4">
       <aside
         className={cn(
           "h-full overflow-y-auto transition-all duration-300 border-r",
@@ -76,17 +77,20 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
         )}
       >
 
-        <Button className="w-full justify-start text-2xl font-bold">
-        🎧 Audiograph
+        <Button className="w-full justify-start text-2xl font-bold" variant="ghost">
+        <div className="flex items-center gap-4">
+          <div>🎧</div>
+          <div>Audiograph</div>
+        </div>
         </Button>
+        <Link href="/search">
+            <Button variant="ghost" className="w-full justify-start">
+              <Search className="h-5 w-5" />
+              {open && <span className="ml-3">Search</span>}
+            </Button>
+          </Link>
         <div className={cn("space-y-4", open ? "p-4" : "p-2")}>
-          <SidebarItem
-            href="/search"
-            icon={<Search className="h-5 w-5" />}
-            title="Search"
-            active={pathname === "/search"}
-            sidebarOpen={open}
-          />
+
 
           {isAdmin && (
             <>
@@ -139,7 +143,6 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
               <AccordionItem value="discover" className="border-none">
                 <AccordionTrigger className="py-2 hover:no-underline">
                   <div className="flex items-center gap-3">
-                    <Compass className="h-5 w-5" />
                     <span>Discover</span>
                   </div>
                 </AccordionTrigger>
@@ -195,6 +198,18 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
+      <div className="mt-auto p-3 absolute bottom-0 w-full">
+        <button
+          onClick={() => signOut()}
+          className={cn(
+            "w-full flex items-center gap-3 p-2 rounded-md hover:bg-secondary",
+            !open && "justify-center"
+          )}
+        >
+          <LogOut className="h-5 w-5" />
+          {open && <span>Log Out</span>}
+        </button>
+      </div>
       </aside>
 
       {open && onClose && (

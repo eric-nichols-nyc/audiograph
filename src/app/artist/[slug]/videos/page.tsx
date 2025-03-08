@@ -2,7 +2,7 @@ import { AdminLayout } from '@/components/features/admin-layout';
 import { getArtistBySlug } from '@/actions/artists/artist';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-
+import Image from 'next/image';
 // Mock data for videos - in a real app, this would come from an API
 const mockVideos = [
   {
@@ -156,7 +156,8 @@ function VideoCard({ video }: VideoCardProps) {
   return (
     <Card className="overflow-hidden">
       <div className="aspect-video relative">
-        <img 
+        <Image 
+          fill
           src={video.thumbnail} 
           alt={video.title}
           className="w-full h-full object-cover"

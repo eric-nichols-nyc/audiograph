@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { LocationResponse, LocationData } from '@/utils/location-data';
+import { NextResponse } from 'next/server';
+import { LocationData } from '@/utils/location-data';
 import { createClient } from '@supabase/supabase-js';
 
 // Initialize Supabase client
@@ -7,7 +7,11 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-export async function GET(request: NextRequest, { params }: { params: { slug: string } }) {
+export async function GET(
+  request: Request,
+  { params }: { params: { slug: string } }
+) {
+  console.log('params', params);
   try {
     const { slug } = params;
 

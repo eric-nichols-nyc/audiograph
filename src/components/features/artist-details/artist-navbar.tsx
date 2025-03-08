@@ -29,7 +29,7 @@ export function ArtistNavbar({ artist }: ArtistNavProps) {
 
   return (
     <div className="z-20 bg-background w-full border-b sticky top-0">
-      <div className="flex flex-col">
+      <div className="flex ">
         <div className="flex items-center gap-4 px-6 py-3">
           <Avatar className="w-12 h-12">
             <AvatarImage className="w-12 h-12" src={artist?.image_url || "https://github.com/shadcn.png"} />

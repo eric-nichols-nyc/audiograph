@@ -2,7 +2,7 @@ import { AdminLayout } from '@/components/features/admin-layout';
 import { getArtistBySlug } from '@/actions/artists/artist';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-
+import Image from 'next/image';
 // Mock data for albums - in a real app, this would come from an API
 const mockAlbums = [
   {
@@ -142,7 +142,8 @@ function AlbumCard({ album }: AlbumCardProps) {
   return (
     <Card className="overflow-hidden">
       <div className="aspect-square relative">
-        <img 
+        <Image 
+          fill
           src={album.coverArt} 
           alt={album.title}
           className="w-full h-full object-cover"
@@ -151,7 +152,7 @@ function AlbumCard({ album }: AlbumCardProps) {
       <CardContent className="p-4">
         <div className="flex justify-between items-start mb-2">
           <h3 className="font-medium line-clamp-1">{album.title}</h3>
-          <Badge variant={albumTypeColors[album.type] as any} className="capitalize">
+          <Badge variant={albumTypeColors[album.type]} className="capitalize">
             {album.type}
           </Badge>
         </div>
