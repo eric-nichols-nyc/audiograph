@@ -3,7 +3,6 @@ import { ArtistMetricsTable } from "@/components/features/admin-dashbaord/artist
 import { ActivityLogContent } from "@/components/features/admin-dashbaord/recent-activity-log";
 import { MetricsOverview } from "@/components/features/admin-dashbaord/metrics-overview";
 import { createClient } from "@/lib/supabase/server";
-
 import { Artist, ArtistMetric } from '@/types/artist';
 
 export default async function Dashboard() {

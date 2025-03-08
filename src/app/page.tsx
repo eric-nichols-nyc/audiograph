@@ -1,26 +1,9 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ThemeToggle } from '@/components/theme-toggle';
 
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-40 border-b bg-background">
-        <div className="container flex h-16 items-center justify-between py-4">
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">AudioGPraph</h1>
-          </div>
-          <nav className="flex items-center gap-4">
-            <ThemeToggle />
-            <Link href="/sign-in">
-              <Button variant="outline">Login</Button>
-            </Link>
-            <Link href="/sign-up">
-              <Button>Sign Up</Button>
-            </Link>
-          </nav>
-        </div>
-      </header>
       <main className="flex-1">
         <section className="space-y-6 pb-8 pt-6 md:pb-12 md:pt-10 lg:py-32 bg-gradient-to-b from-background to-secondary/20">
           <div className="container flex max-w-[64rem] flex-col items-center gap-4 text-center">
@@ -31,9 +14,6 @@ export default function Home() {
               Track artist performance, discover trends, and gain insights with our powerful music analytics platform
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Link href="/sign-up">
-                <Button size="lg" className="bg-primary hover:bg-primary/90">Get Started</Button>
-              </Link>
               <Link href="/artists">
                 <Button variant="outline" size="lg">
                   Explore Artists
