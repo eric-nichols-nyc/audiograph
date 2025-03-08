@@ -27,6 +27,15 @@ interface MapComponentProps {
   maxViews: number;
 }
 
+// Define the marker type
+interface LocationMarker {
+  coordinates: [number, number];
+  size: number;
+  rank: string;
+  title: string;
+  views: string;
+}
+
 const MapComponent: React.FC<MapComponentProps> = ({ locations, maxViews }) => {
   useEffect(() => {
     // Fix for Leaflet default icon issue in Next.js
@@ -42,7 +51,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ locations, maxViews }) => {
   }, []);
 
   // Filter locations that have coordinates
-  const markersWithCoordinates = locations
+  const markersWithCoordinates: LocationMarker[] = locations
     .map(location => {
       const coordinates = CITY_COORDINATES[location.title];
       if (!coordinates) return null;
@@ -59,7 +68,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ locations, maxViews }) => {
         views: location.views,
       };
     })
-    .filter(Boolean);
+    .filter((marker): marker is LocationMarker => marker !== null);
 
   return (
     <MapContainer

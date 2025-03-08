@@ -12,6 +12,7 @@ interface AdminLayoutProps {
 }
 
 export function AdminLayout({ title, children, className }: AdminLayoutProps) {
+  console.log('admin layout title', title);
   const [sidebarOpen, setSidebarOpen] = useState(true)
 
   return (
@@ -22,7 +23,6 @@ export function AdminLayout({ title, children, className }: AdminLayoutProps) {
       />
       <div className="flex flex-col h-full w-full overflow-hidden">
         <AdminNavbar
-          title={title || ""}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />

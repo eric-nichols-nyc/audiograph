@@ -53,8 +53,9 @@ const mockTracks = [
   },
 ];
 
-export default async function ArtistTracksPage({ params }: { params: { slug: string } }) {
-  const { artist } = await getArtistBySlug(params.slug);
+export default async function ArtistTracksPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const { artist } = await getArtistBySlug(slug);
 
   return (
     <AdminLayout title={`${artist?.name || 'Artist'} Tracks`}>

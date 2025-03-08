@@ -4,10 +4,10 @@ import { createSpotifyService } from '@/services/spotify-service';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     
     // Get market from searchParams (optional)
     const searchParams = request.nextUrl.searchParams;

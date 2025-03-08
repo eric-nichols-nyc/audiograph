@@ -57,8 +57,9 @@ const mockVideos = [
   },
 ];
 
-export default async function ArtistVideosPage({ params }: { params: { slug: string } }) {
-  const { artist } = await getArtistBySlug(params.slug);
+export default async function ArtistVideosPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const { artist } = await getArtistBySlug(slug);
 
   return (
     <AdminLayout title={`${artist?.name || 'Artist'} Videos`}>

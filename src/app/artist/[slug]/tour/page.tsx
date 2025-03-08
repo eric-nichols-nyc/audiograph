@@ -58,8 +58,9 @@ const mockTourDates = [
   },
 ];
 
-export default async function ArtistTourPage({ params }: { params: { slug: string } }) {
-  const { artist } = await getArtistBySlug(params.slug);
+export default async function ArtistTourPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const { artist } = await getArtistBySlug(slug);
   
   const upcomingShows = mockTourDates.filter(show => show.status === 'upcoming');
   const completedShows = mockTourDates.filter(show => show.status === 'completed');

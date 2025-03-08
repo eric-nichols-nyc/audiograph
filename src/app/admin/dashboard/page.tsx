@@ -4,7 +4,7 @@ import { ActivityLogContent } from "@/components/features/admin-dashbaord/recent
 import { MetricsOverview } from "@/components/features/admin-dashbaord/metrics-overview";
 import { createClient } from "@/lib/supabase/server";
 
-import { ArtistMetric } from '@/types/artist';
+import { Artist, ArtistMetric } from '@/types/artist';
 
 export default async function Dashboard() {
   const supabase = await createClient();
@@ -60,7 +60,7 @@ export default async function Dashboard() {
 
         <ActivityLogContent />
         <ArtistMetricsTable
-        initialArtists={artists || []}
+        initialArtists={artists as Artist[] || []}
         artistMetrics={metricsGroupedByArtist}
       />
       </div>

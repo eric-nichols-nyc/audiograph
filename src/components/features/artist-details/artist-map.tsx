@@ -50,9 +50,8 @@ export function ArtistMap() {
         </div>
       ) : locations && locations.length > 0 ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Map Column - Takes up 2/3 of the space on large screens */}
-               {/* Cities List Column - Takes up 1/3 of the space on large screens */}
-               <div className="lg:col-span-1">
+          {/* Cities List Column - Takes up 1/3 of the space on large screens */}
+          <div className="lg:col-span-1">
             <Card className="h-full">
               <CardHeader>
                 <CardTitle>Top Listener Cities</CardTitle>
@@ -66,7 +65,6 @@ export function ArtistMap() {
                       </div>
                       <div className="flex-1">
                         <div className="font-medium">{location.title}</div>
-                        <div className="text-sm text-muted-foreground">{location.country || 'Unknown'}</div>
                       </div>
                       <Badge variant="secondary">{location.views}</Badge>
                     </div>
@@ -75,14 +73,14 @@ export function ArtistMap() {
               </CardContent>
             </Card>
           </div>
+          
+          {/* Map Column - Takes up 2/3 of the space on large screens */}
           <div className="lg:col-span-2">
             <ArtistLocationMap
               artistName={formattedArtistName}
               locations={locations}
             />
           </div>
-          
-     
         </div>
       ) : (
         <div className="p-4 border border-yellow-300 bg-yellow-50 rounded-lg">

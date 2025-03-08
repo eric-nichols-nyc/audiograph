@@ -3,8 +3,9 @@ import { getArtistBySlug } from '@/actions/artists/artist';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-export default async function ArtistStatsPage({ params }: { params: { slug: string } }) {
-  const { artist } = await getArtistBySlug(params.slug);
+export default async function ArtistStatsPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const { artist } = await getArtistBySlug(slug);
 
   return (
     <AdminLayout title={`${artist?.name || 'Artist'} Statistics`}>

@@ -1,6 +1,6 @@
 import { ArrowDownIcon, ArrowUpIcon, MinusIcon } from "lucide-react"
 import { PlatformIcon } from "@/components/platform-icon"
-import type { Platform } from "@/lib/types"
+import type { Platform } from "@/types/platform"
 
 interface PlatformCardProps {
   platform: Platform

@@ -9,11 +9,11 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function GET(
   request: Request,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   console.log('params', params);
   try {
-    const { slug } = params;
+    const { slug } = await params;
 
     // First, try to get data from the database
     const { data: artistData, error: artistError } = await supabase

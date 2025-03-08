@@ -6,8 +6,10 @@ import { SimilarArtists } from '@/components/features/artist-details/overview/si
 import { MusicStreaming } from '@/components/features/artist-details/overview/music-streaming';
 import { VideosStreaming } from '@/components/features/artist-details/overview/videos-streaming';
 import { ArtistMap } from '@/components/features/artist-details/artist-map';
-export default async function ArtistOverviewPage({ params }: { params: { slug: string } }) {
-  const { artist } = await getArtistBySlug(params.slug);
+
+export default async function ArtistOverviewPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const { artist } = await getArtistBySlug(slug);
 
   return (
     <AdminLayout title={`${artist?.name || 'Artist'} Overview`}>

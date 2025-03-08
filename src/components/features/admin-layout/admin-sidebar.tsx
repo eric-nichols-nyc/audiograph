@@ -200,7 +200,6 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
           </Accordion>
       <div className="mt-auto p-3 absolute bottom-0 w-full">
         <button
-          onClick={() => signOut()}
           className={cn(
             "w-full flex items-center gap-3 p-2 rounded-md hover:bg-secondary",
             !open && "justify-center"

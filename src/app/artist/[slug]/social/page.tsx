@@ -2,6 +2,7 @@ import { AdminLayout } from '@/components/features/admin-layout';
 import { getArtistBySlug } from '@/actions/artists/artist';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+//import { Badge } from '@/components/ui/badge';
 
 // Mock data for social media - in a real app, this would come from an API
 const mockSocialData = {
@@ -39,8 +40,9 @@ const mockSocialData = {
   }
 };
 
-export default async function ArtistSocialPage({ params }: { params: { slug: string } }) {
-  const { artist } = await getArtistBySlug(params.slug);
+export default async function ArtistSocialPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const { artist } = await getArtistBySlug(slug);
 
   return (
     <AdminLayout title={`${artist?.name || 'Artist'} Social Media`}>

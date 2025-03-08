@@ -18,6 +18,8 @@ export interface Artist {
     youtubeSubscribers?: number; 
     instagramFollowers?: number; 
     popularity?: number;
+    slug: string;
+    rank: number;
 }
 
 export interface ArtistPlatformIds {

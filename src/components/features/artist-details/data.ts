@@ -1,6 +1,5 @@
-import type { Platform } from "./types"
 
-export const platformData: Platform[] = [
+export const platformData= [
   {
     id: "deezer",
     name: "DEEZER FANS",
