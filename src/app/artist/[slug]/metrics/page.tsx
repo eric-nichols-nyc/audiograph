@@ -2,6 +2,7 @@ import { AdminLayout } from '@/components/features/admin-layout';
 import { getArtistBySlug } from '@/actions/artists/artist';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ArtistNavbar } from "@/components/features/artist-details/artist-navbar";
 
 export default async function ArtistMetricsPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -9,6 +10,7 @@ export default async function ArtistMetricsPage({ params }: { params: Promise<{ 
 
   return (
     <AdminLayout title={`${artist?.name || 'Artist'} Metrics`}>
+      <ArtistNavbar artist={artist} />
       <Tabs defaultValue="spotify" className="w-full">
         <TabsList className="grid w-full grid-cols-4 mb-6">
           <TabsTrigger value="spotify">Spotify</TabsTrigger>
@@ -16,7 +18,7 @@ export default async function ArtistMetricsPage({ params }: { params: Promise<{ 
           <TabsTrigger value="instagram">Instagram</TabsTrigger>
           <TabsTrigger value="tiktok">TikTok</TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="spotify" className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             <Card>
@@ -29,7 +31,7 @@ export default async function ArtistMetricsPage({ params }: { params: Promise<{ 
                 <p className="text-xs text-muted-foreground">+2.5% from last month</p>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium">Monthly Listeners</CardTitle>
@@ -40,7 +42,7 @@ export default async function ArtistMetricsPage({ params }: { params: Promise<{ 
                 <p className="text-xs text-muted-foreground">+5.2% from last month</p>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium">Popularity</CardTitle>
@@ -52,7 +54,7 @@ export default async function ArtistMetricsPage({ params }: { params: Promise<{ 
               </CardContent>
             </Card>
           </div>
-          
+
           <Card>
             <CardHeader>
               <CardTitle>Follower Growth</CardTitle>
@@ -65,7 +67,7 @@ export default async function ArtistMetricsPage({ params }: { params: Promise<{ 
             </CardContent>
           </Card>
         </TabsContent>
-        
+
         <TabsContent value="youtube" className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             <Card>
@@ -79,7 +81,7 @@ export default async function ArtistMetricsPage({ params }: { params: Promise<{ 
               </CardContent>
             </Card>
           </div>
-          
+
           <Card>
             <CardHeader>
               <CardTitle>View Count</CardTitle>
@@ -92,7 +94,7 @@ export default async function ArtistMetricsPage({ params }: { params: Promise<{ 
             </CardContent>
           </Card>
         </TabsContent>
-        
+
         <TabsContent value="instagram" className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             <Card>
@@ -106,7 +108,7 @@ export default async function ArtistMetricsPage({ params }: { params: Promise<{ 
               </CardContent>
             </Card>
           </div>
-          
+
           <Card>
             <CardHeader>
               <CardTitle>Engagement Rate</CardTitle>
@@ -119,7 +121,7 @@ export default async function ArtistMetricsPage({ params }: { params: Promise<{ 
             </CardContent>
           </Card>
         </TabsContent>
-        
+
         <TabsContent value="tiktok" className="space-y-6">
           <div className="h-[400px] flex items-center justify-center bg-muted/20 rounded-md">
             <p className="text-muted-foreground">TikTok metrics coming soon</p>

@@ -8,7 +8,6 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/sonner";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -47,7 +46,6 @@ export default async function RootLayout({
               <Toaster />
             </ThemeProvider>
           </HydrationBoundary>
-          <ReactQueryDevtools initialIsOpen={false} />
         </QueryProvider>
       </body>
     </html>
