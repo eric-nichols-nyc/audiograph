@@ -20,8 +20,8 @@ export function ArtistNavbar({ artist }: ArtistNavProps) {
     { label: 'Overview', href: `${basePath}/overview` },
     { label: 'Audience', href: `${basePath}/audience` },
     { label: 'Spotify', href: `${basePath}/spotify` },
-    { label: 'Videos', href: `${basePath}/videos` },
-    { label: 'Songs', href: `${basePath}/songs` },
+    { label: 'Youtube', href: `${basePath}/youtube` },
+    { label: 'Deezer', href: `${basePath}/deezer` },
   ]
 
   // Get first letter of artist name for fallback

@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const MetricItem = ({ label, value, subLabel }) => (
-    <div className="rounded-md bg-zinc-900 p-4 mb-3">
+    <div className="rounded-md bg-zinc-900 p-4 mb-3 flex flex-1">
         <div className="flex justify-between items-center">
             <div>
                 <p className="text-zinc-200 font-medium">{label}</p>
@@ -18,13 +18,10 @@ export const SpotifyPerformanceCard = () => {
         { label: "Monthly Listeners", value: "80.6M", subLabel: "Current" },
         { label: "Followers", value: "104M", subLabel: "Total" },
         { label: "Popularity", value: "92%", subLabel: "Current" },
-        { label: "Artist Rank", value: "#12", subLabel: "Global" },
-        { label: "Playlists", value: "112K", subLabel: "Total" },
-        { label: "Playlist Reach", value: "1.29B", subLabel: "Total" },
     ];
 
     return (
-        <div className="max-w-md mx-auto">
+        <div className="w-full mx-auto">
             <Card className="bg-zinc-950 border-zinc-800 text-white">
                 <CardHeader className="pb-2">
                     <CardTitle className="flex items-center gap-2 text-lg">
@@ -43,7 +40,7 @@ export const SpotifyPerformanceCard = () => {
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="space-y-1 max-h-full overflow-y-auto pr-2">
+                    <div className="flex gap-3 max-h-full overflow-y-auto pr-2">
                         {metrics.map((metric, index) => (
                             <MetricItem
                                 key={index}
