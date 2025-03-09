@@ -4,29 +4,30 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 
-// Define the data point type
+// Define the data point type with index signature to allow dynamic property access
 interface DataPoint {
     date: string;
-    monthly_listeners?: number;
-    followers?: number;
-    subscribers?: number;
-    views?: number;
-    likes?: number;
-    comments?: number;
-    shares?: number;
-    playlist_adds?: number;
+    [key: string]: string | number;
 }
 
-const formatNumber = (num) => {
+const formatNumber = (num: number): string => {
     if (num >= 1000000) {
         return `${(num / 1000000).toFixed(1)}M`;
     } else if (num >= 1000) {
         return `${(num / 1000).toFixed(1)}K`;
     }
-    return num;
+    return num.toString();
 };
 
-const TimeRangeSelector = ({ selectedRange, onRangeChange, color = "#E5234A" }) => {
+const TimeRangeSelector = ({
+    selectedRange,
+    onRangeChange,
+    color = "#E5234A"
+}: {
+    selectedRange: string;
+    onRangeChange: (range: string) => void;
+    color?: string
+}) => {
     const ranges = [
         { value: "1m", label: "1m" },
         { value: "3m", label: "3m" },
@@ -57,7 +58,7 @@ const TimeRangeSelector = ({ selectedRange, onRangeChange, color = "#E5234A" }) 
 };
 
 // Default YouTube SVG icon
-const DefaultYouTubeIcon = ({ color }) => (
+const DefaultYouTubeIcon = ({ color }: { color: string }) => (
     <svg className="w-6 h-6" viewBox="0 0 24 24" fill={color}>
         <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
     </svg>
@@ -71,6 +72,12 @@ interface MetricLineChartProps {
     data: DataPoint[];
     dataKey?: string;
     tooltipLabel?: string;
+}
+
+interface TooltipProps {
+    active?: boolean;
+    payload?: Array<{ value: number }>;
+    label?: string;
 }
 
 export function MetricLineChart({
@@ -115,8 +122,8 @@ export function MetricLineChart({
     }, [timeRange, data]);
 
     // Find min and max for better chart scaling
-    const maxListeners = Math.max(...filteredData.map(d => d[dataKey] || 0));
-    const minListeners = Math.min(...filteredData.map(d => d[dataKey] || 0));
+    const maxListeners = Math.max(...filteredData.map(d => Number(d[dataKey] || 0)));
+    const minListeners = Math.min(...filteredData.map(d => Number(d[dataKey] || 0)));
 
     // Calculate padding for Y-axis
     const yAxisMax = maxListeners + (maxListeners * 0.1);
@@ -145,7 +152,7 @@ export function MetricLineChart({
     };
 
     // Custom tooltip component with dynamic label
-    const CustomTooltipWithLabel = (props) => {
+    const CustomTooltipWithLabel = (props: TooltipProps) => {
         if (props.active && props.payload && props.payload.length) {
             return (
                 <div className="bg-background border rounded-md shadow-md p-3">
@@ -225,7 +232,7 @@ export function MetricLineChart({
                     <div>
                         <h3 className="text-lg uppercase text-gray-400 text-sm">Current</h3>
                         <div className="text-4xl font-bold" style={{ color }}>
-                            {formatNumber(filteredData[filteredData.length - 1]?.[dataKey] || 0)}
+                            {formatNumber(Number(filteredData[filteredData.length - 1]?.[dataKey] || 0))}
                         </div>
                     </div>
                 </div>
