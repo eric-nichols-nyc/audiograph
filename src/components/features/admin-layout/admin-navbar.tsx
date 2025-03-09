@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useCallback } from "react"
 import { Menu, User as UserIcon } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Notifications } from "./notifications"
@@ -14,23 +14,28 @@ interface AdminNavbarProps {
   setSidebarOpen: (open: boolean) => void
 }
 
-export function AdminNavbar({ 
-  sidebarOpen, 
-  setSidebarOpen 
+export function AdminNavbar({
+  sidebarOpen,
+  setSidebarOpen
 }: AdminNavbarProps) {
   const [user, setUser] = useState<User | null>(null);
 
-  useEffect(() => {
-  const fetchUser = async () => {
-    const user = await getUser();
-    setUser(user);
-  };
-  fetchUser();
-}, []);
+  // Use useCallback for event handlers to maintain stable references
+  const toggleSidebar = useCallback(() => {
+    setSidebarOpen(!sidebarOpen);
+  }, [sidebarOpen, setSidebarOpen]);
 
-useEffect(() => {
-  console.log(user)
-}, [user]);
+  useEffect(() => {
+    const fetchUser = async () => {
+      const user = await getUser();
+      setUser(user);
+    };
+    fetchUser();
+  }, []);
+
+  useEffect(() => {
+    console.log(user)
+  }, [user]);
 
 
   return (
@@ -38,7 +43,7 @@ useEffect(() => {
       <div className="flex items-center gap-4 flex-1">
         {!sidebarOpen && (
           <button
-            onClick={() => setSidebarOpen(true)}
+            onClick={toggleSidebar}
             className="p-2 rounded-md hover:bg-secondary"
             aria-label="Open sidebar"
           >

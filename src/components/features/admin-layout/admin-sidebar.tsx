@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
@@ -66,6 +66,11 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
 
   // console.log('admin sidebar: ', user)
 
+  // Use useCallback for event handlers to maintain stable references
+  const handleClose = useCallback(() => {
+    if (onClose) onClose();
+  }, [onClose]);
+
   return (
     <div className="relative flex h-[calc(100vh-4rem)] pt-4">
       <aside
@@ -78,17 +83,17 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
       >
 
         <Button className="w-full justify-start text-2xl font-bold" variant="ghost">
-        <div className="flex items-center gap-4">
-          <div>🎧</div>
-          <div>Audiograph</div>
-        </div>
+          <div className="flex items-center gap-4">
+            <div>🎧</div>
+            <div>Audiograph</div>
+          </div>
         </Button>
         <Link href="/search">
-            <Button variant="ghost" className="w-full justify-start">
-              <Search className="h-5 w-5" />
-              {open && <span className="ml-3">Search</span>}
-            </Button>
-          </Link>
+          <Button variant="ghost" className="w-full justify-start">
+            <Search className="h-5 w-5" />
+            {open && <span className="ml-3">Search</span>}
+          </Button>
+        </Link>
         <div className={cn("space-y-4", open ? "p-4" : "p-2")}>
 
 
@@ -156,7 +161,7 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
                       sidebarOpen={open}
                     />
                     <SidebarItem
-                      href="/tracks" 
+                      href="/tracks"
                       icon={<Music className="h-5 w-5" />}
                       title="Tracks"
                       active={pathname === "/tracks"}
@@ -165,7 +170,7 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
                     <SidebarItem
                       href="/videos"
                       icon={<FileText className="h-5 w-5" />}
-                      title="Videos" 
+                      title="Videos"
                       active={pathname === "/videos"}
                       sidebarOpen={open}
                     />
@@ -180,40 +185,40 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
           )}
         </div>
 
-          <Accordion type="single" defaultValue="tools">
-            <AccordionItem value="tools">
-              <AccordionTrigger className={cn("px-3", !open && "justify-center")}>
-                {open ? "Tools" : <BarChart className="h-5 w-5" />}
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="flex flex-col gap-1">
-                  <SidebarItem
-                    href="/compare"
-                    icon={<Users className="h-5 w-5" />}
-                    title="Compare"
-                    active={pathname === "/compare"}
-                    sidebarOpen={open}
-                  />
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-      <div className="mt-auto p-3 absolute bottom-0 w-full">
-        <button
-          className={cn(
-            "w-full flex items-center gap-3 p-2 rounded-md hover:bg-secondary",
-            !open && "justify-center"
-          )}
-        >
-          <LogOut className="h-5 w-5" />
-          {open && <span>Log Out</span>}
-        </button>
-      </div>
+        <Accordion type="single" defaultValue="tools">
+          <AccordionItem value="tools">
+            <AccordionTrigger className={cn("px-3", !open && "justify-center")}>
+              {open ? "Tools" : <BarChart className="h-5 w-5" />}
+            </AccordionTrigger>
+            <AccordionContent>
+              <div className="flex flex-col gap-1">
+                <SidebarItem
+                  href="/compare"
+                  icon={<Users className="h-5 w-5" />}
+                  title="Compare"
+                  active={pathname === "/compare"}
+                  sidebarOpen={open}
+                />
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+        <div className="mt-auto p-3 absolute bottom-0 w-full">
+          <button
+            className={cn(
+              "w-full flex items-center gap-3 p-2 rounded-md hover:bg-secondary",
+              !open && "justify-center"
+            )}
+          >
+            <LogOut className="h-5 w-5" />
+            {open && <span>Log Out</span>}
+          </button>
+        </div>
       </aside>
 
       {open && onClose && (
         <button
-          onClick={onClose}
+          onClick={handleClose}
           className="h-12 w-6 absolute -right-6 top-10 -translate-y-1/2 flex items-center justify-center bg-blue-100 hover:bg-blue-200 dark:bg-blue-900 dark:hover:bg-blue-800 rounded-r-md z-50"
           aria-label="Close sidebar"
         >

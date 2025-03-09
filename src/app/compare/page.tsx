@@ -1,3 +1,9 @@
+import { AdminLayout } from "@/components/features/admin-layout";
+
 export default function ComparePage() {
-  return <div>ComparePageq</div>;
+  return (
+    <AdminLayout title="Compare">
+      <div>ComparePage</div>
+    </AdminLayout>
+  );
 }
