@@ -7,7 +7,14 @@ import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianG
 // Define the data point type
 interface DataPoint {
     date: string;
-    monthly_listeners: number;
+    monthly_listeners?: number;
+    followers?: number;
+    subscribers?: number;
+    views?: number;
+    likes?: number;
+    comments?: number;
+    shares?: number;
+    playlist_adds?: number;
 }
 
 const formatNumber = (num) => {
