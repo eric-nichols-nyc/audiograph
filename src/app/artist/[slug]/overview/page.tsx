@@ -14,15 +14,13 @@ export default async function ArtistOverviewPage({ params }: { params: Promise<{
   return (
     <AdminLayout title={`${artist?.name || 'Artist'} Overview`}>
       <ArtistNavbar artist={artist} />
-      <div className="">
-   
+      <div className="p-6">
         <MusicStreaming />
         <VideosStreaming />
         <SocialMediaDashboard />
         <ArtistMap />
         <SimilarArtists />
       </div>
-     
     </AdminLayout>
   );
 } 

@@ -75,7 +75,7 @@ export async function GET(
       timestamp: new Date().toISOString(),
       artistSlug: slug,
       artistName: artistData.name,
-      topLocations,
+      topLocations: topLocations.slice(0, 6),
     });
   } catch (error) {
     console.error('Error fetching artist location data:', error);

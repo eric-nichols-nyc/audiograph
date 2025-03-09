@@ -2,9 +2,9 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import { Play, Bookmark } from "lucide-react"
+import { Bookmark } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-
+import { ScrollableGallery } from "@/components/features/scrollable-gallery/scrollablegallery"
 export function MusicStreaming() {
   const [saved, setSaved] = useState(false)
 
@@ -33,6 +33,31 @@ export function MusicStreaming() {
       image: "/images/tracks/track.jpeg",
       hasVideo: false,
     },
+    {
+      id: 4,
+      title: "MONACO",
+      artist: "Bad Bunny",
+      streams: "22.3M",
+      image: "/images/tracks/track.jpeg",
+      hasVideo: true,
+    },
+    {
+      id: 5,
+      title: "PERRO NEGRO",
+      artist: "Bad Bunny",
+      streams: "18.9M",
+      image: "/images/tracks/track.jpeg",
+      hasVideo: false,
+    },
+    {
+      id: 6,
+      title: "PERRO NEGRO",
+      artist: "Bad Bunny",
+      streams: "18.9M",
+      image: "/images/tracks/track.jpeg",
+      hasVideo: false,
+    },
+
   ]
 
   return (
@@ -49,11 +74,11 @@ export function MusicStreaming() {
           </button>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+          <ScrollableGallery>
             {tracks.map((track) => (
-              <Card key={track.id} className="bg-[#0f2942] overflow-hidden shadow-lg hover:shadow-xl transition-all hover:scale-105 duration-200">
+              <Card key={track.id} className="bg-[#0f2942] max-w-[275px] overflow-hidden shadow-lg hover:shadow-xl transition-all hover:scale-105 duration-200">
                 <div className="relative">
-                  <div className="aspect-square relative h-[120px]">
+                  <div className="aspect-square relative h-[275px]">
                     <Image
                       src={track.image}
                       alt={`${track.title} by ${track.artist}`}
@@ -63,19 +88,7 @@ export function MusicStreaming() {
                     <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60"></div>
                   </div>
 
-                  {track.hasVideo ? (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="px-2 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs font-medium">
-                        Video
-                      </span>
-                    </div>
-                  ) : (
-                    <button className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                      <div className="h-10 w-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                        <Play className="h-5 w-5 text-white fill-white" />
-                      </div>
-                    </button>
-                  )}
+
                 </div>
 
                 <CardContent className="p-3">
@@ -94,7 +107,7 @@ export function MusicStreaming() {
                 </CardContent>
               </Card>
             ))}
-          </div>
+          </ScrollableGallery>
         </CardContent>
       </Card>
     </div>

@@ -1,5 +1,5 @@
 
-export const platformData= [
+export const platformData = [
   {
     id: "deezer",
     name: "DEEZER FANS",
@@ -8,38 +8,14 @@ export const platformData= [
     change: 100277,
     icon: "deezer",
   },
-  {
-    id: "facebook",
-    name: "FACEBOOK FANS",
-    count: 11717730,
-    growth: -0.0,
-    change: -3693,
-    icon: "facebook",
-  },
-  {
-    id: "genius",
-    name: "GENIUS FOLLOWERS",
-    count: 10435,
-    growth: 0.013,
-    change: 132,
-    icon: "genius",
-  },
-  {
-    id: "instagram",
-    name: "INSTAGRAM FOLLOWERS",
-    count: 76756973,
-    growth: 0.01,
-    change: 751787,
-    icon: "instagram",
-  },
-  {
-    id: "soundcloud",
-    name: "SOUNDCLOUD FOLLOWERS",
-    count: 7297643,
-    growth: 0.005,
-    change: 37809,
-    icon: "soundcloud",
-  },
+  // {
+  //   id: "soundcloud",
+  //   name: "SOUNDCLOUD FOLLOWERS",
+  //   count: 7297643,
+  //   growth: 0.005,
+  //   change: 37809,
+  //   icon: "soundcloud",
+  // },
   {
     id: "spotify",
     name: "SPOTIFY FOLLOWERS",
@@ -47,22 +23,6 @@ export const platformData= [
     growth: 0.018,
     change: 1745591,
     icon: "spotify",
-  },
-  {
-    id: "tiktok",
-    name: "TIKTOK FOLLOWERS",
-    count: 10500000,
-    growth: 0.029,
-    change: 300000,
-    icon: "tiktok",
-  },
-  {
-    id: "twitter",
-    name: "TWITTER FOLLOWERS",
-    count: 17074178,
-    growth: 0.001,
-    change: 11977,
-    icon: "twitter",
   },
   {
     id: "youtube",

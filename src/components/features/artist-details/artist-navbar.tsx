@@ -5,7 +5,8 @@ import { usePathname } from 'next/navigation'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Artist } from '@/types/artist'
-
+import { Button } from "@/components/ui/button"
+import { ChevronRight } from 'lucide-react'
 interface ArtistNavProps {
   artist: Artist
 }
@@ -13,7 +14,7 @@ interface ArtistNavProps {
 export function ArtistNavbar({ artist }: ArtistNavProps) {
   const pathname = usePathname()
   const basePath = pathname.split('/').slice(0, 3).join('/')
-  
+
   const navItems = [
     { label: 'Overview', href: `${basePath}/overview` },
     { label: 'Metrics', href: `${basePath}/metrics` },
@@ -57,25 +58,35 @@ export function ArtistNavbar({ artist }: ArtistNavProps) {
             </div>
           </div>
         </div>
-        <nav className="flex gap-6 px-6 pb-2">
+        <nav className="flex justify-between gap-6 px-6 pb-2 w-full">
           {navItems.map((item) => {
             // Check if this nav item matches the current path
             const isActive = pathname.includes(item.href.split('/').pop() || '')
-            
+
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`text-sm font-medium pb-2 ${
-                  isActive
-                    ? 'text-primary border-b-2 border-primary'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
+                className={`text-sm font-medium pb-2 ${isActive
+                  ? 'text-primary border-b-2 border-primary'
+                  : 'text-muted-foreground hover:text-foreground'
+                  }`}
               >
                 {item.label}
               </Link>
             )
           })}
+          <div className="flex items-center ml-auto">
+            <Link
+              href="/compare"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground"
+            >
+              <Button size="sm">
+                Compare this artist
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            </Link>
+          </div>
         </nav>
       </div>
     </div>
