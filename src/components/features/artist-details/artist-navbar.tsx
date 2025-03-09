@@ -18,7 +18,8 @@ export function ArtistNavbar({ artist }: ArtistNavProps) {
 
   const navItems = [
     { label: 'Overview', href: `${basePath}/overview` },
-    { label: 'Metrics', href: `${basePath}/metrics` },
+    { label: 'Audience', href: `${basePath}/audience` },
+    { label: 'Spotify', href: `${basePath}/spotify` },
     { label: 'Videos', href: `${basePath}/videos` },
     { label: 'Songs', href: `${basePath}/songs` },
   ]

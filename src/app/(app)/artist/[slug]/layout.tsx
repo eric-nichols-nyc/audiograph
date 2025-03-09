@@ -1,6 +1,8 @@
 import { ArtistProvider } from "@/providers/artist-provider";
 import { QueryClient } from "@tanstack/react-query";
 import { getArtist } from "@/actions/artist";
+import { ArtistNavbar } from "@/components/features/artist-details/artist-navbar";
+
 export default async function ArtistLayout({
     params,
     children
@@ -24,6 +26,7 @@ export default async function ArtistLayout({
     return (
         <div className="flex flex-col w-full min-h-screen">
             <ArtistProvider initialArtist={artist}>
+                <ArtistNavbar artist={artist} />
                 <div className="flex-1 overflow-auto">
                     {children}
                 </div>
