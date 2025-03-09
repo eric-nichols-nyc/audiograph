@@ -1,6 +1,6 @@
-import { DailyViews } from '@/components/features/artist-youtube-tab/daily-views';
 import { PerformanceCard } from '@/components/features/artist-youtube-tab/performance-card';
-
+import { MetricLineChart } from '@/components/features/charts/metric-line-chart';
+import { monthlyListenersData } from '@/components/features/charts/youtube-data';
 // YouTube icon component
 const YouTubeIcon = ({ color = "#E5234A" }) => (
   <svg
@@ -34,11 +34,14 @@ export default async function YoutubeMetricsPage() {
         />
       </div>
       <div className="flex-1 h-full">
-        <DailyViews
+        <MetricLineChart
           color="#E5234A"
-          title="Daily Views"
-          description="YouTube daily view count over time"
+          title="YouTube Performance"
           svgIcon={<YouTubeIcon />}
+          data={monthlyListenersData}
+          dataKey="monthly_listeners"
+          tooltipLabel="Monthly Listeners"
+          description="YouTube monthly listener count over time"
         />
       </div>
     </div>
