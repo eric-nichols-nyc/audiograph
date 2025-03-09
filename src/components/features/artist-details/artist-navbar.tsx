@@ -12,6 +12,7 @@ interface ArtistNavProps {
 }
 
 export function ArtistNavbar({ artist }: ArtistNavProps) {
+  console.log('artist/navbar', artist);
   const pathname = usePathname()
   const basePath = pathname.split('/').slice(0, 3).join('/')
 
