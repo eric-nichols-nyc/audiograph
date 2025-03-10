@@ -16,7 +16,7 @@ interface FanbaseDistributionProps {
   artistName: string;
 }
 
-export function FanbaseDistribution({ data, totalFans, artistName }: FanbaseDistributionProps) {
+export function FanbaseDistribution({ data, totalFans }: FanbaseDistributionProps) {
   return (
     <ChartCard>
       <div className="w-full h-[400px]">
@@ -43,7 +43,7 @@ export function FanbaseDistribution({ data, totalFans, artistName }: FanbaseDist
             </Pie>
             <Tooltip
               formatter={(value: number) => `${(value / 1e6).toFixed(1)}M followers`}
-              contentStyle={{ 
+              contentStyle={{
                 backgroundColor: '#1F2937',
                 border: 'none',
                 borderRadius: '8px',
@@ -61,7 +61,7 @@ export function FanbaseDistribution({ data, totalFans, artistName }: FanbaseDist
             <span className="text-gray-500">Total Fanbase Size</span>
           </div>
           <div className="relative h-2 bg-gray-100 rounded-full overflow-hidden">
-            <div 
+            <div
               className="absolute inset-y-0 left-0 bg-blue-500 rounded-full"
               style={{ width: '100%' }}
             />
