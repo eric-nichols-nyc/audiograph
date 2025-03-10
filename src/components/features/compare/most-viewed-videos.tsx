@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useSearchParams } from 'next/navigation';
-import { formatNumber } from "@/lib/utils";
+import { formatNumber } from "@/utils/number-format";
 
 interface VideoData {
   title: string;

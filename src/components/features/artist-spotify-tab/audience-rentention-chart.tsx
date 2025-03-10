@@ -2,33 +2,29 @@
 
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { monthlyListenersData } from './points';
 
-const formatNumber = (num) => {
+const formatNumber = (num: number): string => {
     if (num >= 1000000) {
         return `${(num / 1000000).toFixed(1)}M`;
     } else if (num >= 1000) {
         return `${(num / 1000).toFixed(1)}K`;
     }
-    return num;
+    return num.toString();
 };
 
-const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-        return (
-            <div className="bg-background border rounded-md shadow-md p-3">
-                <p className="font-semibold">{label}</p>
-                <p className="text-green-500">
-                    {`Monthly Listeners: ${formatNumber(payload[0].value)}`}
-                </p>
-            </div>
-        );
-    }
-    return null;
-};
+interface DataPoint {
+    date: string;
+    monthly_listeners: number;
+}
 
-const TimeRangeSelector = ({ selectedRange, onRangeChange }) => {
+interface TimeRangeSelectorProps {
+    selectedRange: string;
+    onRangeChange: (range: string) => void;
+}
+
+const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({ selectedRange, onRangeChange }) => {
     const ranges = [
         { value: "1m", label: "1m" },
         { value: "3m", label: "3m" },
@@ -62,7 +58,7 @@ export function AudienceRetention() {
 
     const filteredData = React.useMemo(() => {
         const now = new Date();
-        const data = [...monthlyListenersData];
+        const data: DataPoint[] = [...monthlyListenersData];
 
         switch (timeRange) {
             case "1m":
@@ -147,7 +143,6 @@ export function AudienceRetention() {
                                 tickFormatter={formatNumber}
                                 width={60}
                             />
-                            <Tooltip content={<CustomTooltip />} />
                             <Line
                                 type="monotone"
                                 dataKey="monthly_listeners"

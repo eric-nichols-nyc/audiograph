@@ -2,7 +2,7 @@
 // app/artist/[slug]/artist-provider.tsx
 import { useRef, useEffect } from 'react';
 import { useArtistStore } from '@/stores/artist-slug-store';
-import { Artist } from '@/types';
+import { Artist } from '@/types/artist';
 
 export function ArtistProvider({
     initialArtist,

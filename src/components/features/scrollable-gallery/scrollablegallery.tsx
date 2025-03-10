@@ -6,15 +6,22 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
-type ImageItem = {
+interface ImageItem {
   src: string
   alt: string
 }
 
-type GalleryItem = ImageItem | ReactNode
+function isImageItem(item: ImageItem | ReactNode): item is ImageItem {
+  return (
+    typeof item === 'object' &&
+    item !== null &&
+    'src' in item &&
+    typeof (item as ImageItem).src === 'string'
+  )
+}
 
 interface ScrollableGalleryProps {
-  items?: GalleryItem[]
+  items?: (ImageItem | ReactNode)[]
   children?: ReactNode
   itemsPerView?: number
   className?: string
@@ -71,10 +78,7 @@ export function ScrollableGallery({
     }
   }
 
-
-
   useEffect(() => {
-    // Handle scroll events to update the current page
     const handleScroll = () => {
       if (!scrollContainerRef.current) return
 
@@ -122,9 +126,6 @@ export function ScrollableGallery({
         ) : (
           // Render items
           contentItems.map((item, index) => {
-            // Check if item is an image object
-            const isImageItem = item && typeof item === 'object' && 'src' in item
-
             return (
               <div
                 key={index}
@@ -135,11 +136,11 @@ export function ScrollableGallery({
                 style={{ width: `${itemWidthPercentage}%`, minWidth: '200px' }}
               >
                 <div className="w-full h-full p-1">
-                  {isImageItem ? (
+                  {isImageItem(item) ? (
                     <div className="w-full h-full relative aspect-square overflow-hidden rounded-lg border">
                       <Image
-                        src={(item as ImageItem).src || "/placeholder.svg"}
-                        alt={(item as ImageItem).alt || "Gallery image"}
+                        src={item.src}
+                        alt={item.alt || "Gallery image"}
                         fill
                         className="object-cover"
                       />

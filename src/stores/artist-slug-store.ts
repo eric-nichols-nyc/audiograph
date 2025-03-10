@@ -1,6 +1,6 @@
 // stores/artist-store.ts
 import { create } from 'zustand';
-import { Artist } from '@/types';
+import { Artist } from '@/types/artist';
 
 interface ArtistState {
     artist: Artist | null;

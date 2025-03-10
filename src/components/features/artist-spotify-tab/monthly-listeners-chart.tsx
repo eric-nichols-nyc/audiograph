@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { monthlyListenersData } from './points';
 
 const formatNumber = (num) => {
@@ -12,20 +12,6 @@ const formatNumber = (num) => {
         return `${(num / 1000).toFixed(1)}K`;
     }
     return num;
-};
-
-const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-        return (
-            <div className="bg-background border rounded-md shadow-md p-3">
-                <p className="font-semibold">{label}</p>
-                <p className="text-green-500">
-                    {`Monthly Listeners: ${formatNumber(payload[0].value)}`}
-                </p>
-            </div>
-        );
-    }
-    return null;
 };
 
 const TimeRangeSelector = ({ selectedRange, onRangeChange }) => {
@@ -147,7 +133,6 @@ export function MonthlyListenersChart() {
                                 tickFormatter={formatNumber}
                                 width={60}
                             />
-                            <Tooltip content={<CustomTooltip />} />
                             <Line
                                 type="monotone"
                                 dataKey="monthly_listeners"

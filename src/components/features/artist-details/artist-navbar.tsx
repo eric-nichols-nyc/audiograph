@@ -4,16 +4,26 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { Artist } from '@/types/artist'
 import { Button } from "@/components/ui/button"
 import { ChevronRight } from 'lucide-react'
-interface ArtistNavProps {
-  artist: Artist
-}
+import { useQuery } from '@tanstack/react-query'
 
-export function ArtistNavbar({ artist }: ArtistNavProps) {
-  console.log('artist/navbar', artist);
+export function ArtistNavbar() {
   const pathname = usePathname()
+  const slug = pathname.split('/')[2] // Get the slug from the URL
+
+  const { data: artist, isLoading } = useQuery({
+    queryKey: ['artist', slug],
+    queryFn: async () => {
+      const response = await fetch(`/api/artists/${slug}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch artist');
+      }
+      return response.json();
+    },
+    enabled: !!slug
+  });
+
   const basePath = pathname.split('/').slice(0, 3).join('/')
 
   const navItems = [
@@ -29,6 +39,20 @@ export function ArtistNavbar({ artist }: ArtistNavProps) {
 
   // Format genres for display
   const displayGenres = artist?.genres?.slice(0, 2).join(', ') || 'Unknown Genre'
+
+  if (isLoading) {
+    return (
+      <div className="z-20 bg-background w-full border-b sticky top-0">
+        <div className="flex items-center gap-4 px-6 py-3">
+          <div className="w-12 h-12 rounded-full bg-muted animate-pulse" />
+          <div className="flex flex-col gap-2">
+            <div className="h-5 w-32 bg-muted animate-pulse rounded" />
+            <div className="h-4 w-24 bg-muted animate-pulse rounded" />
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="z-20 bg-background w-full border-b sticky top-0">

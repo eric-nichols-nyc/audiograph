@@ -12,7 +12,7 @@ export function useArtists() {
     queryKey: ['artists'],
     queryFn: async () => {
       try {
-        return await getArtists();
+        return await getArtists({});
       } catch (error) {
         console.error('Error fetching artists:', error);
         throw error;
