@@ -1,132 +1,14 @@
 "use client"
+
 import { useState } from "react";
 import Image from "next/image"
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { ArtistCard } from "./artist-card";
+import { Artist } from "@/types/artist";
 import { cn } from "@/lib/utils";
-
-const artists: Artist[] = [
-    {
-        id: "1",
-        name: "The Neighbourhood",
-        country: "USA",
-        countryCode: "US",
-        genre: "ROCK",
-        image: "/images/svgs/avatar.svg",
-        rank: 12
-    },
-    {
-        id: "2",
-        name: "Conan Gray",
-        country: "USA",
-        countryCode: "US",
-        genre: "POP",
-        image: "/images/svgs/avatar.svg",
-        rank: 11
-    },
-    {
-        id: "3",
-        name: "Girl in Red",
-        country: "NOR",
-        countryCode: "NO",
-        genre: "POP",
-        image: "/images/svgs/avatar.svg",
-        rank: 10
-    },
-    {
-        id: "4",
-        name: "Taylor Swift",
-        country: "USA",
-        countryCode: "US",
-        genre: "POP",
-        image: "/images/svgs/avatar.svg",
-        rank: 1
-    },
-    {
-        id: "5",
-        name: "Bruno Mars",
-        country: "USA",
-        countryCode: "US",
-        genre: "POP",
-        image: "/images/svgs/avatar.svg",
-        rank: 5
-    },
-    {
-        id: "6",
-        name: "Sabrina Carpenter",
-        country: "USA",
-        countryCode: "US",
-        genre: "POP",
-        image: "/images/svgs/avatar.svg",
-        rank: 9
-    },
-    {
-        id: "7",
-        name: "Ariana Grande",
-        country: "USA",
-        countryCode: "US",
-        genre: "POP",
-        image: "/images/svgs/avatar.svg",
-        rank: 2
-    },
-    {
-        id: "8",
-        name: "The Weeknd",
-        country: "CAN",
-        countryCode: "CA",
-        genre: "POP",
-        image: "/images/svgs/avatar.svg",
-        rank: 3
-    },
-    {
-        id: "9",
-        name: "Lady Gaga",
-        country: "USA",
-        countryCode: "US",
-        genre: "POP",
-        image: "/images/svgs/avatar.svg",
-        rank: 4
-    },
-    {
-        id: "10",
-        name: "Adele",
-        country: "GBR",
-        countryCode: "GB",
-        genre: "POP",
-        image: "/images/svgs/avatar.svg",
-        rank: 6
-    },
-    {
-        id: "11",
-        name: "Olivia Rodrigo",
-        country: "USA",
-        countryCode: "US",
-        genre: "POP",
-        image: "/images/svgs/avatar.svg",
-        rank: 7
-    },
-    {
-        id: "12",
-        name: "Lana Del Rey",
-        country: "USA",
-        countryCode: "US",
-        genre: "POP",
-        image: "/images/svgs/avatar.svg",
-        rank: 8
-    },
-]
-
-interface Artist {
-    id: string;
-    name: string;
-    country: string;
-    countryCode: string;
-    genre: string;
-    image: string;
-    rank: number;
-}
+import { useArtists } from "@/hooks/use-artists";
 
 interface ArtistSelectProps {
     position: 1 | 2;
@@ -140,19 +22,20 @@ interface ArtistSelectProps {
 export function ArtistSelect({ position, selectedId, otherSelectedId, onSelect, onClear, sticky = false }: ArtistSelectProps) {
     const [searchQuery, setSearchQuery] = useState("")
     const [isFocused, setIsFocused] = useState(false)
+    const { data: artists, isLoading } = useArtists()
 
-    const selectedArtist = selectedId ? artists.find(a => a.id.toLowerCase() === selectedId.toLowerCase()) : null
+    const selectedArtist = selectedId ? artists?.find(a => a.id.toLowerCase() === selectedId.toLowerCase()) : null
 
-    const availableArtists = artists.filter(artist =>
+    const availableArtists = artists?.filter(artist =>
         !otherSelectedId || artist.id.toLowerCase() !== otherSelectedId.toLowerCase()
-    )
+    ) || []
 
     const filteredArtists = searchQuery
         ? availableArtists.filter(
             (artist) =>
                 artist.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                artist.genre.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                artist.country.toLowerCase().includes(searchQuery.toLowerCase()),
+                (artist.genres?.[0] || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                artist.country?.toLowerCase().includes(searchQuery.toLowerCase()),
         )
         : availableArtists
 
@@ -195,8 +78,20 @@ export function ArtistSelect({ position, selectedId, otherSelectedId, onSelect, 
                     onFocus={() => setIsFocused(true)}
                 />
 
+                {/* Loading state */}
+                {isLoading && isFocused && (
+                    <Card className={cn(
+                        "mt-2 w-full z-20 border shadow-lg",
+                        sticky ? "sticky top-2" : "absolute"
+                    )}>
+                        <div className="p-4 text-center text-muted-foreground">
+                            Loading artists...
+                        </div>
+                    </Card>
+                )}
+
                 {/* Dropdown list */}
-                {isFocused && filteredArtists.length > 0 && (
+                {!isLoading && isFocused && filteredArtists.length > 0 && (
                     <>
                         <div
                             className="fixed inset-0 z-10"
@@ -222,7 +117,7 @@ export function ArtistSelect({ position, selectedId, otherSelectedId, onSelect, 
                                                 <div className="flex items-center gap-3">
                                                     <div className="relative h-8 w-8 overflow-hidden rounded-full">
                                                         <Image
-                                                            src={artist.image}
+                                                            src={artist.image_url || "/images/svgs/avatar.svg"}
                                                             alt={artist.name}
                                                             fill
                                                             className="object-cover"
@@ -231,13 +126,16 @@ export function ArtistSelect({ position, selectedId, otherSelectedId, onSelect, 
                                                     <span className="font-medium">{artist.name}</span>
                                                 </div>
                                                 <div className="flex items-center gap-2">
-                                                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-secondary text-secondary-foreground">
-                                                        <span className={`fi fi-${artist.countryCode.toLowerCase()} mr-1`}></span>
-                                                        {artist.country}
-                                                    </span>
-                                                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-secondary text-secondary-foreground">
-                                                        {artist.genre}
-                                                    </span>
+                                                    {artist.country && (
+                                                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-secondary text-secondary-foreground">
+                                                            {artist.country}
+                                                        </span>
+                                                    )}
+                                                    {artist.genres?.[0] && (
+                                                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-secondary text-secondary-foreground">
+                                                            {artist.genres[0]}
+                                                        </span>
+                                                    )}
                                                 </div>
                                             </li>
                                         ))}
@@ -247,7 +145,7 @@ export function ArtistSelect({ position, selectedId, otherSelectedId, onSelect, 
                     </>
                 )}
 
-                {isFocused && filteredArtists.length === 0 && (
+                {!isLoading && isFocused && filteredArtists.length === 0 && (
                     <Card className={cn(
                         "mt-2 w-full z-20 border shadow-lg",
                         sticky ? "sticky top-2" : "absolute"

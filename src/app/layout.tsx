@@ -8,6 +8,7 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/sonner";
+import { getArtists } from "@/actions/artists/artist";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -30,9 +31,13 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
-  // Prefetch the user data on the server side (SSR) to avoid loading delays.
   const queryClient = new QueryClient();
+
+  // Prefetch artists data
+  await queryClient.prefetchQuery({
+    queryKey: ['artists'],
+    queryFn: async () => await getArtists({})
+  });
 
   return (
     <html lang="en" suppressHydrationWarning>

@@ -8,18 +8,19 @@ export interface ArtistMetric {
 }
 
 export interface Artist {
-    id : string;
-    name: string;
-    image_url: string; 
-    genres: string[];
-    country: string;
-    spotifyFollowers?: number;
-    monthlyListeners?: number;
-    youtubeSubscribers?: number; 
-    instagramFollowers?: number; 
-    popularity?: number;
-    slug: string;
-    rank: number;
+    id?: string
+    is_complete?: boolean
+    name: string
+    slug: string
+    rank?: number | null
+    genres?: string[] | null
+    rank_change?: number | null
+    last_rank_update?: string | null
+    bio: string | null
+    gender: string | null
+    country: string | null
+    birth_date: string | null
+    image_url: string | null
 }
 
 export interface ArtistPlatformIds {

@@ -2,14 +2,10 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Crown } from "lucide-react";
+import { Artist } from "@/types/artist";
 
 interface ArtistCardProps {
-    artist: {
-        name: string;
-        country: string;
-        rank?: number;
-        image: string;
-    };
+    artist: Artist;
     onChangeClick?: () => void;
     compact?: boolean;
 }
@@ -47,7 +43,7 @@ export function ArtistCard({ artist, onChangeClick, compact = false }: ArtistCar
                     <div className="flex items-center gap-3">
                         <div className="relative h-10 w-10 overflow-hidden rounded-full">
                             <Image
-                                src={artist.image || "/images/svgs/avatar.svg"}
+                                src={artist.image_url || "/images/svgs/avatar.svg"}
                                 alt={artist.name}
                                 fill
                                 className="object-cover"
@@ -72,7 +68,7 @@ export function ArtistCard({ artist, onChangeClick, compact = false }: ArtistCar
                     <div className="flex flex-col items-center gap-4">
                         <div className="relative h-20 w-20 overflow-hidden rounded-full">
                             <Image
-                                src={artist.image || "/images/svgs/avatar.svg"}
+                                src={artist.image_url || "/images/svgs/avatar.svg"}
                                 alt={artist.name}
                                 fill
                                 className="object-cover"
