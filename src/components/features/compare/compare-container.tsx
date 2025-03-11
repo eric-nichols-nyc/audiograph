@@ -47,7 +47,9 @@ export function CompareContainer() {
                     onClear={() => handleArtistClear(2)}
                 />
             </div>
-            <FanbaseChart />
+            {entity1 && entity2 && (
+                <FanbaseChart />
+            )}
         </div>
     )
 }

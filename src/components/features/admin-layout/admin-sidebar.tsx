@@ -2,6 +2,8 @@
 
 import React, { useCallback } from "react";
 import Link from "next/link";
+import { Notifications } from "./notifications"
+import { UserProfile } from "./user-profile";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
 import {
@@ -203,7 +205,11 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
             </AccordionContent>
           </AccordionItem>
         </Accordion>
+
         <div className="mt-auto p-3 absolute bottom-0 w-full">
+          <Notifications />
+
+          <UserProfile />
           <button
             className={cn(
               "w-full flex items-center gap-3 p-2 rounded-md hover:bg-secondary",
