@@ -8,6 +8,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Play } from "lucide-react";
+import { SpotifyPerformance } from "./spotify-performance";
 
 export function CompareContainer() {
     const router = useRouter()
@@ -25,7 +26,10 @@ export function CompareContainer() {
                 // When sentinel is not intersecting, the div is sticky
                 setIsSticky(!entry.isIntersecting)
             },
-            { threshold: 1.0 }
+            {
+                threshold: [0, 1],
+                rootMargin: '-24px 0px 0px 0px'
+            }
         )
 
         if (sentinelRef.current) {
@@ -35,10 +39,6 @@ export function CompareContainer() {
         return () => observer.disconnect()
     }, [])
 
-    //console.log isSticky
-    useEffect(() => {
-        console.log('isSticky', isSticky)
-    }, [isSticky])
 
     const handleArtistSelect = (position: 1 | 2, artistId: string) => {
         const params = new URLSearchParams(searchParams.toString())
@@ -59,9 +59,9 @@ export function CompareContainer() {
     return (
         <div className="flex flex-col gap-4 border border-white/10 rounded-lg p-4 bg-card">
             {/* Sentinel div to detect when sticky div hits the top */}
-            <div ref={sentinelRef} className="absolute top-0 h-px w-full" />
+            <div ref={sentinelRef} className="h-px w-full" />
 
-            <div ref={stickyRef} className="flex gap-4 sticky top-0 bg-card z-10">
+            <div ref={stickyRef} className="flex gap-4 sticky top-[24px] bg-card z-10">
                 <ArtistSelect
                     position={1}
                     selectedId={entity1 || undefined}
@@ -83,96 +83,6 @@ export function CompareContainer() {
                 <>
                     <FanbaseChart />
                     <div className="max-w-6xl mx-auto px-4 py-8">
-                        {/* Overview section */}
-                        <div className="mb-12">
-                            <div className="flex items-center mb-6">
-                                <div className="bg-red-600 text-white p-1 rounded mr-2">
-                                    <span className="font-bold">V</span>
-                                </div>
-                                <h2 className="text-2xl font-semibold">Overview</h2>
-                                <div className="ml-2 text-blue-600">ⓘ</div>
-                            </div>
-
-                            <Card className="p-6">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    {/* Left artist stats */}
-                                    <div className="space-y-6">
-                                        <div className="flex justify-between items-center">
-                                            <span className="font-bold">4.2M</span>
-                                            <div className="flex-1 mx-4 h-6 bg-gray-700 rounded">
-                                                <div className="h-full w-3/4 bg-gray-500 rounded text-xs text-white flex items-center justify-center">
-                                                    Viberate Points
-                                                </div>
-                                            </div>
-                                            <span className="text-gray-500">Social Media</span>
-                                        </div>
-
-                                        <div className="flex justify-between items-center">
-                                            <span className="font-bold">656.5M</span>
-                                            <div className="flex-1 mx-4 h-6 bg-gray-700 rounded">
-                                                <div className="h-full w-4/5 bg-gray-500 rounded text-xs text-white flex items-center justify-center">
-                                                    Viberate Points
-                                                </div>
-                                            </div>
-                                            <span className="text-gray-500">Music Channels</span>
-                                        </div>
-
-                                        <div className="flex justify-between items-center">
-                                            <span className="font-bold">3.8K</span>
-                                            <div className="flex-1 mx-4 h-6 bg-gray-700 rounded">
-                                                <div className="h-full w-1/2 bg-gray-500 rounded text-xs text-white flex items-center justify-center">
-                                                    Viberate Points
-                                                </div>
-                                            </div>
-                                            <span className="text-gray-500">Network Respect</span>
-                                        </div>
-
-                                        <Button variant="link" className="text-blue-600 p-0">
-                                            Check Artist&apos;s Analytics
-                                        </Button>
-                                    </div>
-
-                                    {/* Right artist stats */}
-                                    <div className="space-y-6">
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-gray-500">Social Media</span>
-                                            <div className="flex-1 mx-4 h-6 bg-gray-200 rounded">
-                                                <div className="h-full w-1/6 bg-gray-500 rounded text-xs text-white flex items-center justify-center"></div>
-                                            </div>
-                                            <span className="font-bold">155.7K</span>
-                                        </div>
-
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-gray-500">Music Channels</span>
-                                            <div className="flex-1 mx-4 h-6 bg-gray-200 rounded">
-                                                <div className="h-full w-5/6 bg-gray-700 rounded text-xs text-white flex items-center justify-center">
-                                                    Viberate Points
-                                                </div>
-                                            </div>
-                                            <span className="font-bold">690.4M</span>
-                                        </div>
-
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-gray-500">Network Respect</span>
-                                            <div className="flex-1 mx-4 h-6 bg-gray-200 rounded">
-                                                <div className="h-full w-5/6 bg-gray-700 rounded text-xs text-white flex items-center justify-center">
-                                                    Viberate Points
-                                                </div>
-                                            </div>
-                                            <span className="font-bold">4.7K</span>
-                                        </div>
-
-                                        <div className="text-right">
-                                            <Button variant="link" className="text-blue-600 p-0">
-                                                Check Artist&apos;s Analytics
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Card>
-                        </div>
-
-                        {/* YouTube Videos section */}
                         <div className="mb-12">
                             <h2 className="text-2xl font-semibold mb-6 flex items-center">
                                 <Play className="text-red-600 mr-2" /> Most Viewed YouTube Video Alltime
@@ -253,26 +163,9 @@ export function CompareContainer() {
 
                         {/* Fanbase section */}
                         <div className="mb-12">
-                            <h2 className="text-2xl font-semibold mb-6">Fanbase</h2>
+                            <h2 className="text-2xl font-semibold mb-6">Top Connections</h2>
 
                             <Card className="p-6">
-                                <div className="flex justify-center mb-8">
-                                    <div className="relative h-40 w-40">
-                                        <div className="absolute inset-0 rounded-full overflow-hidden">
-                                            <div className="h-full w-1/2 bg-gray-700"></div>
-                                            <div className="h-full w-1/2 bg-gray-400 absolute right-0 top-0"></div>
-                                        </div>
-                                        <div className="absolute inset-0 flex items-center justify-center">
-                                            <div className="text-center">
-                                                <div className="flex justify-between w-40">
-                                                    <span className="font-bold">11.8K</span>
-                                                    <span className="font-bold">11.5K</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <div className="grid grid-cols-2 gap-4 text-center">
                                     <div>
                                         <p className="text-gray-600">Top Connections</p>
@@ -286,11 +179,7 @@ export function CompareContainer() {
 
                         {/* Size & Distribution section */}
                         <div className="mb-12">
-                            <h2 className="text-2xl font-semibold mb-6">Size & Distribution</h2>
-
-                            <Card className="p-6 h-60 flex items-center justify-center">
-                                <p className="text-gray-500">Size & Distribution data visualization would go here</p>
-                            </Card>
+                            <SpotifyPerformance />
                         </div>
                     </div>
                 </>
