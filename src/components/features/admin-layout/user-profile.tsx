@@ -8,10 +8,12 @@ import { User } from "@/types/user"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 
 export function UserProfile() {
+    const [mounted, setMounted] = useState(false)
     const [user, setUser] = useState<User | null>(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
+        setMounted(true)
         async function fetchUser() {
             try {
                 const userData = await getUser()
@@ -25,6 +27,11 @@ export function UserProfile() {
 
         fetchUser()
     }, [])
+
+    // Prevent hydration mismatch by not rendering anything until client-side
+    if (!mounted) {
+        return <div className="h-5 w-5" />
+    }
 
     if (loading) {
         return <div className="h-5 w-5 animate-pulse bg-muted rounded-full"></div>

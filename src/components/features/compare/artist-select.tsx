@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { ArtistCard } from "./artist-card";
+import { cn } from "@/lib/utils";
 
 const artists: Artist[] = [
     {
@@ -133,9 +134,10 @@ interface ArtistSelectProps {
     otherSelectedId?: string;
     onSelect: (artistId: string) => void;
     onClear: () => void;
+    sticky?: boolean;
 }
 
-export function ArtistSelect({ position, selectedId, otherSelectedId, onSelect, onClear }: ArtistSelectProps) {
+export function ArtistSelect({ position, selectedId, otherSelectedId, onSelect, onClear, sticky = false }: ArtistSelectProps) {
     const [searchQuery, setSearchQuery] = useState("")
     const [isFocused, setIsFocused] = useState(false)
 
@@ -166,6 +168,7 @@ export function ArtistSelect({ position, selectedId, otherSelectedId, onSelect, 
                 <ArtistCard
                     artist={selectedArtist}
                     onChangeClick={onClear}
+                    compact={sticky}
                 />
             </div>
         )
@@ -199,7 +202,10 @@ export function ArtistSelect({ position, selectedId, otherSelectedId, onSelect, 
                             className="fixed inset-0 z-10"
                             onClick={() => setIsFocused(false)}
                         />
-                        <Card className="absolute mt-2 w-full z-20 max-h-[400px] overflow-y-auto border shadow-lg">
+                        <Card className={cn(
+                            "mt-2 w-full z-20 max-h-[400px] overflow-y-auto border shadow-lg",
+                            sticky ? "sticky top-2" : "absolute"
+                        )}>
                             <div className="p-2">
                                 <h3 className="px-2 py-1.5 text-sm font-medium text-muted-foreground">
                                     {searchQuery ? 'Search Results' : 'Recommended Artists'}
@@ -242,7 +248,10 @@ export function ArtistSelect({ position, selectedId, otherSelectedId, onSelect, 
                 )}
 
                 {isFocused && filteredArtists.length === 0 && (
-                    <Card className="absolute mt-2 w-full z-20 border shadow-lg">
+                    <Card className={cn(
+                        "mt-2 w-full z-20 border shadow-lg",
+                        sticky ? "sticky top-2" : "absolute"
+                    )}>
                         <div className="p-4 text-center text-muted-foreground">
                             {searchQuery ? 'No artists found' : 'No artists available'}
                         </div>

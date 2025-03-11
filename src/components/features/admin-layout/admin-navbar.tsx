@@ -18,6 +18,7 @@ export function AdminNavbar({
   sidebarOpen,
   setSidebarOpen
 }: AdminNavbarProps) {
+  const [mounted, setMounted] = useState(false)
   const [user, setUser] = useState<User | null>(null);
 
   // Use useCallback for event handlers to maintain stable references
@@ -26,6 +27,7 @@ export function AdminNavbar({
   }, [sidebarOpen, setSidebarOpen]);
 
   useEffect(() => {
+    setMounted(true)
     const fetchUser = async () => {
       const user = await getUser();
       setUser(user);
@@ -36,6 +38,15 @@ export function AdminNavbar({
   useEffect(() => {
     console.log(user)
   }, [user]);
+
+  // Prevent hydration mismatch by rendering minimal UI until client-side
+  if (!mounted) {
+    return (
+      <header className="bg-background border-b h-16 flex items-center px-6 sticky top-0 z-10">
+        <div className="flex-1" />
+      </header>
+    )
+  }
 
   return (
     <header className="bg-background border-b h-16 flex items-center px-6 sticky top-0 z-10">

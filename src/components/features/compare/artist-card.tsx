@@ -11,9 +11,10 @@ interface ArtistCardProps {
         image: string;
     };
     onChangeClick?: () => void;
+    compact?: boolean;
 }
 
-export function ArtistCard({ artist, onChangeClick }: ArtistCardProps) {
+export function ArtistCard({ artist, onChangeClick, compact = false }: ArtistCardProps) {
     if (!artist) {
         return (
             <Card className="w-full">
@@ -32,6 +33,31 @@ export function ArtistCard({ artist, onChangeClick }: ArtistCardProps) {
                         <div className="flex flex-col gap-1">
                             <div className="h-6 w-32 rounded-md bg-muted animate-pulse" />
                             <div className="h-5 w-24 rounded-md bg-muted animate-pulse" />
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    }
+
+    if (compact) {
+        return (
+            <Card className="w-full">
+                <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                        <div className="relative h-10 w-10 overflow-hidden rounded-full">
+                            <Image
+                                src={artist.image || "/images/svgs/avatar.svg"}
+                                alt={artist.name}
+                                fill
+                                className="object-cover"
+                            />
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <span className="font-medium">{artist.name}</span>
+                            {artist.rank === 1 && (
+                                <Crown className="h-4 w-4 text-yellow-500" />
+                            )}
                         </div>
                     </div>
                 </CardContent>
