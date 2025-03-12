@@ -14,10 +14,20 @@ interface DeezerArtist {
     type: string
 }
 
+interface DeezerTrack {
+    id: number
+    title: string
+    preview: string
+}
+
 interface DeezerSearchResponse {
     data: DeezerArtist[]
     total: number
     next?: string
+}
+
+interface DeezerTopTracksResponse {
+    data: DeezerTrack[]
 }
 
 export class DeezerService {
@@ -54,6 +64,28 @@ export class DeezerService {
         } catch (error) {
             console.error("Error fetching multiple Deezer artists:", error)
             return artistNames.map(() => null)
+        }
+    }
+
+    /**
+     * Get a preview track for an artist
+     * @param artistName The name of the artist
+     * @returns Preview URL or null if not found
+     */
+    static async getArtistPreview(artistName: string): Promise<string | null> {
+        try {
+            const artist = await this.getArtist(artistName)
+            if (!artist) return null
+
+            const response = await fetch(`${this.BASE_URL}/artist/288166/top?limit=1`)
+            if (!response.ok) {
+                throw new Error(`Deezer API error: ${response.statusText}`)
+            }
+            const data: DeezerTopTracksResponse = await response.json()
+            return data.data[0]?.preview || null
+        } catch (error) {
+            console.error("Error fetching artist preview:", error)
+            return null
         }
     }
 }

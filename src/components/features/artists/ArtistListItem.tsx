@@ -12,22 +12,22 @@ interface ArtistListItemProps {
 
 export function ArtistListItem({ artist }: ArtistListItemProps) {
   const artistSlug = createSlug(artist.name);
-  
+
   return (
-    <Link 
-      href={`/artist/${artistSlug}`} 
+    <Link
+      href={`/artist/${artistSlug}`}
       className="block"
     >
-      <div 
-        key={artist.id} 
+      <div
+        key={artist.id}
         className="rounded-lg border bg-card p-6 hover:border-primary/50 hover:bg-card/60 transition-colors"
       >
         <div className="flex flex-col gap-4">
           <div className="h-40 rounded-md bg-secondary/30 flex items-center justify-center overflow-hidden">
             {artist.image_url ? (
-              <Image 
-                src={artist.image_url} 
-                alt={artist.name} 
+              <Image
+                src={artist.image_url}
+                alt={artist.name}
                 width={320}
                 height={160}
                 className="h-full w-full object-cover rounded-md"

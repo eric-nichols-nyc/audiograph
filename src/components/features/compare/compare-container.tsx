@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArtistSelect } from "./artist-select";
-import { FanbaseChart } from "./fanbase-chart";
+import { FanbaseChart } from "./fanbase-charts";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
