@@ -4,8 +4,16 @@ import * as React from "react"
 import { TrendingUp } from "lucide-react"
 import { Pie, PieChart } from "recharts"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader } from "@/components/ui/card"
-import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import { ArtistMetrics } from "@/actions/metrics"
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+
+type ArtistMetric = {
+    id: string
+    artist_id: string
+    platform: string
+    metric_type: string
+    value: number
+    created_at: string
+}
 
 // Format date to a readable string
 function formatDate(dateString: string) {
@@ -17,7 +25,7 @@ function formatDate(dateString: string) {
 }
 
 // Utility function to organize and sort metrics
-function organizeMetrics(metrics: ArtistMetrics[]) {
+function organizeMetrics(metrics: ArtistMetric[]) {
     if (!metrics || metrics.length === 0) return []
 
     // Initialize arrays for each platform
@@ -61,10 +69,11 @@ function organizeMetrics(metrics: ArtistMetrics[]) {
             const sortedData = data.sort((a, b) =>
                 new Date(b.date).getTime() - new Date(a.date).getTime()
             )
+            const config = chartConfig[platform as keyof typeof chartConfig]
             return {
                 platform,
                 value: sortedData[0].value,
-                fill: chartConfig[platform as keyof typeof chartConfig]?.color || '#000000'
+                fill: config?.color || '#000000'
             }
         })
 
@@ -79,9 +88,15 @@ const chartData = [
     { platform: "genius", value: 190, fill: "#4CAF50" }
 ]
 
-const chartConfig = {
+interface PlatformConfig {
+    label: string;
+    color: string;
+}
+
+const chartConfig: Record<string, PlatformConfig> = {
     value: {
         label: "value",
+        color: "#000000"
     },
     youtube: {
         label: "Youtube Subscribers",
@@ -103,10 +118,10 @@ const chartConfig = {
         label: "Genius Fans",
         color: "#4CAF50"
     },
-} satisfies ChartConfig
+} as const
 
 type ComparePieChartProps = {
-    data: ArtistMetrics[]
+    data: ArtistMetric[]
 }
 
 export function ComparePieChart({ data }: ComparePieChartProps) {

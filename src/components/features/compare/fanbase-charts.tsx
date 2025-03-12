@@ -5,19 +5,23 @@ import { getArtistMetrics } from "@/actions/metrics"
 import { useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
-type ArtistMetrics = {
-  spotify_followers?: number
-  monthly_listeners?: number
-  youtube_subscribers?: number
-  youtube_views?: number
-} | null
+type ArtistMetric = {
+  id: string
+  artist_id: string
+  platform: string
+  metric_type: string
+  value: number
+  created_at: string
+}
+
+type MetricsState = {
+  artist1: ArtistMetric[] | null
+  artist2: ArtistMetric[] | null
+}
 
 export function FanbaseChart() {
   const searchParams = useSearchParams()
-  const [metrics, setMetrics] = useState<{
-    artist1: ArtistMetrics
-    artist2: ArtistMetrics
-  }>({
+  const [metrics, setMetrics] = useState<MetricsState>({
     artist1: null,
     artist2: null
   })
@@ -46,8 +50,8 @@ export function FanbaseChart() {
       <div className="flex flex-col space-y-6">
         {/* Donut Charts */}
         <div className="flex flex-wrap justify-around items-center gap-8">
-          <ComparePieChart data={metrics.artist1} />
-          <ComparePieChart data={metrics.artist2} />
+          {metrics.artist1 && <ComparePieChart data={metrics.artist1} />}
+          {metrics.artist2 && <ComparePieChart data={metrics.artist2} />}
         </div>
       </div>
     </div>
