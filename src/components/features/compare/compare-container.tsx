@@ -116,7 +116,7 @@ export function CompareContainer() {
                         <section className="space-y-4">
                             <div className="flex items-center gap-2">
                                 <div className="h-8 w-1 bg-blue-500/30 rounded-full" />
-                                <h2 className="text-2xl font-semibold">Performance</h2>
+                                <h2 className="text-2xl font-semibold">Spotify Performance</h2>
                             </div>
                             <div className="rounded-lg overflow-hidden">
                                 <SpotifyPerformance />
