@@ -9,7 +9,7 @@ import { createBrowserSupabase } from "@/lib/supabase/client";
 import { formatNumber } from "@/utils/number-format";
 import { Video } from "@/types/videos";
 
-type DatabaseVideo = {
+type VideoResponse = {
     id: string;
     video_id: string;
     title: string;
@@ -17,12 +17,11 @@ type DatabaseVideo = {
     daily_view_count: number;
     published_at: string;
     thumbnail_url: string;
-}
-
-type DatabaseResponse = {
-    videos: DatabaseVideo[];
-    artists: Array<{
-        name: string;
+    artist_videos: Array<{
+        artist_id: string;
+        artists: {
+            name: string;
+        }[];
     }>;
 }
 
@@ -49,45 +48,47 @@ export function VideoContainer() {
 
                 // Get top video for first artist
                 const { data: data1, error: error1 } = await supabase
-                    .from('artist_videos')
+                    .from('videos')
                     .select(`
-                        videos!inner (
-                            id,
-                            video_id,
-                            title,
-                            view_count,
-                            daily_view_count,
-                            published_at,
-                            thumbnail_url
-                        ),
-                        artists!inner (
-                            name
+                        id,
+                        video_id,
+                        title,
+                        view_count,
+                        daily_view_count,
+                        published_at,
+                        thumbnail_url,
+                        artist_videos!inner (
+                            artist_id,
+                            artists!inner (
+                                name
+                            )
                         )
                     `)
-                    .eq('artist_id', entity1)
-                    .order('videos.view_count', { ascending: false })
+                    .eq('artist_videos.artist_id', entity1)
+                    .order('view_count', { ascending: false })
                     .limit(1)
                     .single();
 
                 // Get top video for second artist
                 const { data: data2, error: error2 } = await supabase
-                    .from('artist_videos')
+                    .from('videos')
                     .select(`
-                        videos!inner (
-                            id,
-                            video_id,
-                            title,
-                            view_count,
-                            daily_view_count,
-                            published_at,
-                            thumbnail_url
-                        ),
-                        artists!inner (
-                            name
+                        id,
+                        video_id,
+                        title,
+                        view_count,
+                        daily_view_count,
+                        published_at,
+                        thumbnail_url,
+                        artist_videos!inner (
+                            artist_id,
+                            artists!inner (
+                                name
+                            )
                         )
                     `)
-                    .eq('artist_id', entity2)
-                    .order('videos.view_count', { ascending: false })
+                    .eq('artist_videos.artist_id', entity2)
+                    .order('view_count', { ascending: false })
                     .limit(1)
                     .single();
 
@@ -100,16 +101,16 @@ export function VideoContainer() {
                     return;
                 }
 
-                const formattedVideos = [data1, data2].map((record: DatabaseResponse) => ({
-                    id: record.videos[0].id,
-                    video_id: record.videos[0].video_id,
-                    title: record.videos[0].title,
-                    view_count: record.videos[0].view_count,
-                    daily_view_count: record.videos[0].daily_view_count,
-                    published_at: record.videos[0].published_at,
-                    thumbnail_url: record.videos[0].thumbnail_url,
-                    views: record.videos[0].view_count,
-                    artist_name: record.artists[0].name
+                const formattedVideos = [data1, data2].map((record: VideoResponse) => ({
+                    id: record.id,
+                    video_id: record.video_id,
+                    title: record.title,
+                    view_count: record.view_count,
+                    daily_view_count: record.daily_view_count,
+                    published_at: record.published_at,
+                    thumbnail_url: record.thumbnail_url,
+                    views: record.view_count,
+                    artist_name: record.artist_videos[0].artists[0].name
                 }));
 
                 console.log('Formatted videos:', formattedVideos);
