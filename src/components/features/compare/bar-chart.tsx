@@ -1,73 +1,89 @@
 "use client"
 
-import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts"
-
-import { Card, CardContent } from "@/components/ui/card"
+import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis, Cell } from "recharts"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-const chartData = [
-    { month: "January", desktop: 186, mobile: 80 },
-    { month: "February", desktop: 305, mobile: 200 },
-]
 
-const chartConfig = {
-    desktop: {
-        label: "Desktop",
-        color: "hsl(0, 100%, 50%)",
-    },
-    mobile: {
-        label: "Mobile",
-        color: "hsl(var(--chart-2))",
-    },
-    label: {
-        color: "hsl(var(--background))",
-    },
-} satisfies ChartConfig
+interface CompareBarChartProps {
+    data: Array<{
+        name: string;
+        value: number;
+        color: string;
+    }>;
+    title?: string;
+    valueFormatter?: (value: number) => string;
+}
 
-export function CompareBarChart() {
+export function CompareBarChart({ data, title, valueFormatter = (value) => value.toString() }: CompareBarChartProps) {
+    const chartConfig = data.reduce((acc, item) => ({
+        ...acc,
+        [item.name]: {
+            label: item.name,
+            color: item.color,
+        }
+    }), {
+        label: {
+            color: "hsl(var(--background))",
+        },
+    }) satisfies ChartConfig;
+
     return (
         <Card className="w-full">
+            {title && (
+                <CardHeader>
+                    <CardTitle>{title}</CardTitle>
+                </CardHeader>
+            )}
             <CardContent className="px-0">
                 <ChartContainer config={chartConfig} className="h-24 w-full">
                     <BarChart
                         accessibilityLayer
-                        data={chartData}
+                        data={data}
                         height={100}
-                        width={800} // Set a large fixed width
+                        width={800}
                         barSize={15}
                         barGap={2}
                         layout="vertical"
                         margin={{
-                            right: 50, // Increased right margin for labels
+                            right: 50,
                             left: 10,
                         }}
                     >
                         <CartesianGrid horizontal={false} />
                         <YAxis
-                            dataKey="month"
+                            dataKey="name"
                             type="category"
                             tickLine={false}
                             tickMargin={10}
                             axisLine={false}
-                            tickFormatter={(value) => value.slice(0, 3)}
                             hide
                         />
-                        <XAxis dataKey="desktop" type="number" hide />
+                        <XAxis dataKey="value" type="number" hide />
                         <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="line" />} />
                         <Bar
-                            dataKey="desktop"
+                            dataKey="value"
                             layout="vertical"
-                            fill="hsl(0, 100%, 50%)"
                             radius={4}
-                            maxBarSize={700} // Set a large maximum bar size
+                            maxBarSize={700}
                         >
+                            {data.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
                             <LabelList
-                                dataKey="month"
+                                dataKey="name"
                                 position="insideLeft"
                                 offset={8}
                                 className="fill-[--color-label]"
                                 fontSize={10}
                             />
-                            <LabelList dataKey="desktop" position="right" offset={8} className="fill-foreground" fontSize={10} />
+                            <LabelList
+                                dataKey="value"
+                                position="right"
+                                offset={8}
+                                className="fill-foreground"
+                                fontSize={10}
+                                formatter={valueFormatter}
+                            />
                         </Bar>
                     </BarChart>
                 </ChartContainer>

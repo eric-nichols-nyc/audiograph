@@ -94,10 +94,14 @@ export function CompareContainer() {
                         <FanbaseChart />
                     </div>
 
-                    <div className="space-y-8">
-                        <div className="w-full rounded-lg overflow-hidden ring-1 ring-white/10 bg-card/50">
+                    <section className="space-y-8">
+                        <section className="space-y-4">
+                            <div className="flex items-center gap-2">
+                                <div className="h-8 w-1 bg-blue-500/30 rounded-full" />
+                                <h2 className="text-2xl font-semibold">Most Viewed YouTube Video Alltime</h2>
+                            </div>
                             <VideoContainer />
-                        </div>
+                        </section>
 
                         {/* Fanbase section */}
                         <section className="space-y-4">
@@ -118,7 +122,7 @@ export function CompareContainer() {
                                 <SpotifyPerformance />
                             </div>
                         </section>
-                    </div>
+                    </section>
                 </div>
             ) : (
                 <div className="flex items-center justify-center min-h-[200px] rounded-lg bg-blue-500/5 border border-blue-500/10">
