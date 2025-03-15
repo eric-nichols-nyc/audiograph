@@ -9,7 +9,7 @@ import { createBrowserSupabase } from "@/lib/supabase/client";
 import { formatNumber } from "@/utils/number-format";
 import { Video } from "@/types/videos";
 
-type VideoResponse = {
+type DatabaseVideo = {
     id: string;
     video_id: string;
     title: string;
@@ -21,7 +21,7 @@ type VideoResponse = {
         artist_id: string;
         artists: {
             name: string;
-        }[];
+        };
     }>;
 }
 
@@ -50,13 +50,7 @@ export function VideoContainer() {
                 const { data: data1, error: error1 } = await supabase
                     .from('videos')
                     .select(`
-                        id,
-                        video_id,
-                        title,
-                        view_count,
-                        daily_view_count,
-                        published_at,
-                        thumbnail_url,
+                        *,
                         artist_videos!inner (
                             artist_id,
                             artists!inner (
@@ -73,13 +67,7 @@ export function VideoContainer() {
                 const { data: data2, error: error2 } = await supabase
                     .from('videos')
                     .select(`
-                        id,
-                        video_id,
-                        title,
-                        view_count,
-                        daily_view_count,
-                        published_at,
-                        thumbnail_url,
+                        *,
                         artist_videos!inner (
                             artist_id,
                             artists!inner (
@@ -101,7 +89,7 @@ export function VideoContainer() {
                     return;
                 }
 
-                const formattedVideos = [data1, data2].map((record: VideoResponse) => ({
+                const formattedVideos = [data1, data2].map((record: DatabaseVideo) => ({
                     id: record.id,
                     video_id: record.video_id,
                     title: record.title,
@@ -110,7 +98,7 @@ export function VideoContainer() {
                     published_at: record.published_at,
                     thumbnail_url: record.thumbnail_url,
                     views: record.view_count,
-                    artist_name: record.artist_videos[0].artists[0].name
+                    artist_name: record.artist_videos[0].artists.name
                 }));
 
                 console.log('Formatted videos:', formattedVideos);
