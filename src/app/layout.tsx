@@ -10,6 +10,8 @@ import {
 import { Toaster } from "@/components/ui/sonner";
 import { getArtists } from "@/actions/artists/artist";
 import "./globals.css";
+import { cn } from "@/lib/utils";
+import { Inter } from "next/font/google";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,6 +20,11 @@ const geistSans = Geist({
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
@@ -41,12 +48,18 @@ export default async function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <head>
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+      </head>
+      <body className={cn("min-h-screen bg-background font-sans antialiased", geistSans.variable, geistMono.variable, inter.className)}>
         <QueryProvider dehydratedState={dehydrate(queryClient)}>
           <HydrationBoundary state={dehydrate(queryClient)}>
-            <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="dark"
+              enableSystem
+              disableTransitionOnChange
+            >
               {children}
               <Toaster />
             </ThemeProvider>

@@ -4,11 +4,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ArtistSelect } from "./artist-select";
 import { FanbaseChart } from "./fanbase-charts";
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Play } from "lucide-react";
+import { VideoContainer } from "./video-container";
 import { SpotifyPerformance } from "./spotify-performance";
+import { cn } from "@/lib/utils";
+import { TopConnections } from "./top-connections";
 
 export function CompareContainer() {
     const router = useRouter()
@@ -57,11 +56,20 @@ export function CompareContainer() {
     }
 
     return (
-        <div className="flex flex-col gap-4 border border-white/10 rounded-lg p-4 bg-card">
+        <div className="relative flex flex-col gap-6 border border-white/10 rounded-lg p-6 bg-card">
+            {/* Background accent */}
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent rounded-lg pointer-events-none" />
+
             {/* Sentinel div to detect when sticky div hits the top */}
             <div ref={sentinelRef} className="h-px w-full" />
 
-            <div ref={stickyRef} className="flex gap-4 sticky top-[24px] bg-card z-10">
+            <div
+                ref={stickyRef}
+                className={cn(
+                    "flex gap-4 sticky top-[24px] z-10 transition-all duration-300",
+                    isSticky && "bg-background/80 backdrop-blur-sm shadow-lg rounded-lg p-4"
+                )}
+            >
                 <ArtistSelect
                     position={1}
                     selectedId={entity1 || undefined}
@@ -79,110 +87,43 @@ export function CompareContainer() {
                     sticky={isSticky}
                 />
             </div>
-            {entity1 && entity2 && (
-                <>
-                    <FanbaseChart />
-                    <div className="max-w-6xl mx-auto px-4 py-8">
-                        <div className="mb-12">
-                            <h2 className="text-2xl font-semibold mb-6 flex items-center">
-                                <Play className="text-red-600 mr-2" /> Most Viewed YouTube Video Alltime
-                            </h2>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                {/* Left artist video */}
-                                <div className="space-y-4">
-                                    <div className="relative aspect-video bg-gray-200 rounded-lg overflow-hidden">
-                                        <Image
-                                            src="/placeholder.svg?height=300&width=500"
-                                            alt="Video thumbnail"
-                                            width={500}
-                                            height={300}
-                                            className="object-cover"
-                                        />
-                                        <div className="absolute inset-0 flex items-center justify-center">
-                                            <div className="h-12 w-12 bg-white rounded-full flex items-center justify-center">
-                                                <Play className="h-6 w-6 text-black" />
-                                            </div>
-                                        </div>
-                                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
-                                            <p className="text-white font-medium">David Guetta - Titanium ft. Sia</p>
-                                        </div>
-                                    </div>
+            {entity1 && entity2 ? (
+                <div className="relative space-y-8">
+                    <div className="rounded-lg overflow-hidden">
+                        <FanbaseChart />
+                    </div>
 
-                                    <div className="flex items-center">
-                                        <span className="font-bold mr-2">1.2B</span>
-                                        <div className="flex-1 h-6 bg-red-200 rounded">
-                                            <div className="h-full w-3/4 bg-red-500 rounded text-xs text-white flex items-center justify-center">
-                                                Plays
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <Button variant="link" className="text-blue-600 p-0">
-                                        Check Artist&apos;s Analytics
-                                    </Button>
-                                </div>
-
-                                {/* Right artist video */}
-                                <div className="space-y-4">
-                                    <div className="relative aspect-video bg-gray-200 rounded-lg overflow-hidden">
-                                        <Image
-                                            src="/placeholder.svg?height=300&width=500"
-                                            alt="Video thumbnail"
-                                            width={500}
-                                            height={300}
-                                            className="object-cover"
-                                        />
-                                        <div className="absolute inset-0 flex items-center justify-center">
-                                            <div className="h-12 w-12 bg-white rounded-full flex items-center justify-center">
-                                                <Play className="h-6 w-6 text-black" />
-                                            </div>
-                                        </div>
-                                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
-                                            <p className="text-white font-medium">Calvin Harris - This Is What You Came For ft. Rihanna</p>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-center">
-                                        <span className="font-bold mr-2">2.4B</span>
-                                        <div className="flex-1 h-6 bg-red-200 rounded">
-                                            <div className="h-full w-5/6 bg-red-500 rounded text-xs text-white flex items-center justify-center">
-                                                Plays
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="text-right">
-                                        <Button variant="link" className="text-blue-600 p-0">
-                                            Check Artist&apos;s Analytics
-                                        </Button>
-                                    </div>
-                                </div>
-                            </div>
+                    <div className="space-y-8">
+                        <div className="w-full rounded-lg overflow-hidden ring-1 ring-white/10 bg-card/50">
+                            <VideoContainer />
                         </div>
 
                         {/* Fanbase section */}
-                        <div className="mb-12">
-                            <h2 className="text-2xl font-semibold mb-6">Top Connections</h2>
-
-                            <Card className="p-6">
-                                <div className="grid grid-cols-2 gap-4 text-center">
-                                    <div>
-                                        <p className="text-gray-600">Top Connections</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-gray-600">Top Connections</p>
-                                    </div>
-                                </div>
-                            </Card>
-                        </div>
+                        <section className="space-y-4">
+                            <div className="flex items-center gap-2">
+                                <div className="h-8 w-1 bg-blue-500/30 rounded-full" />
+                                <h2 className="text-2xl font-semibold">Top Connections</h2>
+                            </div>
+                            <TopConnections />
+                        </section>
 
                         {/* Size & Distribution section */}
-                        <div className="mb-12">
-                            <SpotifyPerformance />
-                        </div>
+                        <section className="space-y-4">
+                            <div className="flex items-center gap-2">
+                                <div className="h-8 w-1 bg-blue-500/30 rounded-full" />
+                                <h2 className="text-2xl font-semibold">Performance</h2>
+                            </div>
+                            <div className="rounded-lg overflow-hidden">
+                                <SpotifyPerformance />
+                            </div>
+                        </section>
                     </div>
-                </>
+                </div>
+            ) : (
+                <div className="flex items-center justify-center min-h-[200px] rounded-lg bg-blue-500/5 border border-blue-500/10">
+                    <p className="text-lg text-muted-foreground">Select two artists to compare their metrics</p>
+                </div>
             )}
         </div>
     )

@@ -1,59 +1,24 @@
 'use client';
 
-import { Card, CardContent } from "@/components/ui/card";
-import Image from "next/image";
+import { Card } from "@/components/ui/card";
 
-interface ArtistConnection {
-  name: string;
-  image_url: string;
-  country: string;
-  genre: string;
-}
-
-interface TopConnectionsProps {
-  connections: ArtistConnection[];
-}
-
-export function TopConnections({ connections }: TopConnectionsProps) {
+export function TopConnections() {
   return (
-    <div className="flex-1 mb-8">
-      <h2 className="text-xl font-semibold mb-4">Top Connections</h2>
-      <div className="space-y-3">
-        {connections.map((artist, index) => (
-          <Card key={index} className="overflow-hidden">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-4">
-                <div className="relative h-12 w-12 rounded-full overflow-hidden flex-shrink-0">
-                  <Image
-                    src={artist.image_url}
-                    alt={artist.name}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="flex-grow">
-                  <h3 className="font-medium">{artist.name}</h3>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-1">
-                    <Image
-                      src={`https://flagcdn.com/${artist.country.toLowerCase()}.svg`}
-                      alt={artist.country}
-                      width={20}
-                      height={15}
-                      className="rounded"
-                    />
-                    <span className="text-sm text-gray-500">{artist.country}</span>
-                  </div>
-                  <div className="bg-gray-100 px-2 py-1 rounded text-sm">
-                    {artist.genre}
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+    <Card className="p-6 bg-card/50 border-white/10">
+      <div className="grid grid-cols-2 gap-6 text-center">
+        <div className="space-y-4">
+          <h3 className="text-lg font-medium text-blue-200/80">Artist One Connections</h3>
+          <div className="p-4 rounded-lg bg-blue-500/5 border border-blue-500/10">
+            <p className="text-muted-foreground">Coming soon...</p>
+          </div>
+        </div>
+        <div className="space-y-4">
+          <h3 className="text-lg font-medium text-blue-200/80">Artist Two Connections</h3>
+          <div className="p-4 rounded-lg bg-blue-500/5 border border-blue-500/10">
+            <p className="text-muted-foreground">Coming soon...</p>
+          </div>
+        </div>
       </div>
-    </div>
+    </Card>
   );
 } 

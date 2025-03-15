@@ -9,7 +9,7 @@ export async function getArtistMetrics(id: string) {
         .select('*')
         .eq('artist_id', id)
         .order('date', { ascending: false })
-    console.log('metrics/actions = ', data);
+
 
     if (error) {
         console.error('there was an error fetching the artist', error);

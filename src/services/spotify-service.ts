@@ -101,7 +101,7 @@ export class SpotifyService {
       });
 
       const artistData = await artistResponse.json();
-      console.log('======== artistData', artistData);
+      // console.log('======== artistData', artistData);
       return artistData;
     },
     ['spotify-search-artist'],
