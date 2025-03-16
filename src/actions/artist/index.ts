@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { createBrowserSupabase } from "@/lib/supabase/client";
+import { Artist } from "@/types/artist";
 
 export async function getArtist(slug: string) {
     console.log('getArtist', slug);
@@ -57,4 +58,31 @@ export async function getSimilarArtists(artistId: string, limit = 10) {
         similarity_score: item.similarity_score,
         similarity_factors: item.metadata?.factors || {}
     }));
+}
+
+/**
+ * Get artist with their platform IDs
+ * @param {string} slug - The slug of the artist
+ * @returns {Promise<Artist>} - Artist data including platform IDs
+ */
+export async function getArtistWithPlatformIds(slug: string): Promise<Artist> {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+        .from('artists')
+        .select(`
+            *,
+            artist_platform_ids (
+                platform,
+                platform_id
+            )
+        `)
+        .eq('slug', slug)
+        .single();
+
+    if (error) {
+        console.error('Error fetching artist with platform IDs:', error);
+        throw new Error(error.message);
+    }
+
+    return data;
 }

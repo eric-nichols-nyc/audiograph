@@ -21,6 +21,7 @@ export interface Artist {
     country: string | null
     birth_date: string | null
     image_url: string | null
+    artist_platform_ids?: ArtistPlatformIds[];
 }
 
 export interface ArtistPlatformIds {

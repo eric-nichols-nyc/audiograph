@@ -1,7 +1,7 @@
 import { ArtistProvider } from "@/providers/artist-provider";
 import { ArtistNavbar } from "@/components/features/artist-details/artist-navbar";
 import { notFound } from "next/navigation";
-import { getArtist } from "@/actions/artist";
+import { getArtistWithPlatformIds } from "@/actions/artist";
 
 export default async function ArtistLayout({
     params,
@@ -14,8 +14,8 @@ export default async function ArtistLayout({
 
     try {
         // Fetch artist data directly
-        const artist = await getArtist(slug);
-
+        const artist = await getArtistWithPlatformIds(slug);
+        console.log('Artist:', artist);
         if (!artist) {
             notFound();
         }

@@ -31,7 +31,7 @@ interface ScrollableGalleryProps {
 export function ScrollableGallery({
   items,
   children,
-  itemsPerView = 5,
+  itemsPerView = 4,
   className,
   itemClassName
 }: ScrollableGalleryProps) {
