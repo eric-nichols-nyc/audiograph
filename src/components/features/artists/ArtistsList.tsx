@@ -45,12 +45,14 @@ export function ArtistsList() {
 
   return (
     <main className="flex-1 container py-8">
-      <SearchBar
-        value={searchQuery}
-        onChange={setSearchQuery}
-        placeholder="Search artists..."
-      />
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="sticky top-0 z-10 pb-8 pt-2 bg-background/80 backdrop-blur-sm">
+        <SearchBar
+          value={searchQuery}
+          onChange={setSearchQuery}
+          placeholder="Search artists..."
+        />
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 place-items-center gap-4">
         {filteredArtists?.map((artist) => (
           <ArtistListItem key={artist.id} artist={artist} />
         ))}
