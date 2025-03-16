@@ -23,23 +23,23 @@ export function ArtistListItem({ artist }: ArtistListItemProps) {
         className="rounded-lg border bg-card p-6 hover:border-primary/50 hover:bg-card/60 transition-colors"
       >
         <div className="flex flex-col gap-4">
-          <div className="h-40 rounded-md bg-secondary/30 flex items-center justify-center overflow-hidden">
+          <div className="aspect-square w-32 mx-auto rounded-full bg-secondary/30 flex items-center justify-center overflow-hidden">
             {artist.image_url ? (
               <Image
                 src={artist.image_url}
                 alt={artist.name}
-                width={320}
-                height={160}
-                className="h-full w-full object-cover rounded-md"
+                width={200}
+                height={200}
+                className="w-full h-full object-cover"
                 priority={false}
               />
             ) : (
               <span className="text-4xl font-bold text-primary/40">{artist.name.charAt(0)}</span>
             )}
           </div>
-          <div>
+          <div className="text-center">
             <h3 className="text-xl font-bold">{artist.name}</h3>
-            <Badge>
+            <Badge variant="secondary" className="mt-1">
               {artist.genres && artist.genres.length > 0 ? artist.genres[0] : 'Unknown Genre'}
             </Badge>
           </div>
