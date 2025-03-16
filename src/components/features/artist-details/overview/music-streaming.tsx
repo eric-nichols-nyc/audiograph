@@ -22,17 +22,15 @@ export function MusicStreaming() {
     queryKey: ['artistTopTracks', spotifyId],
     queryFn: async () => {
       if (!spotifyId) return null;
-      console.log('Fetching tracks for spotifyId:', spotifyId);
+      // console.log('Fetching tracks for spotifyId:', spotifyId);
       const result = await getArtistTopTracks(spotifyId);
-      console.log('Received tracks:', result);
+      // console.log('Received tracks:', result);
       return result;
     },
     enabled: !!spotifyId,
     staleTime: 1000 * 60 * 60,
     gcTime: 1000 * 60 * 60 * 2,
   })
-
-  console.log('Component state:', { spotifyId, isLoading, error, tracksLength: tracks?.length })
 
   return (
     <div className="w-full">

@@ -7,7 +7,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { formatNumber } from "@/utils/number-format";
-import { Video } from "@/types/videos";
+import { Video } from "@/types/video";
 
 type DatabaseVideo = {
     id: string;
@@ -17,6 +17,7 @@ type DatabaseVideo = {
     daily_view_count: number;
     published_at: string;
     thumbnail_url: string;
+    platform: string;
     artist_videos: Array<{
         artist_id: string;
         artists: {
@@ -98,6 +99,7 @@ export function VideoContainer() {
                     published_at: record.published_at,
                     thumbnail_url: record.thumbnail_url,
                     views: record.view_count,
+                    platform: record.platform,
                     artist_name: record.artist_videos[0].artists.name
                 }));
 

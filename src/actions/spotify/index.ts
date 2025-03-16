@@ -1,16 +1,8 @@
 'use server'
 
-import { unstable_cache } from 'next/cache'
-import { createSpotifyService } from '@/services/spotify-service'
-
-interface FormattedTrack {
-    id: string
-    title: string
-    artist: string
-    streams: string // We'll format this as "XM" or "XK"
-    image: string
-    hasVideo: boolean // We might need to determine this from another source
-}
+import { SpotifyService } from '@/services/spotify-service'
+import * as redis from '@/lib/redis'
+import { FormattedTrack } from '@/types/track'
 
 /**
  * Format number to abbreviated string (e.g., 1234567 to "1.2M")
@@ -31,39 +23,36 @@ function formatNumber(num: number): string {
  * @param market The market to get tracks for (defaults to 'US')
  */
 export async function getArtistTopTracks(spotifyId: string, market: string = 'US'): Promise<FormattedTrack[]> {
-    return unstable_cache(
-        async () => {
-            try {
-                //console.log('Fetching tracks for artist:', spotifyId)
-                const spotifyService = createSpotifyService()
-                const topTracks = await spotifyService.getArtistTopTracks(spotifyId, market)
-                //console.log('Raw Spotify response:', JSON.stringify(topTracks, null, 2))
+    const cacheKey = `spotify:formatted-tracks:${spotifyId}-${market}`
+    const cachedTracks = await redis.get<FormattedTrack[]>(cacheKey)
 
-                if (!topTracks) {
-                    console.error('No tracks found in response')
-                    return []
-                }
+    if (cachedTracks) {
+        console.log('Cache hit: Returning cached formatted tracks')
+        return cachedTracks
+    }
 
-                const formattedTracks = topTracks.map(track => ({
-                    id: track.id,
-                    title: track.name,
-                    artist: track.artists[0].name,
-                    streams: formatNumber(track.popularity * 10000),
-                    image: track.album.images[0]?.url || '',
-                    hasVideo: false
-                }))
+    console.log('Cache miss: Fetching and formatting tracks')
+    const spotifyService = new SpotifyService()
+    const topTracks = await spotifyService.getArtistTopTracks(spotifyId, market)
 
-                // console.log('Formatted tracks:', JSON.stringify(formattedTracks, null, 2))
-                return formattedTracks
-            } catch (error) {
-                console.error('Error fetching artist top tracks:', error)
-                throw error
-            }
-        },
-        [`spotify-top-tracks-${spotifyId}-${market}`],
-        {
-            revalidate: 3600, // Cache for 1 hour
-            tags: [`spotify-artist-${spotifyId}`],
-        }
-    )()
+    if (!topTracks || topTracks.length === 0) {
+        console.log('No tracks found')
+        return []
+    }
+
+    const tracks = topTracks.map(track => ({
+        id: track.id,
+        title: track.name,
+        artist: track.artists[0].name,
+        streams: formatNumber(track.popularity * 10000),
+        image: track.album.images[0]?.url || '',
+        hasVideo: false
+    }))
+
+    // Cache formatted tracks for 1 hour
+    await redis.set(cacheKey, tracks, 3600)
+    console.log('Cached formatted tracks')
+
+    return tracks
 }
+

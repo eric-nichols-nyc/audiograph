@@ -6,8 +6,8 @@ export interface Video {
     daily_view_count: number;
     published_at: string;
     thumbnail_url: string;
-    views: number;
-    artist_name: string;
+    platform: string;
+    artist_name?: string;
 }
 
 

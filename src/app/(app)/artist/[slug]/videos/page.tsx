@@ -2,58 +2,43 @@ import { AdminLayout } from '@/components/features/admin-layout';
 import { getArtistBySlug } from '@/actions/artists/artist';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { VideoCard } from '@/components/video-card';
 // Mock data for videos - in a real app, this would come from an API
 const mockVideos = [
   {
-    id: '1',
-    title: 'Music Video One',
-    thumbnail: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
-    publishDate: '2023-06-15',
-    views: 2450000,
-    likes: 125000,
-    duration: '4:12',
-    platform: 'youtube'
+    id: "1",
+    title: "Summer Concert Highlights",
+    description: "Highlights from the summer concert series",
+    url: "https://youtube.com/watch?v=123",
+    thumbnail_url: "https://i.ytimg.com/vi/123/maxresdefault.jpg",
+    platform: "youtube",
+    platform_id: "123",
+    created_at: "2024-01-01T00:00:00Z",
+    updated_at: "2024-01-01T00:00:00Z",
+    view_count: 1000,
   },
   {
-    id: '2',
-    title: 'Music Video Two',
-    thumbnail: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
-    publishDate: '2023-02-28',
-    views: 1850000,
-    likes: 95000,
-    duration: '3:45',
-    platform: 'youtube'
+    id: "2",
+    title: "Behind the Scenes",
+    description: "A look behind the scenes of our latest music video",
+    url: "https://youtube.com/watch?v=456",
+    thumbnail_url: "https://i.ytimg.com/vi/456/maxresdefault.jpg",
+    platform: "youtube",
+    platform_id: "456",
+    created_at: "2024-01-02T00:00:00Z",
+    updated_at: "2024-01-02T00:00:00Z",
+    view_count: 1000,
   },
   {
-    id: '3',
-    title: 'Live Performance',
-    thumbnail: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
-    publishDate: '2022-11-10',
-    views: 980000,
-    likes: 65000,
-    duration: '5:30',
-    platform: 'youtube'
-  },
-  {
-    id: '4',
-    title: 'Behind the Scenes',
-    thumbnail: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
-    publishDate: '2023-07-05',
-    views: 750000,
-    likes: 42000,
-    duration: '8:15',
-    platform: 'youtube'
-  },
-  {
-    id: '5',
-    title: 'Short Clip',
-    thumbnail: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
-    publishDate: '2024-01-15',
-    views: 3250000,
-    likes: 285000,
-    duration: '0:45',
-    platform: 'tiktok'
+    id: "3",
+    title: "Live at Madison Square Garden",
+    description: "Full concert performance at MSG",
+    url: "https://youtube.com/watch?v=789",
+    thumbnail_url: "https://i.ytimg.com/vi/789/maxresdefault.jpg",
+    platform: "youtube",
+    platform_id: "789",
+    created_at: "2024-01-03T00:00:00Z",
+    updated_at: "2024-01-03T00:00:00Z",
+    view_count: 1000,
   },
 ];
 
@@ -82,19 +67,7 @@ export default async function ArtistVideosPage({ params }: { params: Promise<{ s
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {mockVideos.reduce((sum, video) => sum + video.views, 0).toLocaleString()}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Total Likes</CardTitle>
-              <CardDescription>Combined likes across all videos</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {mockVideos.reduce((sum, video) => sum + video.likes, 0).toLocaleString()}
+                {mockVideos.reduce((sum, video) => sum + video.view_count, 0).toLocaleString()}
               </div>
             </CardContent>
           </Card>
@@ -109,29 +82,32 @@ export default async function ArtistVideosPage({ params }: { params: Promise<{ s
 
           <TabsContent value="all" className="space-y-6">
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {mockVideos.map((video) => (
+              {/* {mockVideos.map((video) => (
                 <VideoCard key={video.id} video={video} />
-              ))}
+              ))} */}
+              videos go here...
             </div>
           </TabsContent>
 
           <TabsContent value="youtube" className="space-y-6">
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {mockVideos
+              {/* {mockVideos
                 .filter((video) => video.platform === 'youtube')
                 .map((video) => (
                   <VideoCard key={video.id} video={video} />
-                ))}
+                ))} */}
+              videos go here...
             </div>
           </TabsContent>
 
           <TabsContent value="tiktok" className="space-y-6">
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {mockVideos
+              {/* {mockVideos
                 .filter((video) => video.platform === 'tiktok')
                 .map((video) => (
                   <VideoCard key={video.id} video={video} />
-                ))}
+                ))} */}
+              videos go here...
             </div>
           </TabsContent>
         </Tabs>
