@@ -1,12 +1,26 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { useArtists } from '@/hooks/use-artists';
-import { ArtistListItem } from './ArtistListItem';
+import { useArtists } from "@/hooks/use-artists";
+import { ArtistListItem } from "./ArtistListItem";
+import { useState } from "react";
+import { SearchBar } from "./SearchBar";
 
 export function ArtistsList() {
   const { data: artists, isLoading, error } = useArtists();
-  
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredArtists = artists?.filter((artist) => {
+    if (!searchQuery) return true;
+
+    const query = searchQuery.toLowerCase();
+    const nameParts = artist.name.toLowerCase().split(" ");
+
+    // Check if any part of the name starts with the query
+    return nameParts.some(part => part.startsWith(query)) ||
+      // Also check if full name contains the query for partial matches
+      artist.name.toLowerCase().includes(query);
+  });
+
   if (isLoading) {
     return (
       <main className="flex-1 container py-8">
@@ -16,28 +30,28 @@ export function ArtistsList() {
       </main>
     );
   }
-  
+
   if (error) {
     return (
       <main className="flex-1 container py-8">
         <div className="flex justify-center items-center h-64">
-          <p className="text-lg text-red-500">Error loading artists: {error.message}</p>
+          <p className="text-lg text-red-500">
+            Error loading artists: {error.message}
+          </p>
         </div>
       </main>
     );
   }
+
   return (
     <main className="flex-1 container py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Top Artists</h1>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm">Filter</Button>
-          <Button variant="outline" size="sm">Sort</Button>
-        </div>
-      </div>
-      
+      <SearchBar
+        value={searchQuery}
+        onChange={setSearchQuery}
+        placeholder="Search artists..."
+      />
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {artists.map((artist) => (
+        {filteredArtists?.map((artist) => (
           <ArtistListItem key={artist.id} artist={artist} />
         ))}
       </div>
