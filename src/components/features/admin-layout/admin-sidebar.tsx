@@ -5,7 +5,6 @@ import Link from "next/link";
 import { Notifications } from "./notifications"
 import { UserProfile } from "./user-profile";
 import { usePathname } from "next/navigation";
-import { useAuth } from "@/hooks/use-auth";
 import {
   Users,
   BarChart,
@@ -63,8 +62,6 @@ interface AdminSidebarProps {
 
 export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
   const pathname = usePathname();
-  const { user } = useAuth();
-  const isAdmin = user?.role === 'admin';
 
   // console.log('admin sidebar: ', user)
 
@@ -97,53 +94,6 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
           </Button>
         </Link>
         <div className={cn("space-y-4", open ? "p-4" : "p-2")}>
-
-
-          {isAdmin && (
-            <>
-              {open ? (
-                <Accordion type="single" collapsible className="border-none">
-                  <AccordionItem value="content" className="border-none">
-                    <AccordionTrigger className="py-2 hover:no-underline">
-                      <div className="flex items-center gap-3">
-                        <BarChart className="h-5 w-5" />
-                        <span>Admin</span>
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <div className="pl-7 space-y-1">
-                        <SidebarItem
-                          href="/admin/artists"
-                          icon={<Users className="h-5 w-5" />}
-                          title="Artists"
-                          active={pathname.startsWith("/admin/artists")}
-                          sidebarOpen={open}
-                        />
-                        <SidebarItem
-                          href="/admin/tracks"
-                          icon={<Music className="h-5 w-5" />}
-                          title="Albums"
-                          active={pathname.startsWith("/admin/tracks")}
-                          sidebarOpen={open}
-                        />
-                        <SidebarItem
-                          href="/admin/videos"
-                          icon={<FileText className="h-5 w-5" />}
-                          title="Videos"
-                          active={pathname.startsWith("/admin/videos")}
-                          sidebarOpen={open}
-                        />
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-              ) : (
-                <Link href="/content" className="flex justify-center py-2">
-                  <FileText className="h-5 w-5" />
-                </Link>
-              )}
-            </>
-          )}
 
           {open ? (
             <Accordion type="single" collapsible className="border-none">
