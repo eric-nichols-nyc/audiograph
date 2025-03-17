@@ -5,36 +5,30 @@ import { platformData } from "@/components/features/artist-details/data"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { MetricPieChart } from "@/components/features/charts/metric-pie-chart"
 import { useArtistStore } from "@/stores/artist-slug-store"
+import { useArtistMetrics } from "@/hooks/queries/use-artist-metrics"
+
 export function SocialMediaDashboard() {
-  // Add null check for platformData
   const data = platformData || []
   const artist = useArtistStore((state) => state.artist)
   const artistId = artist?.id
-  const totalFans = data.reduce((sum, platform) => sum + platform.count, 0)
+  const { metrics, loading, error } = useArtistMetrics(artist?.id)
 
+  if (loading) return <div>Loading...</div>
+  if (error) return <div>Error loading metrics</div>
+  if (!metrics) return <div>No metrics available</div>
 
-  // Data for the donut chart
-  const COLORS = ["#4ade80", "#FF5733", "#60a5fa", "#fbbf24", "#a78bfa"]
-  const pieData = data
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 5)
-    .map((platform, index) => ({
-      name: platform.name,
-      value: platform.count,
-      color: COLORS[index % COLORS.length],
-    }))
-
-  // Add "Others" segment for remaining platforms
-  const otherPlatformsSum = data
-    .sort((a, b) => b.count - a.count)
-    .slice(5)
-    .reduce((sum, platform) => sum + platform.count, 0)
-
-  pieData.push({
-    name: "Others",
-    value: otherPlatformsSum,
-    color: "#9ca3af",
+  const formattedMetrics = metrics.map(metric => {
+    const platformInfo = data.find(p => p.name.toLowerCase() === metric.platform.toLowerCase())
+    return {
+      ...metric,
+      name: platformInfo?.name || metric.platform,
+      growth: platformInfo?.growth || 0,
+      change: platformInfo?.change || 0,
+      icon: metric.platform,
+    }
   })
+
+  const totalFans = metrics.reduce((sum, metric) => sum + metric.value, 0)
 
   return (
     <Card className="w-full">
@@ -49,8 +43,8 @@ export function SocialMediaDashboard() {
 
           {/* Platform cards grid */}
           <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {data.map((platform) => (
-              <PlatformCard key={platform.id} platform={platform} />
+            {formattedMetrics.map((platform) => (
+              <PlatformCard key={platform.platform} platform={platform} />
             ))}
           </div>
         </div>

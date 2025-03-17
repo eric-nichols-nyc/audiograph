@@ -12,10 +12,10 @@ export function PlatformCard({ platform }: PlatformCardProps) {
     return null
   }
 
-  const { name, count, growth, change, icon } = platform
+  const { name, value, growth, change, icon } = platform
 
   // Format large numbers with commas
-  const formattedCount = count.toLocaleString()
+  const formattedCount = value.toLocaleString()
   const formattedChange = change ? change.toLocaleString() : "0"
 
   // Determine growth indicator

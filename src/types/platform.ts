@@ -1,7 +1,7 @@
 export interface Platform {
-    id: string;
+    platform: string;
     name: string;
-    count: number;
+    value: number;
     growth: number;
     change: number;
     icon: string;
