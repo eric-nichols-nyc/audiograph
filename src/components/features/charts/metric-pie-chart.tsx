@@ -42,6 +42,7 @@ export function MetricPieChart({ artistId }: MetricPieChartProps) {
         async function fetchMetrics() {
             try {
                 const formattedMetrics = await getFormattedArtistMetrics(artistId)
+                console.log(formattedMetrics)
                 setMetrics(formattedMetrics)
             } catch (err) {
                 console.error('Error fetching metrics:', err)

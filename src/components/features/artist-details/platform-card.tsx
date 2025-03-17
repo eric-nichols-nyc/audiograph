@@ -35,7 +35,7 @@ export function PlatformCard({ platform }: PlatformCardProps) {
   }
 
   return (
-    <div className="bg-[#1a2747] rounded-lg p-4 flex items-center space-x-3">
+    <div className="bg-[#1a2747] rounded-lg px-4 flex items-center space-x-3">
       <div className="flex-shrink-0">
         <PlatformIcon platform={icon} />
       </div>

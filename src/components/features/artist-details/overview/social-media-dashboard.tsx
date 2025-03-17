@@ -10,7 +10,6 @@ export function SocialMediaDashboard() {
   const data = platformData || []
   const artist = useArtistStore((state) => state.artist)
   const artistId = artist?.id
-
   const totalFans = data.reduce((sum, platform) => sum + platform.count, 0)
 
 
@@ -49,7 +48,7 @@ export function SocialMediaDashboard() {
           <MetricPieChart artistId={artistId} />
 
           {/* Platform cards grid */}
-          <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4">
+          <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {data.map((platform) => (
               <PlatformCard key={platform.id} platform={platform} />
             ))}
