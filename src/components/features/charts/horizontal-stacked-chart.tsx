@@ -9,25 +9,34 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { useCompareArtists } from "@/hooks/queries/use-compare-artists";
 
 export default function HorizontalStackedBarChart() {
-  // Sample data
+  const {
+    artist1Metrics,
+    artist2Metrics,
+    artist1Name,
+    artist2Name,
+    loading,
+    error,
+  } = useCompareArtists();
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   const data = [
     {
-      name: "Selena Gomez",
-      youtube: 400,
-      spotify: 300,
-      deezer: 200,
-      genius: 100,
-      lastfm: 100,
+      name: artist1Name,
+      ...Object.fromEntries(artist1Metrics.map((m) => [m.platform, m.value])),
     },
     {
-      name: "Taylor Swift",
-      youtube: 300,
-      spotify: 400,
-      deezer: 500,
-      genius: 200,
-      lastfm: 100,
+      name: artist2Name,
+      ...Object.fromEntries(artist2Metrics.map((m) => [m.platform, m.value])),
     },
   ];
 
@@ -60,11 +69,15 @@ export default function HorizontalStackedBarChart() {
               labelFormatter={(value) => `Artist: ${value}`}
             />
             <Legend />
-            <Bar dataKey="youtube" name="Youtube" stackId="a" fill="#FF0050" />
-            <Bar dataKey="spotify" name="Spotify" stackId="a" fill="#1DB954" />
-            <Bar dataKey="deezer" name="Deezer" stackId="a" fill="#1DA1F2" />
-            <Bar dataKey="genius" name="Genius" stackId="a" fill="#FFFE00" />
-            <Bar dataKey="lastfm" name="Last.fm" stackId="a" fill="#8B0000" />
+            {artist1Metrics.map((metric) => (
+              <Bar
+                key={metric.platform}
+                dataKey={metric.platform}
+                name={metric.platform}
+                stackId="a"
+                fill={metric.fill}
+              />
+            ))}
           </BarChart>
         </ResponsiveContainer>
       </div>

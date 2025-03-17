@@ -2,7 +2,6 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArtistSelect } from "./artist-select";
-import { FanbaseChart } from "./fanbase-charts";
 import { useEffect, useRef, useState } from "react";
 import { VideoContainer } from "./video-container";
 import { SpotifyPerformance } from "./spotify-performance";
@@ -91,9 +90,8 @@ export function CompareContainer() {
 
       {entity1 && entity2 ? (
         <div className="relative space-y-8">
-          <HorizontalStackedBarChart />
           <div className="rounded-lg overflow-hidden">
-            <FanbaseChart />
+            <HorizontalStackedBarChart />
           </div>
 
           <section className="space-y-8">

@@ -34,10 +34,11 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
 # AudioGraph
 
 > **Note on Mermaid Charts**: This README contains Mermaid diagrams that require proper rendering support. To view these diagrams:
-> 
+>
 > - **GitHub**: Mermaid charts are automatically rendered when viewing the README on GitHub.
 > - **VS Code**: Install the "Markdown Preview Mermaid Support" extension to view diagrams in the preview.
 > - **Other Editors**: Use a Markdown editor that supports Mermaid syntax, or visit [Mermaid Live Editor](https://mermaid.live) to paste and render the diagram code.
@@ -49,29 +50,29 @@ graph TD
     A[AudioGraph] --> B[src]
     A --> C[hooks]
     A --> D[public]
-    
+
     B --> E[app]
     B --> F[components]
     B --> G[lib]
-    
+
     E --> H[layout.tsx]
     E --> I[page.tsx]
     E --> J[globals.css]
     E --> K[(auth)]
     E --> L[(admin)]
-    
+
     K --> M[sign-in/page.tsx]
     K --> N[sign-up/page.tsx]
     K --> O[callback/page.tsx]
-    
+
     L --> P[dashboard/page.tsx]
-    
+
     F --> Q[auth-header.tsx]
     F --> R[theme-toggle.tsx]
     F --> S[ui/]
-    
+
     C --> T[use-auth.ts]
-    
+
     G --> U[utils.ts]
 ```
 
@@ -87,13 +88,13 @@ sequenceDiagram
     participant Middleware
     participant SupabaseAuth
     participant SupabaseDB
-    
+
     %% Route Protection Flow
     User->>Browser: Visit protected route
     Browser->>NextJS: Request page
     NextJS->>Middleware: Process request
     Middleware->>SupabaseAuth: Check session (updateSession)
-    
+
     alt No valid session
         SupabaseAuth-->>Middleware: No session
         Middleware-->>Browser: Redirect to /sign-in
@@ -104,12 +105,12 @@ sequenceDiagram
         NextJS-->>Browser: Return requested page
         Browser-->>User: Display protected content
     end
-    
+
     %% Email/Password Sign-in Flow
     User->>Browser: Enter email/password
     Browser->>NextJS: Submit credentials
     NextJS->>SupabaseAuth: signInWithPassword
-    
+
     alt Authentication Success
         SupabaseAuth-->>NextJS: Session created
         NextJS-->>Browser: Redirect to /admin/dashboard
@@ -119,7 +120,7 @@ sequenceDiagram
         NextJS-->>Browser: Show error message
         Browser-->>User: Display error
     end
-    
+
     %% OAuth Sign-in Flow
     User->>Browser: Click "Sign in with Google"
     Browser->>SupabaseAuth: signInWithOAuth (Google)
@@ -137,10 +138,12 @@ sequenceDiagram
 1. **Middleware Protection**: All routes are processed through middleware that checks for valid authentication sessions.
 
 2. **Authentication Methods**:
+
    - Email/Password: Traditional form-based authentication
    - OAuth: Social login through Google
 
 3. **Session Management**:
+
    - Server-side: Using Supabase SSR helpers to validate sessions
    - Client-side: Using browser cookies to maintain authentication state
 
@@ -162,32 +165,32 @@ flowchart TD
         Callback[Auth Callback]
         Dashboard[Dashboard Page]
     end
-    
+
     subgraph "Authentication"
         useAuth[useAuth Hook]
         SupabaseClient[Supabase Client]
         Session[Auth Session]
     end
-    
+
     subgraph "Server Components"
         Middleware[Next.js Middleware]
         ServerAuth[Server Auth]
     end
-    
+
     Layout --> AuthHeader
     Layout --> ThemeToggle
-    
+
     SignIn --> useAuth
     SignUp --> useAuth
     Dashboard --> useAuth
     Callback --> SupabaseClient
-    
+
     useAuth <--> SupabaseClient
     SupabaseClient <--> Session
-    
+
     Middleware <--> ServerAuth
     ServerAuth <--> SupabaseClient
-    
+
     style useAuth fill:#f9f,stroke:#333,stroke-width:2px
     style SupabaseClient fill:#bbf,stroke:#333,stroke-width:2px
     style Middleware fill:#bfb,stroke:#333,stroke-width:2px
@@ -211,7 +214,7 @@ flowchart TD
     end
 
     B -->|Triggers| C
-    
+
     subgraph "User Actions"
         I[User Action] -->|Triggers| A
         J[Background Job] -->|Triggers| A
@@ -221,4 +224,47 @@ flowchart TD
         E -->|Renders in| K[MetricsAdminPage]
         K -->|Uses Suspense| L[ActivityLogSkeleton]
     end
+```
+
+## Artist Comparison
+
+The application includes a feature to compare metrics between two artists using a horizontal stacked bar chart. This visualization shows the distribution of fanbases across different platforms (YouTube, Spotify, Deezer, Genius, Last.fm) for each artist.
+
+### How it Works
+
+1. **URL Parameters**: The comparison is triggered by URL parameters:
+
+   ```
+   /compare?type=artist&entity1=<artist1_id>&entity2=<artist2_id>
+   ```
+
+2. **Data Flow**:
+
+   - `useCompareArtists` hook fetches metrics and names for both artists
+   - Metrics are fetched using `getFormattedArtistMetrics` server action
+   - Artist names are fetched using `getArtistName` server action
+   - Data is transformed and displayed in a horizontal stacked bar chart
+
+3. **Components**:
+   - `HorizontalStackedBarChart`: Renders the comparison visualization
+   - `useCompareArtists`: Custom hook managing data fetching and state
+   - Server actions in `actions/metrics` and `actions/artists`
+
+### Example Usage
+
+```typescript
+// In a component
+const {
+  artist1Metrics,
+  artist2Metrics,
+  artist1Name,
+  artist2Name,
+  loading,
+  error,
+} = useCompareArtists();
+
+// The chart will automatically display:
+// - Loading state while fetching data
+// - Error state if something goes wrong
+// - Horizontal stacked bars showing platform distribution for each artist
 ```
