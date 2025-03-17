@@ -50,8 +50,8 @@ export function FanbaseChart() {
       <div className="flex flex-col space-y-6">
         {/* Donut Charts */}
         <div className="flex flex-wrap justify-around items-center gap-8">
-          {metrics.artist1 && <ComparePieChart data={metrics.artist1} />}
-          {metrics.artist2 && <ComparePieChart data={metrics.artist2} />}
+          {metrics.artist1 && <ComparePieChart artistId={metrics.artist1[0].artist_id} />}
+          {metrics.artist2 && <ComparePieChart artistId={metrics.artist2[0].artist_id} />}
         </div>
       </div>
     </div>
