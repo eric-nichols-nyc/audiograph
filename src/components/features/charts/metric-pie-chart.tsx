@@ -29,11 +29,11 @@ const chartConfig = {
     }
 } as const
 
-interface ComparePieChartProps {
+interface MetricPieChartProps {
     artistId: string
 }
 
-export function ComparePieChart({ artistId }: ComparePieChartProps) {
+export function MetricPieChart({ artistId }: MetricPieChartProps) {
     const [metrics, setMetrics] = React.useState<FormattedMetric[]>([])
     const [loading, setLoading] = React.useState(true)
     const [error, setError] = React.useState<string | null>(null)

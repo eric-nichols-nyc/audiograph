@@ -1,23 +1,18 @@
 "use client"
 
-import { PieChart, Pie, Cell } from "recharts"
-import { ChartContainer } from "@/components/ui/chart"
 import { PlatformCard } from "@/components/features/artist-details/platform-card"
 import { platformData } from "@/components/features/artist-details/data"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-
+import { MetricPieChart } from "@/components/features/charts/metric-pie-chart"
+import { useArtistStore } from "@/stores/artist-slug-store"
 export function SocialMediaDashboard() {
   // Add null check for platformData
   const data = platformData || []
+  const artist = useArtistStore((state) => state.artist)
+  const artistId = artist?.id
 
   const totalFans = data.reduce((sum, platform) => sum + platform.count, 0)
-  const formattedTotal = (totalFans / 1000000).toFixed(0)
 
-  // Calculate total growth percentage
-  const totalGrowth =
-    data.reduce((sum, platform) => {
-      return sum + (platform.growth || 0) * platform.count
-    }, 0) / totalFans
 
   // Data for the donut chart
   const COLORS = ["#4ade80", "#FF5733", "#60a5fa", "#fbbf24", "#a78bfa"]
@@ -51,40 +46,7 @@ export function SocialMediaDashboard() {
       <CardContent>
         <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Center donut chart */}
-          <div className="lg:col-span-1 flex justify-center items-center">
-            <div className="relative w-64 h-64">
-              <ChartContainer className="w-full h-full" config={{
-                spotify: { color: "#22c55e" },
-                youtube: { color: "#FF5733" },
-                instagram: { color: "#3b82f6" },
-                tiktok: { color: "#f59e0b" },
-                other: { color: "#6b7280" }
-              }}>
-                <PieChart width={250} height={250}>
-                  <Pie
-                    data={pieData}
-                    cx={125}
-                    cy={125}
-                    innerRadius={90}
-                    outerRadius={105}
-                    paddingAngle={2}
-                    dataKey="value"
-                  >
-                    {pieData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                </PieChart>
-              </ChartContainer>
-              <div className="absolute inset-0 flex flex-col justify-center items-center">
-                <div className="text-4xl font-medium">{formattedTotal} M</div>
-                <div className={`text-sm ${totalGrowth >= 0 ? "text-green-500" : "text-red-500"} flex items-center`}>
-                  {totalGrowth >= 0 ? "↑" : "↓"}
-                  {Math.abs(totalGrowth * 100).toFixed(1)}%
-                </div>
-              </div>
-            </div>
-          </div>
+          <MetricPieChart artistId={artistId} />
 
           {/* Platform cards grid */}
           <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4">
