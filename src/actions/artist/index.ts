@@ -5,6 +5,16 @@ import { createBrowserSupabase } from "@/lib/supabase/client";
 import * as redis from '@/lib/redis'
 import { Artist } from "@/types/artist";
 
+interface SimilarArtistResponse {
+    similarity_score: number;
+    similar_artist: {
+        id: string;
+        name: string;
+        image_url: string;
+        genres: string[];
+    };
+}
+
 interface SimilarArtist {
     id: string;
     name: string;
@@ -38,14 +48,14 @@ export async function getArtist(slug: string) {
  * @param {number} limit - Maximum number of similar artists to return (default: 10)
  * @returns {Promise<Array>} - Array of similar artists with similarity data
  */
-export async function getSimilarArtists(artistId: string, limit = 10) {
+export async function getSimilarArtists(artistId: string, limit = 10): Promise<SimilarArtist[]> {
     const cacheKey = `artist:${artistId}:similar:${limit}`;
-    const cachedData = await redis.get<SimilarArtist[]>(cacheKey);
+    // const cachedData = await redis.get<SimilarArtist[]>(cacheKey);
 
-    if (cachedData) {
-        console.log('Cache hit: Returning cached similar artists for artist:', artistId);
-        return cachedData;
-    }
+    // if (cachedData) {
+    //     console.log('Cache hit: Returning cached similar artists for artist:', artistId);
+    //     return cachedData;
+    // }
     console.log('Cache miss: Fetching similar artists from database for artist:', artistId);
     const supabase = createBrowserSupabase();
     const { data, error } = await supabase
@@ -63,6 +73,7 @@ export async function getSimilarArtists(artistId: string, limit = 10) {
         .order('similarity_score', { ascending: false })
         .limit(limit);
 
+    console.log('similar artists = ', data);
     if (error) {
         console.error('Error fetching similar artists:', error);
         return [];
@@ -72,9 +83,12 @@ export async function getSimilarArtists(artistId: string, limit = 10) {
     await redis.set(cacheKey, data, 3600); // Cache for 1 hour
 
     // Transform the result to a more convenient format
-    return data.map(item => ({
-        ...item.similar_artist,
-        similarity_score: item.similarity_score,
+    return (data as unknown as SimilarArtistResponse[]).map((item: SimilarArtistResponse): SimilarArtist => ({
+        id: item.similar_artist.id,
+        name: item.similar_artist.name,
+        image_url: item.similar_artist.image_url,
+        genres: item.similar_artist.genres,
+        similarity_score: item.similarity_score
     }));
 }
 
