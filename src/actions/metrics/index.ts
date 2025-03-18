@@ -11,7 +11,6 @@ export async function getArtistMetrics(id: string) {
         .eq('artist_id', id)
         .order('date', { ascending: false })
 
-
     if (error) {
         console.error('there was an error fetching the artist', error);
         throw new Error(error.message);
@@ -67,86 +66,68 @@ export async function getFormattedArtistMetrics(artistId: string): Promise<Forma
     try {
         const cacheKey = `artist:${artistId}:formatted-metrics`
         const cachedMetrics = await redis.get<FormattedMetric[]>(cacheKey)
+        const CACHE_DURATION = 24 * 60 * 60 // 24 hours in seconds
 
+        // If we have cached data, return it immediately
         if (cachedMetrics) {
             console.log('Cache hit: Returning cached formatted metrics')
             return cachedMetrics
         }
 
         console.log('Cache miss: Fetching and formatting metrics')
-
-        const supabase = await createClient()
-        const { data: metrics, error } = await supabase
-            .from('artist_metrics')
-            .select('*')
-            .eq('artist_id', artistId)
-            .order('created_at', { ascending: false })
-
-        if (error) {
-            throw error
-        }
-
-        if (!metrics || metrics.length === 0) {
-            console.log('No metrics found')
-            return []
-        }
-
-        const platforms = {
-            spotify: [] as { value: number; date: string }[],
-            youtube: [] as { value: number; date: string }[],
-            deezer: [] as { value: number; date: string }[],
-            musicbrainz: [] as { value: number; date: string }[],
-            genius: [] as { value: number; date: string }[]
-        }
-
-        // Group metrics by platform
-        metrics.forEach((metric: ArtistMetric) => {
-            const date = new Date(metric.created_at || '').toISOString()
-
-            // spotify followers
-            if (metric.metric_type === 'followers' && metric.platform === 'spotify') {
-                platforms.spotify.push({ value: metric.value, date })
-            }
-            // youtube subscribers
-            if (metric.metric_type === 'subscribers' && metric.platform === 'youtube') {
-                platforms.youtube.push({ value: metric.value, date })
-            }
-            // deezer followers
-            if (metric.metric_type === 'followers' && metric.platform === 'deezer') {
-                platforms.deezer.push({ value: metric.value, date })
-            }
-            // lastfm listeners
-            if (metric.metric_type === 'monthly_listeners' && metric.platform === 'musicbrainz') {
-                platforms.musicbrainz.push({ value: metric.value, date })
-            }
-            // genius followers
-            if (metric.metric_type === 'followers' && metric.platform === 'genius') {
-                platforms.genius.push({ value: metric.value, date })
-            }
-        })
-
-        // Convert to chart data format with latest values
-        const formattedMetrics = Object.entries(platforms)
-            .filter(([, data]) => data.length > 0)
-            .map(([platform, data]) => {
-                const sortedData = data.sort((a, b) =>
-                    new Date(b.date).getTime() - new Date(a.date).getTime()
-                )
-                const config = chartConfig[platform as keyof typeof chartConfig]
-                return {
-                    platform,
-                    value: sortedData[0].value,
-                    fill: config?.color || '#000000'
-                }
-            })
-
-        // Cache formatted metrics for 1 hour
-        await redis.set(cacheKey, formattedMetrics, 3600)
-        console.log('Cached formatted metrics')
-
-        return formattedMetrics
+        return await fetchAndFormatMetrics(artistId, cacheKey, CACHE_DURATION)
     } catch (err) {
         console.error('Error getting formatted metrics:', err)
         return []
     }
+}
+
+async function fetchAndFormatMetrics(
+    artistId: string,
+    cacheKey: string,
+    cacheDuration: number
+): Promise<FormattedMetric[]> {
+    const supabase = await createClient()
+    const { data: metrics, error } = await supabase
+        .from('artist_metrics')
+        .select(`
+            platform,
+            value
+        `)
+        .eq('artist_id', artistId)
+        .gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
+        .order('created_at', { ascending: false })
+        .limit(5) // We only need one record per platform, and we have 5 platforms max
+
+    if (error) {
+        throw error
+    }
+
+    if (!metrics || metrics.length === 0) {
+        console.log('No metrics found')
+        return []
+    }
+
+    // Get the latest value for each platform
+    const latestMetrics = metrics.reduce((acc, metric) => {
+        if (!acc[metric.platform]) {
+            acc[metric.platform] = metric
+        }
+        return acc
+    }, {} as Record<string, typeof metrics[0]>)
+
+    const formattedMetrics = Object.values(latestMetrics).map(metric => {
+        const config = chartConfig[metric.platform as keyof typeof chartConfig]
+        return {
+            platform: metric.platform,
+            value: metric.value,
+            fill: config?.color || '#000000'
+        }
+    })
+
+    // Cache the formatted metrics
+    await redis.set(cacheKey, formattedMetrics, cacheDuration)
+    console.log('Cached formatted metrics')
+
+    return formattedMetrics
 }
