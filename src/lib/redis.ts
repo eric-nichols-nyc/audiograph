@@ -1,10 +1,10 @@
 import Redis from 'ioredis';
 
-if (!process.env.REDIS_URL) {
-    throw new Error('REDIS_URL is not defined');
+if (!process.env.UPSTASH_REDIS_REST_URL) {
+    throw new Error('UPSTASH_REDIS_REST_URL is not defined');
 }
 
-const redis = new Redis(process.env.REDIS_URL);
+const redis = new Redis(process.env.UPSTASH_REDIS_REST_URL);
 
 export async function get<T>(key: string): Promise<T | null> {
     const value = await redis.get(key);

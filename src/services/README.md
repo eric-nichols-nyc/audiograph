@@ -17,7 +17,7 @@ The Spotify service provides a robust interface for interacting with the Spotify
 ```env
 SPOTIFY_CLIENT_ID=your_spotify_client_id
 SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
-REDIS_URL=redis://localhost:6379
+UPSTASH_REDIS_REST_URL=redis://localhost:6379
 ```
 
 ### Redis Caching
@@ -30,6 +30,7 @@ All API responses are cached using Redis with the following TTLs:
 - Search Results: 1 hour
 
 Cache keys follow this pattern:
+
 - `spotify:access_token` - Spotify API access token
 - `spotify:artist:{id}` - Artist data
 - `spotify:artist:{id}:top-tracks` - Artist's top tracks
@@ -41,32 +42,33 @@ Cache keys follow this pattern:
 ### Basic Usage
 
 ```typescript
-import { SpotifyService } from '@/services/spotify-service';
+import { SpotifyService } from "@/services/spotify-service";
 
 const spotify = new SpotifyService();
 
 // Search for artists
-const artists = await spotify.searchArtist('Queen');
+const artists = await spotify.searchArtist("Queen");
 
 // Get artist details
-const artist = await spotify.getArtist('0TnOYISbd1XYRBk9myaseg');
+const artist = await spotify.getArtist("0TnOYISbd1XYRBk9myaseg");
 
 // Get artist's top tracks
-const tracks = await spotify.getArtistTopTracks('0TnOYISbd1XYRBk9myaseg');
+const tracks = await spotify.getArtistTopTracks("0TnOYISbd1XYRBk9myaseg");
 ```
 
 ### With Formatted Tracks
 
 ```typescript
-import { getTopTracks } from '@/actions/spotify';
+import { getTopTracks } from "@/actions/spotify";
 
 // Get formatted tracks with additional metadata
-const formattedTracks = await getTopTracks('0TnOYISbd1XYRBk9myaseg');
+const formattedTracks = await getTopTracks("0TnOYISbd1XYRBk9myaseg");
 ```
 
 ## Error Handling
 
 The service includes comprehensive error handling:
+
 - Failed API requests throw descriptive errors
 - Cache misses are logged for debugging
 - Network errors are caught and logged
@@ -87,7 +89,7 @@ await redis.set(key, value, ttl);
 await redis.del(key);
 
 // Invalidate by pattern
-await redis.invalidateByPattern('spotify:artist:*');
+await redis.invalidateByPattern("spotify:artist:*");
 ```
 
 ### Benefits Over unstable_cache
@@ -110,7 +112,8 @@ await redis.invalidateByPattern('spotify:artist:*');
 ## Development
 
 To run locally:
+
 1. Install Redis (`brew install redis` on macOS)
 2. Start Redis server (`redis-server`)
 3. Set environment variables
-4. Run the application 
+4. Run the application
