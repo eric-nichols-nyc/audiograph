@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArtistSelect } from "./artist-select";
-import { FanbaseChart } from "./fanbase-charts";
+//import { FanbaseChart } from "./fanbase-charts";
 import { useEffect, useRef, useState } from "react";
 import { VideoContainer } from "./video-container";
 import { SpotifyPerformance } from "./spotify-performance";
