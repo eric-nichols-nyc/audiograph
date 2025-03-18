@@ -94,7 +94,7 @@ export function CompareContainer() {
           <div className="rounded-lg overflow-hidden">
             <HorizontalStackedBarChart />
 
-            <FanbaseChart />
+            {/* <FanbaseChart /> */}
           </div>
 
           <section className="space-y-8">

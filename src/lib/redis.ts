@@ -1,15 +1,22 @@
-import Redis from 'ioredis';
+import { Redis } from '@upstash/redis'
 
-if (!process.env.REDIS_URL) {
-    throw new Error('REDIS_URL is not defined');
+if (!process.env.UPSTASH_REDIS_REST_URL) {
+    throw new Error('UPSTASH_REDIS_REST_URL is not defined');
 }
 
-const redis = new Redis(process.env.REDIS_URL);
+if (!process.env.UPSTASH_REDIS_REST_TOKEN) {
+    throw new Error('UPSTASH_REDIS_REST_TOKEN is not defined');
+}
+
+const redis = new Redis({
+    url: process.env.UPSTASH_REDIS_REST_URL,
+    token: process.env.UPSTASH_REDIS_REST_TOKEN,
+})
 
 export async function get<T>(key: string): Promise<T | null> {
     const value = await redis.get(key);
     if (!value) return null;
-    return JSON.parse(value) as T;
+    return value as T;
 }
 
 export async function set<T>(key: string, value: T, ttl?: number): Promise<void> {
