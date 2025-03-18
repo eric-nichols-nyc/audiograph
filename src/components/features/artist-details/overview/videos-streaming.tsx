@@ -1,38 +1,40 @@
-"use client"
-
+"use client";
+import { use } from "react";
 import { VideoCard } from "@/components/video-card";
 import { getVideosByArtist } from "@/actions/video";
-import { useEffect, useState } from "react";
 import { useArtistStore } from "@/stores/artist-slug-store";
 import { Video } from "@/types/video";
 
+// Cache for storing promises
+const videoCache = new Map<string, Promise<Video[]>>();
+
 export function VideosStreaming() {
-  const artist = useArtistStore(state => state.artist);
-  const [videos, setVideos] = useState<Video[]>([]);
+  const artist = useArtistStore((state) => state.artist);
+  const artistId = artist?.id;
 
-  useEffect(() => {
-    async function fetchVideos() {
-      if (artist?.id) {
-        console.log('Fetching videos for artist:', artist.id);
-        const artistVideos = await getVideosByArtist(artist.id);
-        console.log('Videos fetched:', artistVideos);
-        if (Array.isArray(artistVideos)) {
-          setVideos(artistVideos);
-        }
-      }
-    }
+  if (!artistId) return null;
 
-    fetchVideos();
-  }, [artist?.id]);
+  // Get or create the promise for this artist
+  let videosPromise = videoCache.get(artistId);
+  if (!videosPromise) {
+    videosPromise = new Promise<Video[]>((resolve) => {
+      setTimeout(async () => {
+        const videos = await getVideosByArtist(artistId, 3);
+        resolve(videos);
+      }, 5000);
+    });
+    videoCache.set(artistId, videosPromise);
+  }
+
+  const videos = use(videosPromise);
 
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {videos
-        .filter((video: Video) => video.platform === 'youtube')
+        .filter((video: Video) => video.platform === "youtube")
         .map((video: Video) => (
           <VideoCard key={video.id} video={video} />
         ))}
     </div>
   );
 }
-

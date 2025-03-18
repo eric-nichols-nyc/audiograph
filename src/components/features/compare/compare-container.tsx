@@ -8,7 +8,7 @@ import { VideoContainer } from "./video-container";
 import { SpotifyPerformance } from "./spotify-performance";
 import { cn } from "@/lib/utils";
 import { TopConnections } from "./top-connections";
-import HorizontalStackedBarChart from "../charts/horizontal-stacked-chart";
+import { HorizontalStackedBarChart } from "../charts/horizontal-stacked-chart";
 
 export function CompareContainer() {
   const router = useRouter();

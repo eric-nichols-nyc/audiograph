@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import {
   BarChart,
@@ -11,7 +13,7 @@ import {
 } from "recharts";
 import { useCompareArtists } from "@/hooks/queries/use-compare-artists";
 
-export default function HorizontalStackedBarChart() {
+export function HorizontalStackedBarChart() {
   const {
     artist1Metrics,
     artist2Metrics,

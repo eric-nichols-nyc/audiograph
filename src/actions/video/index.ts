@@ -4,7 +4,7 @@ import * as redis from '@/lib/redis'
 import { Video } from "@/types/video"
 
 
-export const getVideosByArtist = async (artistId: string, limit: number = 6): Promise<Video[]> => {
+export const getVideosByArtist = async (artistId: string, limit: number = 10): Promise<Video[]> => {
     try {
         // Check cache first
         const cacheKey = `artist:${artistId}:videos:${limit}`
@@ -12,53 +12,74 @@ export const getVideosByArtist = async (artistId: string, limit: number = 6): Pr
 
         if (cachedVideos) {
             console.log('Cache hit: Returning cached videos for artist:', artistId)
-            return cachedVideos.slice(0, limit)
+            return cachedVideos
         }
 
         console.log('Cache miss: Fetching videos from database for artist:', artistId)
         const supabase = createBrowserSupabase()
 
-        // First, get video IDs from artist_videos table
-        const { data: artistVideos, error: artistVideosError } = await supabase
+        // Join artist_videos and videos tables to get all data in one query
+        const { data, error } = await supabase
             .from('artist_videos')
-            .select('video_id')
+            .select(`
+                video_id,
+                videos(*)
+            `)
             .eq('artist_id', artistId)
-            .limit(limit)
 
-        if (artistVideosError) {
-            console.error('Error fetching artist videos:', artistVideosError)
+        if (error) {
+            console.error('Error fetching artist videos:', error)
             return []
         }
 
-        if (!artistVideos || artistVideos.length === 0) {
+        if (!data || data.length === 0) {
             return []
         }
 
-        // Extract video IDs
-        const videoIds = artistVideos.map(av => av.video_id)
+        // Extract and format the videos with the right structure
+        const videos = data
+            .filter(item => item.videos) // Filter out any null video references
+            .map(item => {
+                const video = item.videos as unknown as Video;
+                return {
+                    id: video.id,
+                    video_id: video.video_id,
+                    title: video.title,
+                    view_count: video.view_count,
+                    daily_view_count: video.daily_view_count,
+                    thumbnail_url: video.thumbnail_url,
+                    published_at: video.published_at,
+                    platform: video.platform
+                };
+            }) as Video[]
 
-        // Then fetch the actual videos
-        const { data: videos, error: videosError } = await supabase
-            .from('videos')
-            .select('*')
-            .in('id', videoIds)
-            .limit(limit)
+        // Sort by view_count in descending order (highest views first)
+        const sortedVideos = videos.sort((a, b) =>
+            (b.view_count || 0) - (a.view_count || 0)
+        )
 
-        if (videosError) {
-            console.error('Error fetching videos:', videosError)
-            return []
-        }
+        // Take only the requested number of videos
+        const topVideos = sortedVideos.slice(0, limit)
 
-        const fetchedVideos = videos || []
+        // Cache the videos for 30 seconds
+        await redis.set(cacheKey, topVideos, 30)
+        console.log('Cached top videos for artist:', artistId, '(expires in 30 seconds)')
 
-        // Cache the videos - we can use a long TTL since videos won't change
-        // 1 week = 604800 seconds
-        await redis.set(cacheKey, fetchedVideos, 604800)
-        console.log('Cached videos for artist:', artistId)
-
-        return fetchedVideos
+        return topVideos
     } catch (err) {
         console.error('Error in getVideosByArtist:', err)
         return []
+    }
+}
+
+export const clearArtistVideosCache = async (artistId: string, limit: number = 10): Promise<boolean> => {
+    try {
+        const cacheKey = `artist:${artistId}:videos:${limit}`
+        await redis.del(cacheKey)
+        console.log(`Cache cleared for artist: ${artistId} with limit: ${limit}`)
+        return true
+    } catch (err) {
+        console.error('Error clearing artist videos cache:', err)
+        return false
     }
 }

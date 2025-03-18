@@ -1,15 +1,26 @@
-import { SocialMediaDashboard } from '@/components/features/artist-details/overview/social-media-dashboard';
-import { SimilarArtists } from '@/components/features/artist-details/overview/similar-artists';
-import { MusicStreaming } from '@/components/features/artist-details/overview/music-streaming';
-import { VideosStreaming } from '@/components/features/artist-details/overview/videos-streaming';
+"use client";
+import { Suspense } from "react";
+import { SocialMediaDashboard } from "@/components/features/artist-details/overview/social-media-dashboard";
+import { SimilarArtists } from "@/components/features/artist-details/overview/similar-artists";
+import { MusicStreaming } from "@/components/features/artist-details/overview/music-streaming";
+import { VideosStreaming } from "@/components/features/artist-details/overview/videos-streaming";
+import { HeadphonesLoader } from "@/components/headphones-loader";
 
-export default async function ArtistOverviewPage() {
+export default function ArtistOverviewPage() {
   return (
     <>
-      <MusicStreaming />
-      <VideosStreaming />
-      <SocialMediaDashboard />
-      <SimilarArtists />
+      <Suspense fallback={<HeadphonesLoader />}>
+        <MusicStreaming />
+      </Suspense>
+      <Suspense fallback={<HeadphonesLoader />}>
+        <VideosStreaming />
+      </Suspense>
+      <Suspense fallback={<HeadphonesLoader />}>
+        <SocialMediaDashboard />
+      </Suspense>
+      <Suspense fallback={<HeadphonesLoader />}>
+        <SimilarArtists />
+      </Suspense>
     </>
   );
-} 
+}
