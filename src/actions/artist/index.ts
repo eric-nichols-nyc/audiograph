@@ -73,7 +73,6 @@ export async function getSimilarArtists(artistId: string, limit = 10): Promise<S
         .order('similarity_score', { ascending: false })
         .limit(limit);
 
-    console.log('similar artists = ', data);
     if (error) {
         console.error('Error fetching similar artists:', error);
         return [];
