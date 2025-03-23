@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { ArtistSelect } from "./artist-select";
 //import { FanbaseChart } from "./fanbase-charts";
 import { useEffect, useRef, useState } from "react";
@@ -11,25 +11,38 @@ import { TopConnections } from "./top-connections";
 import { HorizontalStackedBarChart } from "../charts/horizontal-stacked-chart";
 
 export function CompareContainer() {
-  const router = useRouter();
   const searchParams = useSearchParams();
-  const [isSticky, setIsSticky] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+
   const stickyRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
+  const [firstArtistId, setFirstArtistId] = useState<string>();
+  const [secondArtistId, setSecondArtistId] = useState<string>();
+  const [isSticky, setIsSticky] = useState(false);
 
-  const entity1 = searchParams.get("entity1");
-  const entity2 = searchParams.get("entity2");
+  // Initialize artist IDs from URL params
+  useEffect(() => {
+    const entity1 = searchParams.get("entity1");
+    const entity2 = searchParams.get("entity2");
+    if (entity1) setFirstArtistId(entity1);
+    if (entity2) setSecondArtistId(entity2);
+  }, [searchParams]);
+
+  // Update URL when artist IDs change
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (firstArtistId) params.set("entity1", firstArtistId);
+    if (secondArtistId) params.set("entity2", secondArtistId);
+    router.replace(`${pathname}?${params.toString()}`);
+  }, [firstArtistId, secondArtistId, pathname, router]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        // When sentinel is not intersecting, the div is sticky
         setIsSticky(!entry.isIntersecting);
       },
-      {
-        threshold: [0, 1],
-        rootMargin: "-24px 0px 0px 0px",
-      }
+      { threshold: [1] }
     );
 
     if (sentinelRef.current) {
@@ -39,29 +52,13 @@ export function CompareContainer() {
     return () => observer.disconnect();
   }, []);
 
-  const handleArtistSelect = (position: 1 | 2, artistId: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("type", "artist");
-    params.set(`entity${position}`, artistId.toLowerCase());
-    router.push(`/compare?${params.toString()}`);
-  };
-
-  const handleArtistClear = (position: 1 | 2) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.delete(`entity${position}`);
-    if (!params.get("entity1") && !params.get("entity2")) {
-      params.delete("type");
-    }
-    router.push(`/compare?${params.toString()}`);
-  };
-
   return (
     <div className="relative flex flex-col gap-6 border border-white/10 rounded-lg p-6 bg-card">
       {/* Background accent */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent rounded-lg pointer-events-none" />
 
       {/* Sentinel div to detect when sticky div hits the top */}
-      <div ref={sentinelRef} className="h-px w-full" />
+      <div ref={sentinelRef} className="absolute top-0 left-0 h-px w-full" />
 
       <div
         ref={stickyRef}
@@ -71,25 +68,29 @@ export function CompareContainer() {
             "bg-background/80 backdrop-blur-sm shadow-lg rounded-lg p-4"
         )}
       >
-        <ArtistSelect
-          position={1}
-          selectedId={entity1 || undefined}
-          otherSelectedId={entity2 || undefined}
-          onSelect={(artistId) => handleArtistSelect(1, artistId)}
-          onClear={() => handleArtistClear(1)}
-          sticky={isSticky}
-        />
-        <ArtistSelect
-          position={2}
-          selectedId={entity2 || undefined}
-          otherSelectedId={entity1 || undefined}
-          onSelect={(artistId) => handleArtistSelect(2, artistId)}
-          onClear={() => handleArtistClear(2)}
-          sticky={isSticky}
-        />
+        <div className="flex-1">
+          <ArtistSelect
+            position={1}
+            selectedId={firstArtistId}
+            otherSelectedId={secondArtistId}
+            onSelect={setFirstArtistId}
+            onClear={() => setFirstArtistId(undefined)}
+            sticky={isSticky}
+          />
+        </div>
+        <div className="flex-1">
+          <ArtistSelect
+            position={2}
+            selectedId={secondArtistId}
+            otherSelectedId={firstArtistId}
+            onSelect={setSecondArtistId}
+            onClear={() => setSecondArtistId(undefined)}
+            sticky={isSticky}
+          />
+        </div>
       </div>
 
-      {entity1 && entity2 ? (
+      {firstArtistId && secondArtistId ? (
         <div className="relative space-y-8">
           <div className="rounded-lg overflow-hidden">
             <HorizontalStackedBarChart />
