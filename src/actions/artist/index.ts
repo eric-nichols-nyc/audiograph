@@ -50,12 +50,12 @@ export async function getArtist(slug: string) {
  */
 export async function getSimilarArtists(artistId: string, limit = 10): Promise<SimilarArtist[]> {
     const cacheKey = `artist:${artistId}:similar:${limit}`;
-    // const cachedData = await redis.get<SimilarArtist[]>(cacheKey);
+    const cachedData = await redis.get<SimilarArtist[]>(cacheKey);
 
-    // if (cachedData) {
-    //     console.log('Cache hit: Returning cached similar artists for artist:', artistId);
-    //     return cachedData;
-    // }
+    if (cachedData) {
+        console.log('Cache hit: Returning cached similar artists for artist:', artistId);
+        return cachedData;
+    }
     console.log('Cache miss: Fetching similar artists from database for artist:', artistId);
     const supabase = createBrowserSupabase();
     const { data, error } = await supabase
