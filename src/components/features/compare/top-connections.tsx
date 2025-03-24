@@ -1,9 +1,10 @@
-'use client';
+"use client";
 
 import { Card } from "@/components/ui/card";
 import { getSimilarArtists } from "@/actions/artist";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { useIsMounted } from "@/hooks/use-ismounted";
 
 interface SimilarArtist {
   id: string;
@@ -15,40 +16,54 @@ interface SimilarArtist {
 }
 
 export function TopConnections() {
-  const [artist1Connections, setArtist1Connections] = useState<SimilarArtist[]>([]);
-  const [artist2Connections, setArtist2Connections] = useState<SimilarArtist[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const searchParams = useSearchParams();
-
-  const entity1 = searchParams.get('entity1');
-  const entity2 = searchParams.get('entity2');
+  const entity1 = searchParams.get("entity1");
+  const entity2 = searchParams.get("entity2");
+  const [artist1Connections, setArtist1Connections] = useState<SimilarArtist[]>(
+    []
+  );
+  const [artist2Connections, setArtist2Connections] = useState<SimilarArtist[]>(
+    []
+  );
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const isMounted = useIsMounted();
 
   useEffect(() => {
-    const fetchConnections = async () => {
-      if (!entity1 && !entity2) return;
+    // Add this check to ensure we have at least one ID
+    if (!entity1 && !entity2) {
+      setIsLoading(false);
+      return;
+    }
 
+    const fetchConnections = async () => {
       setIsLoading(true);
       setError(null);
 
       try {
         const [artist1Similar, artist2Similar] = await Promise.all([
           entity1 ? getSimilarArtists(entity1, 5) : Promise.resolve([]),
-          entity2 ? getSimilarArtists(entity2, 5) : Promise.resolve([])
+          entity2 ? getSimilarArtists(entity2, 5) : Promise.resolve([]),
         ]);
 
-        setArtist1Connections(artist1Similar);
-        setArtist2Connections(artist2Similar);
+        if (isMounted()) {
+          setArtist1Connections(artist1Similar);
+          setArtist2Connections(artist2Similar);
+        }
       } catch (err) {
-        console.error('Error fetching connections:', err);
-        setError('Failed to load artist connections');
+        if (isMounted()) {
+          console.error("Error fetching connections:", err);
+          setError("Failed to load artist connections");
+        }
       } finally {
-        setIsLoading(false);
+        if (isMounted()) {
+          setIsLoading(false);
+        }
       }
     };
 
     fetchConnections();
-  }, [entity1, entity2]);
+  }, [entity1, entity2, isMounted]);
 
   const renderConnections = (connections: SimilarArtist[]) => {
     if (isLoading) {
@@ -101,7 +116,9 @@ export function TopConnections() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {entity1 && (
           <div className="space-y-4">
-            <h3 className="text-lg font-medium text-blue-200/80">Top Connections</h3>
+            <h3 className="text-lg font-medium text-blue-200/80">
+              Top Connections
+            </h3>
             <div className="p-4 rounded-lg bg-blue-500/5 border border-blue-500/10">
               {renderConnections(artist1Connections)}
             </div>
@@ -109,7 +126,9 @@ export function TopConnections() {
         )}
         {entity2 && (
           <div className="space-y-4">
-            <h3 className="text-lg font-medium text-blue-200/80">Top Connections</h3>
+            <h3 className="text-lg font-medium text-blue-200/80">
+              Top Connections
+            </h3>
             <div className="p-4 rounded-lg bg-blue-500/5 border border-blue-500/10">
               {renderConnections(artist2Connections)}
             </div>
@@ -118,4 +137,4 @@ export function TopConnections() {
       </div>
     </Card>
   );
-} 
+}
