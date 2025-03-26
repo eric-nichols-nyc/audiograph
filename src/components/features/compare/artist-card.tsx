@@ -18,9 +18,15 @@ export function ArtistCard({
   compact = false,
   position = 1,
 }: ArtistCardProps) {
+  // Function to get flag image path
+  const getFlagPath = (country: string | null) => {
+    if (!country) return null;
+    return `/images/flags/${country.toLowerCase()}.svg`;
+  };
+
   if (!artist) {
     return (
-      <Card className="w-full">
+      <Card className="w-full text-white">
         <CardContent className="p-6">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-4">
@@ -91,21 +97,34 @@ export function ArtistCard({
                 className="object-cover"
               />
             </div>
-            <Button variant="secondary" onClick={onChangeClick}>
-              Change
-            </Button>
           </div>
           <div
             className={cn("flex flex-col gap-1", position === 2 && "items-end")}
           >
-            <div className="flex items-center gap-2">
-              <span className="text-lg font-semibold">{artist.name}</span>
-              {artist.rank === 1 && (
-                <Crown className="h-4 w-4 text-yellow-500" />
+            <div
+              className={cn(
+                "flex flex-col gap-2 text-sm",
+                position === 2 ? "items-start" : "items-end"
               )}
-            </div>
-            <div className="flex flex-col items-center gap-2 text-sm text-muted-foreground">
-              <span>{artist.country}</span>
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-lg font-semibold">{artist.name}</span>
+                {artist.rank === 1 && (
+                  <Crown className="h-4 w-4 text-yellow-500" />
+                )}
+              </div>
+              {artist.country && (
+                <div className="relative h-4 w-6">
+                  <Image
+                    src={
+                      getFlagPath(artist.country) || "/images/flags/unknown.svg"
+                    }
+                    alt={`${artist.country} flag`}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              )}
               {artist.rank && <span>Rank #{artist.rank}</span>}
             </div>
           </div>
