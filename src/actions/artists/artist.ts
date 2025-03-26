@@ -1,35 +1,36 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { actionClient } from "@/lib/safe-action";
 
-export const getArtists = actionClient
-  .action(async () => {
-    const supabase = await createClient();
-    
-    // Add console.log for debugging
-    console.log('Fetching artists...');
-    
-    const { data, error } = await supabase
-      .from("artists")
-      .select(`*`);
-    
-    // console.log('Artists data:', data); // Debug log
-    
-    if (error) {
-      console.error("Error fetching artists:", error);
-      throw error;
-    }
+interface GetArtistsParams {
+  slug?: string;
+}
 
-    return { 
-      data: Array.isArray(data) ? data : [] 
-    };
-  });
+export async function getArtists({ slug }: GetArtistsParams = {}) {
+  const supabase = await createClient();
 
+  let query = supabase.from("artists").select(`*`);
+
+  // If slug is provided, filter by it
+  if (slug) {
+    query = query.eq('slug', slug);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    console.error("Error fetching artists:", error);
+    throw error;
+  }
+
+  return {
+    data: Array.isArray(data) ? data : []
+  };
+}
 
 export async function getArtistBySlug(slug: string) {
   const supabase = await createClient();
-  
+
   // Get basic artist info
   const { data: artist } = await supabase
     .from('artists')

@@ -3,7 +3,6 @@
 // hooks/use-artists.ts
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getArtists } from '@/actions/artists/artist';
-import { Artist } from '@/types/artist';
 
 export function useArtists() {
   const queryClient = useQueryClient();
@@ -12,7 +11,8 @@ export function useArtists() {
     queryKey: ['artists'],
     queryFn: async () => {
       try {
-        return await getArtists({});
+        const response = await getArtists({});
+        return response;
       } catch (error) {
         console.error('Error fetching artists:', error);
         throw error;
@@ -21,8 +21,7 @@ export function useArtists() {
   });
 
   // Safely extract artists data
-  const artistsData = query?.data?.data?.data;
-  const artists = Array.isArray(artistsData) ? artistsData as Artist[] : [];
+  const artists = Array.isArray(query.data?.data) ? query.data.data : [];
 
   return {
     data: artists,

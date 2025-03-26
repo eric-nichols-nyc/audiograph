@@ -13,6 +13,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Inter } from "next/font/google";
 import { YouTubePlayer } from "@/components/features/youtube/youtube-player";
+import { Providers } from "./providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -60,20 +61,22 @@ export default async function RootLayout({
           inter.className
         )}
       >
-        <QueryProvider dehydratedState={dehydrate(queryClient)}>
-          <HydrationBoundary state={dehydrate(queryClient)}>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="dark"
-              enableSystem
-              disableTransitionOnChange
-            >
-              {children}
-              <Toaster />
-              <YouTubePlayer />
-            </ThemeProvider>
-          </HydrationBoundary>
-        </QueryProvider>
+        <Providers>
+          <QueryProvider dehydratedState={dehydrate(queryClient)}>
+            <HydrationBoundary state={dehydrate(queryClient)}>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="dark"
+                enableSystem
+                disableTransitionOnChange
+              >
+                {children}
+                <Toaster />
+                <YouTubePlayer />
+              </ThemeProvider>
+            </HydrationBoundary>
+          </QueryProvider>
+        </Providers>
       </body>
     </html>
   );
