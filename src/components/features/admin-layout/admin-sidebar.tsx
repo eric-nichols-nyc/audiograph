@@ -2,8 +2,6 @@
 
 import React, { useCallback } from "react";
 import Link from "next/link";
-import { Notifications } from "./notifications"
-import { UserProfile } from "./user-profile";
 import { usePathname } from "next/navigation";
 import {
   Users,
@@ -13,7 +11,6 @@ import {
   Search,
   ChevronLeft,
   Compass,
-  LogOut
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -80,8 +77,10 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
             : "w-16 bg-blue-50 dark:bg-blue-950"
         )}
       >
-
-        <Button className="w-full justify-start text-2xl font-bold" variant="ghost">
+        <Button
+          className="w-full justify-start text-2xl font-bold"
+          variant="ghost"
+        >
           <div className="flex items-center gap-4">
             <div>🎧</div>
             <div>Audiograph</div>
@@ -94,7 +93,6 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
           </Button>
         </Link>
         <div className={cn("space-y-4", open ? "p-4" : "p-2")}>
-
           {open ? (
             <Accordion type="single" collapsible className="border-none">
               <AccordionItem value="discover" className="border-none">
@@ -155,21 +153,6 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
             </AccordionContent>
           </AccordionItem>
         </Accordion>
-
-        <div className="mt-auto p-3 absolute bottom-0 w-full">
-          <Notifications />
-
-          <UserProfile />
-          <button
-            className={cn(
-              "w-full flex items-center gap-3 p-2 rounded-md hover:bg-secondary",
-              !open && "justify-center"
-            )}
-          >
-            <LogOut className="h-5 w-5" />
-            {open && <span>Log Out</span>}
-          </button>
-        </div>
       </aside>
 
       {open && onClose && (

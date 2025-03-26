@@ -16,9 +16,11 @@ export function ArtistsList() {
     const nameParts = artist.name.toLowerCase().split(" ");
 
     // Check if any part of the name starts with the query
-    return nameParts.some(part => part.startsWith(query)) ||
+    return (
+      nameParts.some((part) => part.startsWith(query)) ||
       // Also check if full name contains the query for partial matches
-      artist.name.toLowerCase().includes(query);
+      artist.name.toLowerCase().includes(query)
+    );
   });
 
   if (isLoading) {
@@ -52,7 +54,7 @@ export function ArtistsList() {
           placeholder="Search artists..."
         />
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 place-items-center gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 place-items-center gap-3">
         {filteredArtists?.map((artist) => (
           <ArtistListItem key={artist.id} artist={artist} />
         ))}

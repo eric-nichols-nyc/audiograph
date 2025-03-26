@@ -1,17 +1,18 @@
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col items-center">
       <main className="flex-1">
         <section className="space-y-6 pb-8 pt-6 md:pb-12 md:pt-10 lg:py-32 bg-gradient-to-b from-background to-secondary/20">
           <div className="container flex max-w-[64rem] flex-col items-center gap-4 text-center">
-            <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl md:text-6xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl md:text-6xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent p-3">
               Music Analytics Reimagined
             </h1>
             <p className="max-w-[42rem] leading-normal text-muted-foreground sm:text-xl sm:leading-8">
-              Track artist performance, discover trends, and gain insights with our powerful music analytics platform
+              Track artist performance, discover trends, and gain insights with
+              our powerful music analytics platform
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link href="/artists">
@@ -28,7 +29,8 @@ export default function Home() {
               <div className="space-y-2">
                 <h3 className="font-bold">Artist Analytics</h3>
                 <p className="text-sm text-muted-foreground">
-                  Comprehensive performance metrics for artists across all major platforms
+                  Comprehensive performance metrics for artists across all major
+                  platforms
                 </p>
               </div>
             </div>
@@ -44,7 +46,8 @@ export default function Home() {
               <div className="space-y-2">
                 <h3 className="font-bold">Audience Insights</h3>
                 <p className="text-sm text-muted-foreground">
-                  Understand audience demographics and engagement across platforms
+                  Understand audience demographics and engagement across
+                  platforms
                 </p>
               </div>
             </div>
