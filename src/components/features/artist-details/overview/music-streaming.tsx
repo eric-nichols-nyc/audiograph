@@ -6,33 +6,36 @@ import { Bookmark } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollableGallery } from "@/components/features/scrollable-gallery/scrollablegallery";
 import { useArtistStore } from "@/stores/artist-slug-store";
-import { useQuery } from "@tanstack/react-query";
-import { getArtistTopTracks } from "@/actions/spotify";
 import { HeadphonesLoader } from "@/components/headphones-loader";
+import { useQuery } from "@apollo/client";
+import {
+  GET_ARTIST_TRACKS,
+  GetArtistTracksData,
+  GetArtistTracksVars,
+} from "@/graphql/queries/tracks";
 
 export function MusicStreaming() {
   const [saved, setSaved] = useState(false);
   const artist = useArtistStore((state) => state.artist);
 
-  const spotifyId = artist?.artist_platform_ids?.find(
-    (platform) => platform.platform === "spotify"
-  )?.platform_id;
-
   const {
-    data: tracks,
-    isLoading,
+    data,
+    loading: isLoading,
     error,
-  } = useQuery({
-    queryKey: ["artistTopTracks", spotifyId],
-    queryFn: async () => {
-      if (!spotifyId) return null;
-      const result = await getArtistTopTracks(spotifyId);
-      return result;
-    },
-    enabled: !!spotifyId,
-    staleTime: 1000 * 60 * 60,
-    gcTime: 1000 * 60 * 60 * 2,
+  } = useQuery<GetArtistTracksData, GetArtistTracksVars>(GET_ARTIST_TRACKS, {
+    variables: { id: artist?.id || "" },
+    skip: !artist?.id,
   });
+
+  // Transform tracks data to match the expected format
+  const tracks =
+    data?.artist?.topTracks.map((track) => ({
+      id: track.id,
+      title: track.title,
+      artist: data.artist.name,
+      streams: track.stream_count_total,
+      image: track.thumbnail_url,
+    })) || [];
 
   return (
     <div className="w-full h-[600px]">

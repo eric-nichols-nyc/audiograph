@@ -12,10 +12,20 @@ const typeDefs = gql`
     platform: String!
   }
 
+  type Track {
+    id: ID!
+    title: String!
+    thumbnail_url: String!
+    stream_count_total: String!
+    platform: String!
+    track_id: String!
+  }
+
   type Artist {
     id: ID!
     name: String!
     metrics: [Metric!]
+    topTracks: [Track!]
   }
 
   type Query {
@@ -46,9 +56,26 @@ const resolvers = {
 
       if (metricsError) throw new Error('Failed to fetch metrics');
 
+      // Get top tracks
+      const { data: artistTracks, error: tracksError } = await supabase
+        .from('artist_tracks')
+        .select(`
+          *,
+          track:tracks(*)
+        `)
+        .eq('artist_id', id)
+        .order('stream_count_total', { foreignTable: 'tracks', ascending: false })
+        .limit(10);
+
+      if (tracksError) throw new Error('Failed to fetch tracks');
+
+      // Map the joined data to our Track type
+      const topTracks = artistTracks?.map(at => at.track) || [];
+
       return {
         ...artist,
         metrics: metrics || [],
+        topTracks,
       };
     },
   },
