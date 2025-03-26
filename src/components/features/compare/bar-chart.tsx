@@ -48,7 +48,7 @@ export function CompareBarChart({
   ) satisfies ChartConfig;
 
   return (
-    <Card className="w-full border border-accent-foreground">
+    <Card className="w-full border border-accent-background">
       {title && (
         <CardHeader>
           <CardTitle>{title}</CardTitle>
