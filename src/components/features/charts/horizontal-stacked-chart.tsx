@@ -43,7 +43,7 @@ export function HorizontalStackedBarChart() {
   ];
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col">
       <h2 className="text-xl font-bold mb-4">Fanbase Distribution</h2>
       <div className="w-full h-96">
         <ResponsiveContainer width="100%" height="100%">
