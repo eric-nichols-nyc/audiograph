@@ -1,44 +1,45 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { ChevronRight } from 'lucide-react'
-import { useQuery } from '@tanstack/react-query'
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { ChevronRight } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 
 export function ArtistNavbar() {
-  const pathname = usePathname()
-  const slug = pathname.split('/')[2] // Get the slug from the URL
+  const pathname = usePathname();
+  const slug = pathname.split("/")[2]; // Get the slug from the URL
 
   const { data: artist, isLoading } = useQuery({
-    queryKey: ['artist', slug],
+    queryKey: ["artist", slug],
     queryFn: async () => {
       const response = await fetch(`/api/artists/${slug}`);
       if (!response.ok) {
-        throw new Error('Failed to fetch artist');
+        throw new Error("Failed to fetch artist");
       }
       return response.json();
     },
-    enabled: !!slug
+    enabled: !!slug,
   });
 
-  const basePath = pathname.split('/').slice(0, 3).join('/')
+  const basePath = pathname.split("/").slice(0, 3).join("/");
 
   const navItems = [
-    { label: 'Overview', href: `${basePath}/overview` },
-    { label: 'Audience', href: `${basePath}/audience` },
-    { label: 'Spotify', href: `${basePath}/spotify` },
-    { label: 'Youtube', href: `${basePath}/youtube` },
-    { label: 'Deezer', href: `${basePath}/deezer` },
-  ]
+    { label: "Overview", href: `${basePath}/overview` },
+    { label: "Audience", href: `${basePath}/audience` },
+    { label: "Spotify", href: `${basePath}/spotify` },
+    { label: "Youtube", href: `${basePath}/youtube` },
+    { label: "Deezer", href: `${basePath}/deezer` },
+  ];
 
   // Get first letter of artist name for fallback
-  const artistInitial = artist?.name?.charAt(0) || 'A'
+  const artistInitial = artist?.name?.charAt(0) || "A";
 
   // Format genres for display
-  const displayGenres = artist?.genres?.slice(0, 2).join(', ') || 'Unknown Genre'
+  const displayGenres =
+    artist?.genres?.slice(0, 2).join(", ") || "Unknown Genre";
 
   if (isLoading) {
     return (
@@ -51,7 +52,7 @@ export function ArtistNavbar() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -59,12 +60,19 @@ export function ArtistNavbar() {
       <div className="flex ">
         <div className="flex items-center gap-4 px-6 py-3">
           <Avatar className="w-12 h-12">
-            <AvatarImage className="w-12 h-12" src={artist?.image_url || "https://github.com/shadcn.png"} />
-            <AvatarFallback className="w-12 h-12">{artistInitial}</AvatarFallback>
+            <AvatarImage
+              className="w-12 h-12"
+              src={artist?.image_url || "https://github.com/shadcn.png"}
+            />
+            <AvatarFallback className="w-12 h-12">
+              {artistInitial}
+            </AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
-              <span className="font-medium text-foreground text-lg">{artist?.name || "Artist Name"}</span>
+              <span className="font-medium text-foreground text-lg">
+                {artist?.name || "Artist Name"}
+              </span>
               {artist?.rank && (
                 <Badge variant="outline" className="text-xs">
                   #: {artist.rank}
@@ -72,9 +80,7 @@ export function ArtistNavbar() {
               )}
             </div>
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              {artist?.country && (
-                <span>{artist.country}</span>
-              )}
+              {artist?.country && <span>{artist.country}</span>}
               {artist?.genres && artist.genres.length > 0 && (
                 <>
                   <span className="text-muted-foreground">•</span>
@@ -87,20 +93,23 @@ export function ArtistNavbar() {
         <nav className="flex justify-between gap-6 px-6 pb-2 w-full">
           {navItems.map((item) => {
             // Check if this nav item matches the current path
-            const isActive = pathname.includes(item.href.split('/').pop() || '')
+            const isActive = pathname.includes(
+              item.href.split("/").pop() || ""
+            );
 
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`text-sm font-medium pb-2 ${isActive
-                  ? 'text-primary border-b-2 border-primary'
-                  : 'text-muted-foreground hover:text-foreground'
-                  }`}
+                className={`text-sm font-medium p-2 ${
+                  isActive
+                    ? "text-primary/90 bg-primary/20"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
               >
                 {item.label}
               </Link>
-            )
+            );
           })}
           <div className="flex items-center ml-auto">
             <Link
@@ -116,5 +125,5 @@ export function ArtistNavbar() {
         </nav>
       </div>
     </div>
-  )
-} 
+  );
+}
