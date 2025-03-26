@@ -12,6 +12,7 @@ import { getArtists } from "@/actions/artists/artist";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Inter } from "next/font/google";
+import { YouTubePlayer } from "@/components/features/youtube/youtube-player";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,8 +43,8 @@ export default async function RootLayout({
 
   // Prefetch artists data
   await queryClient.prefetchQuery({
-    queryKey: ['artists'],
-    queryFn: async () => await getArtists({})
+    queryKey: ["artists"],
+    queryFn: async () => await getArtists({}),
   });
 
   return (
@@ -51,7 +52,14 @@ export default async function RootLayout({
       <head>
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
       </head>
-      <body className={cn("min-h-screen bg-background font-sans antialiased", geistSans.variable, geistMono.variable, inter.className)}>
+      <body
+        className={cn(
+          "min-h-screen bg-background font-sans antialiased",
+          geistSans.variable,
+          geistMono.variable,
+          inter.className
+        )}
+      >
         <QueryProvider dehydratedState={dehydrate(queryClient)}>
           <HydrationBoundary state={dehydrate(queryClient)}>
             <ThemeProvider
@@ -62,6 +70,7 @@ export default async function RootLayout({
             >
               {children}
               <Toaster />
+              <YouTubePlayer />
             </ThemeProvider>
           </HydrationBoundary>
         </QueryProvider>
