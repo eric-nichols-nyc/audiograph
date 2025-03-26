@@ -8,6 +8,7 @@ This document outlines the steps to migrate the track-related features from REST
 
 - `tracks` table: Contains track information (title, platform ID, thumbnail, stream counts)
 - `artist_tracks` table: Junction table linking artists to tracks with additional metadata
+- `artist_videos` table: Contains video information and links to artists
 
 ## Migration Steps
 
@@ -93,3 +94,61 @@ query GetArtistTracks($id: ID!) {
    - Verify error handling works
    - Verify track data displays correctly
    - Verify image thumbnails load properly
+
+### Step 3: Add Video Support to GraphQL
+
+1. Add Video type to schema:
+
+```graphql
+type Video {
+  id: ID!
+  title: String!
+  views: Int!
+  thumbnail: String!
+  url: String!
+  platform: String!
+}
+
+extend type Artist {
+  videos: [Video!]
+}
+```
+
+2. Update resolver to fetch videos:
+
+```typescript
+// In resolver
+const { data: videos } = await supabase
+  .from("artist_videos")
+  .select("*")
+  .eq("artist_id", id)
+  .order("views", { ascending: false })
+  .limit(10);
+```
+
+3. Create video-specific GraphQL query file:
+
+```typescript
+// In src/graphql/queries/videos.ts
+query GetArtistVideos($id: ID!) {
+  artist(id: $id) {
+    id
+    name
+    videos {
+      id
+      title
+      views
+      thumbnail
+      url
+      platform
+    }
+  }
+}
+```
+
+### Step 4: Update VideosStreaming Component
+
+1. Move from REST to GraphQL query
+2. Update component to handle GraphQL data
+3. Maintain existing UI and functionality
+4. Test the migration
