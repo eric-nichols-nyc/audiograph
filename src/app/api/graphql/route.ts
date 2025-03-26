@@ -72,6 +72,7 @@ const typeDefs = gql`
     id: ID!
     name: String!
     similarity_score: Float!
+    image_url: String
   }
 
   type Artist {
@@ -152,21 +153,46 @@ const resolvers = {
 
       if (videosError) throw new Error('Failed to fetch videos');
 
+      interface SimilarArtistResult {
+        similarity_score: number;
+        similar_artist: {
+          id: string;
+          name: string;
+          image_url?: string;
+        };
+      }
+
       // Get similar artists
       const { data: similarArtists, error: similarArtistsError } = await supabase
         .from('similar_artists')
         .select(`
-          similar_artist:artists!inner(
+          similarity_score,
+          similar_artist:artists!similar_artists_artist2_id_fkey (
             id,
-            name
-          ),
-          similarity_score
+            name,
+            image_url
+          )
         `)
-        .eq('artist_id', id)
+        .eq('artist1_id', id)
         .order('similarity_score', { ascending: false })
         .limit(5);
 
-      if (similarArtistsError) throw new Error('Failed to fetch similar artists');
+      console.log('DEBUG - Raw similar artists query result:', JSON.stringify(similarArtists, null, 2));
+
+      if (similarArtistsError) {
+        console.error('Similar artists error:', similarArtistsError);
+        throw new Error('Failed to fetch similar artists');
+      }
+
+      // Map similar artists data
+      const mappedSimilarArtists = ((similarArtists || []) as unknown as SimilarArtistResult[]).map(sa => ({
+        id: sa.similar_artist.id || '',
+        name: sa.similar_artist.name || '',
+        image_url: sa.similar_artist.image_url || null,
+        similarity_score: sa.similarity_score || 0
+      }));
+
+      console.log('Mapped similar artists:', JSON.stringify(mappedSimilarArtists, null, 2));
 
       // Map the joined data
       const topTracks = artistTracks?.map(at => at.track) || [];
@@ -176,13 +202,6 @@ const resolvers = {
           const viewCountB = parseInt(b.view_count) || 0;
           return viewCountB - viewCountA;
         }) || [];
-
-      // Map similar artists data
-      const mappedSimilarArtists = (similarArtists || []).map(sa => ({
-        id: sa.similar_artist[0].id,
-        name: sa.similar_artist[0].name,
-        similarity_score: sa.similarity_score
-      }));
 
       const result: ArtistData = {
         ...artist,

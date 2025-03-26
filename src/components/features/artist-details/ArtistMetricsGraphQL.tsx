@@ -26,6 +26,8 @@ export function ArtistMetricsGraphQL({ artistId }: ArtistMetricsProps) {
     variables: { id: artistId },
   });
 
+  console.log("metrics data", data);
+
   if (loading) return <LoadingSpinner />;
   if (error) return <div>Error: {error.message}</div>;
   if (!data?.artist) return <div>No artist found</div>;
