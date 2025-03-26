@@ -114,18 +114,41 @@ export function ArtistCard({
                 )}
               </div>
               {artist.country && (
-                <div className="relative h-4 w-6">
-                  <Image
-                    src={
-                      getFlagPath(artist.country) || "/images/flags/unknown.svg"
-                    }
-                    alt={`${artist.country} flag`}
-                    fill
-                    className="object-cover"
-                  />
+                <div
+                  className={cn(
+                    "flex items-center gap-2",
+                    position === 2 && "flex-row-reverse"
+                  )}
+                >
+                  <span className="text-sm text-muted-foreground">
+                    {artist.country}
+                  </span>
+                  <div className="relative h-4 w-6">
+                    <Image
+                      src={
+                        getFlagPath(artist.country) ||
+                        "/images/flags/unknown.svg"
+                      }
+                      alt={`${artist.country} flag`}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
                 </div>
               )}
-              {artist.rank && <span>Rank #{artist.rank}</span>}
+              {artist.rank && (
+                <div
+                  className={cn(
+                    "flex items-baseline gap-1 mt-3",
+                    position === 2 && "flex-row-reverse"
+                  )}
+                >
+                  <span className="text-sm text-muted-foreground">
+                    Overall Rank
+                  </span>
+                  <span className="text-2xl font-bold">{artist.rank}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
