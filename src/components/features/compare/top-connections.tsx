@@ -5,6 +5,7 @@ import { getSimilarArtists } from "@/actions/artist";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useIsMounted } from "@/hooks/use-ismounted";
+import Image from "next/image";
 
 interface SimilarArtist {
   id: string;
@@ -30,7 +31,6 @@ export function TopConnections() {
   const isMounted = useIsMounted();
 
   useEffect(() => {
-    // Add this check to ensure we have at least one ID
     if (!entity1 && !entity2) {
       setIsLoading(false);
       return;
@@ -65,7 +65,10 @@ export function TopConnections() {
     fetchConnections();
   }, [entity1, entity2, isMounted]);
 
+  // log the artist1Connections and artist2Connections
+
   const renderConnections = (connections: SimilarArtist[]) => {
+    console.log("renderConnections", connections);
     if (isLoading) {
       return (
         <div className="animate-pulse space-y-3">
@@ -97,12 +100,17 @@ export function TopConnections() {
         {connections.map((artist) => (
           <div
             key={artist.id}
-            className="flex items-center justify-between p-3 rounded-lg bg-blue-500/5 border border-blue-500/10 hover:bg-blue-500/10 transition-colors"
+            className="flex items-center gap-3 p-3 rounded-lg bg-blue-500/5 border border-blue-500/10 hover:bg-blue-500/10 transition-colors"
           >
+            <div className="relative h-10 w-10 overflow-hidden rounded-full">
+              <Image
+                src={artist.image_url || "/images/svgs/avatar.svg"}
+                alt={artist.name}
+                fill
+                className="object-cover"
+              />
+            </div>
             <span className="font-medium text-blue-200/90">{artist.name}</span>
-            <span className="text-sm text-blue-200/60">
-              {(artist.similarity_score * 100).toFixed(1)}% match
-            </span>
           </div>
         ))}
       </div>

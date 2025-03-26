@@ -56,19 +56,20 @@ export async function getSimilarArtists(artistId: string, limit = 10): Promise<S
         console.log('Cache hit: Returning cached similar artists for artist:', artistId);
         return cachedData;
     }
+
     console.log('Cache miss: Fetching similar artists from database for artist:', artistId);
     const supabase = createBrowserSupabase();
     const { data, error } = await supabase
         .from('artist_similarities')
         .select(`
-        similarity_score,
-        similar_artist:artist2_id(
-          id, 
-          name,
-          image_url,
-          genres
-        )
-      `)
+            similarity_score,
+            similar_artist:artists!artist_similarities_artist2_id_fkey (
+                id,
+                name,
+                image_url,
+                genres
+            )
+        `)
         .eq('artist1_id', artistId)
         .order('similarity_score', { ascending: false })
         .limit(limit);
@@ -77,9 +78,6 @@ export async function getSimilarArtists(artistId: string, limit = 10): Promise<S
         console.error('Error fetching similar artists:', error);
         return [];
     }
-
-    // Cache the result
-    await redis.set(cacheKey, data, 3600); // Cache for 1 hour
 
     // Transform the result to a more convenient format
     return (data as unknown as SimilarArtistResponse[]).map((item: SimilarArtistResponse): SimilarArtist => ({
