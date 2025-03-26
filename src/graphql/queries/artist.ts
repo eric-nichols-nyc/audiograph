@@ -17,12 +17,16 @@ export const ARTIST_METRICS_FRAGMENT = gql`
 // Fragment for track fields
 export const ARTIST_TRACKS_FRAGMENT = gql`
   fragment ArtistTracks on Artist {
-    tracks {
+    topTracks {
       id
       title
-      plays
+      artist
+      streams
       image
+    }
+    platformIds {
       platform
+      platformId
     }
   }
 `;

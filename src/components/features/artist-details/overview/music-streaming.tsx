@@ -26,8 +26,6 @@ export function MusicStreaming() {
     queryKey: ["artistTopTracks", spotifyId],
     queryFn: async () => {
       if (!spotifyId) return null;
-      // Add artificial delay to test loading state
-      await new Promise((resolve) => setTimeout(resolve, 5000));
       const result = await getArtistTopTracks(spotifyId);
       return result;
     },
@@ -108,7 +106,7 @@ export function MusicStreaming() {
             </ScrollableGallery>
           )}
 
-          {!isLoading && !error && tracks && tracks.length === 0 && (
+          {!isLoading && !error && (!tracks || tracks.length === 0) && (
             <div className="text-center text-gray-400 py-4">
               No tracks available.
             </div>

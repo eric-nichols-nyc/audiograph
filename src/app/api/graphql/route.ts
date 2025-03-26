@@ -25,39 +25,39 @@ const typeDefs = gql`
 
 // Define your resolvers
 const resolvers = {
-    Query: {
-        artist: async (parent: unknown, { id }: { id: string }) => {
-            const supabase = await createClient();
+  Query: {
+    artist: async (parent: unknown, { id }: { id: string }) => {
+      const supabase = await createClient();
 
-            // Get artist details
-            const { data: artist, error: artistError } = await supabase
-                .from('artists')
-                .select('*')
-                .eq('id', id)
-                .single();
+      // Get artist details
+      const { data: artist, error: artistError } = await supabase
+        .from('artists')
+        .select('*')
+        .eq('id', id)
+        .single();
 
-            if (artistError) throw new Error('Artist not found');
+      if (artistError) throw new Error('Artist not found');
 
-            // Get artist metrics
-            const { data: metrics, error: metricsError } = await supabase
-                .from('artist_metrics')
-                .select('*')
-                .eq('artist_id', id);
+      // Get artist metrics
+      const { data: metrics, error: metricsError } = await supabase
+        .from('artist_metrics')
+        .select('*')
+        .eq('artist_id', id);
 
-            if (metricsError) throw new Error('Failed to fetch metrics');
+      if (metricsError) throw new Error('Failed to fetch metrics');
 
-            return {
-                ...artist,
-                metrics: metrics || [],
-            };
-        },
+      return {
+        ...artist,
+        metrics: metrics || [],
+      };
     },
+  },
 };
 
 // Create Apollo Server instance
 const server = new ApolloServer({
-    typeDefs,
-    resolvers,
+  typeDefs,
+  resolvers,
 });
 
 // Create and export the API route handler
