@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -37,10 +38,6 @@ export function ArtistNavbar() {
   // Get first letter of artist name for fallback
   const artistInitial = artist?.name?.charAt(0) || "A";
 
-  // Format genres for display
-  const displayGenres =
-    artist?.genres?.slice(0, 2).join(", ") || "Unknown Genre";
-
   if (isLoading) {
     return (
       <div className="z-20 bg-background w-full border-b sticky top-0">
@@ -59,32 +56,46 @@ export function ArtistNavbar() {
     <div className="z-20 bg-background w-full border-b sticky top-0">
       <div className="flex ">
         <div className="flex items-center gap-4 px-6 py-3">
-          <Avatar className="w-12 h-12">
-            <AvatarImage
-              className="w-12 h-12"
-              src={artist?.image_url || "https://github.com/shadcn.png"}
-            />
-            <AvatarFallback className="w-12 h-12">
-              {artistInitial}
-            </AvatarFallback>
-          </Avatar>
-          <div className="flex flex-col">
-            <div className="flex items-center gap-2">
+          <div className="relative flex flex-col items-center gap-2">
+            <Avatar className="w-12 h-12">
+              <AvatarImage
+                className="w-12 h-12"
+                src={artist?.image_url || "https://github.com/shadcn.png"}
+              />
+              <AvatarFallback className="w-12 h-12">
+                {artistInitial}
+              </AvatarFallback>
+            </Avatar>
+            {artist?.rank && (
+              <Badge
+                variant="outline"
+                className="text-xs absolute -top-2 -right-2"
+              >
+                # {artist.rank}
+              </Badge>
+            )}
+            {artist?.country && (
+              <Image
+                className="w-4 h-4"
+                src={`/images/flags/${artist.country}.svg`}
+                alt={artist.country}
+                width={16}
+                height={16}
+              />
+            )}
+          </div>
+          <div className="flex flex-col border">
+            <div className="flex flex-col items-center gap-2">
               <span className="font-medium text-foreground text-lg">
                 {artist?.name || "Artist Name"}
               </span>
-              {artist?.rank && (
-                <Badge variant="outline" className="text-xs">
-                  #: {artist.rank}
-                </Badge>
-              )}
             </div>
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              {artist?.country && <span>{artist.country}</span>}
               {artist?.genres && artist.genres.length > 0 && (
                 <>
-                  <span className="text-muted-foreground">•</span>
-                  <span>{displayGenres}</span>
+                  <Badge variant="outline" className="text-xs mt-2">
+                    {artist.genres[0]}
+                  </Badge>
                 </>
               )}
             </div>
