@@ -38,17 +38,6 @@ interface ArtistData {
   }>;
 }
 
-interface SimilarArtistRaw {
-  similar_artist_id: string;
-  similarity_score: number;
-  similar_artist: {
-    id: string;
-    name: string;
-    image_url: string | null;
-    genres: string[];
-  };
-}
-
 interface ArtistConnection {
   artist: {
     id: string;
@@ -250,24 +239,17 @@ const resolvers = {
 
       if (videosError) throw new Error('Failed to fetch videos');
 
-      interface SimilarArtistResult {
-        similarity_score: number;
-        similar_artist: {
-          id: string;
-          name: string;
-          image_url?: string;
-        };
-      }
-
       // Get similar artists
       const { data: similarArtists, error: similarArtistsError } = await supabase
         .from('similar_artists')
         .select(`
+          artist2_id,
           similarity_score,
-          similar_artist:artists!similar_artists_artist2_id_fkey (
+          similar_artist:artists!similar_artists_artist2_id_fkey(
             id,
             name,
-            image_url
+            image_url,
+            genres
           )
         `)
         .eq('artist1_id', id)
@@ -282,14 +264,24 @@ const resolvers = {
       }
 
       // Map similar artists data
-      const mappedSimilarArtists = ((similarArtists || []) as unknown as SimilarArtistResult[]).map(sa => ({
-        id: sa.similar_artist.id || '',
-        name: sa.similar_artist.name || '',
-        image_url: sa.similar_artist.image_url || null,
-        similarity_score: sa.similarity_score || 0
+      const transformedSimilarArtists = (similarArtists as unknown as Array<{
+        artist2_id: string;
+        similarity_score: number;
+        similar_artist: {
+          id: string;
+          name: string;
+          image_url: string | null;
+          genres: string[];
+        };
+      }>).map(sa => ({
+        id: sa.similar_artist.id,
+        name: sa.similar_artist.name,
+        image_url: sa.similar_artist.image_url,
+        genres: sa.similar_artist.genres || [],
+        similarity_score: sa.similarity_score
       }));
 
-      console.log('Mapped similar artists:', JSON.stringify(mappedSimilarArtists, null, 2));
+      console.log('Mapped similar artists:', JSON.stringify(transformedSimilarArtists, null, 2));
 
       // Map the joined data
       const topTracks = artistTracks?.map(at => at.track) || [];
@@ -305,7 +297,7 @@ const resolvers = {
         metrics: metrics || [],
         topTracks,
         videos,
-        similarArtists: mappedSimilarArtists
+        similarArtists: transformedSimilarArtists
       };
 
       // Cache the complete result
@@ -348,18 +340,18 @@ const resolvers = {
 
         // If not in cache, fetch from database
         const { data: similarArtists, error: similarError } = await supabase
-          .from('artist_similarities')
+          .from('similar_artists')
           .select(`
-            similar_artist_id,
+            artist2_id,
             similarity_score,
-            similar_artist:artists!inner(
+            similar_artist:artists!similar_artists_artist2_id_fkey(
               id,
               name,
               image_url,
               genres
             )
           `)
-          .eq('artist_id', artist.id)
+          .eq('artist1_id', artist.id)
           .order('similarity_score', { ascending: false })
           .limit(5);
 
@@ -376,7 +368,16 @@ const resolvers = {
         }
 
         // Transform the data to match our schema
-        const transformedSimilarArtists = (similarArtists as unknown as SimilarArtistRaw[]).map(sa => ({
+        const transformedSimilarArtists = (similarArtists as unknown as Array<{
+          artist2_id: string;
+          similarity_score: number;
+          similar_artist: {
+            id: string;
+            name: string;
+            image_url: string | null;
+            genres: string[];
+          };
+        }>).map(sa => ({
           id: sa.similar_artist.id,
           name: sa.similar_artist.name,
           image_url: sa.similar_artist.image_url,
