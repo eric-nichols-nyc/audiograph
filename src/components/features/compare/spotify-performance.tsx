@@ -1,77 +1,25 @@
-import { CompareBarChart } from "./bar-chart";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { getSpotifyData } from "@/actions/compare";
-import { useIsMounted } from "@/hooks/use-ismounted";
+"use client";
 
-type SpotifyMetrics = {
-  name: string;
-  popularity: number;
-  monthly_listeners: number;
-  followers: number;
-  total_streams: number;
-};
+import { CompareBarChart } from "./bar-chart";
+import { useSpotifyPerformance } from "@/hooks/graphql/use-spotify-performance";
 
 export function SpotifyPerformance() {
-  const searchParams = useSearchParams();
-  const entity1 = searchParams.get("entity1");
-  const entity2 = searchParams.get("entity2");
-  const [artist1Data, setArtist1Data] = useState<SpotifyMetrics | null>(null);
-  const [artist2Data, setArtist2Data] = useState<SpotifyMetrics | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const isMounted = useIsMounted();
-
-  useEffect(() => {
-    if (!entity1 || !entity2) {
-      setIsLoading(false);
-      return;
-    }
-
-    async function fetchSpotifyData() {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const [artist1Metrics, artist2Metrics] = await Promise.all([
-          getSpotifyData(entity1),
-          getSpotifyData(entity2),
-        ]);
-
-        if (isMounted()) {
-          setArtist1Data(artist1Metrics);
-          setArtist2Data(artist2Metrics);
-        }
-      } catch (error) {
-        if (isMounted()) {
-          console.error("Error fetching Spotify data:", error);
-          setError("Failed to load Spotify metrics");
-        }
-      } finally {
-        if (isMounted()) {
-          setIsLoading(false);
-        }
-      }
-    }
-
-    fetchSpotifyData();
-  }, [entity1, entity2, isMounted]);
-
-  if (!entity1 || !entity2) return null;
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[300px]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return <div className="text-red-500 p-4 text-center">{error}</div>;
-  }
+  const { artist1Data, artist2Data, isLoading, error } =
+    useSpotifyPerformance();
 
   if (!artist1Data || !artist2Data) {
+    if (isLoading) {
+      return (
+        <div className="flex items-center justify-center min-h-[300px]">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600" />
+        </div>
+      );
+    }
+
+    if (error) {
+      return <div className="text-red-500 p-4 text-center">{error}</div>;
+    }
+
     return (
       <div className="text-red-500 p-4 text-center">
         Could not load Spotify metrics for both artists

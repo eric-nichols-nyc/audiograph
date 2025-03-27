@@ -179,3 +179,21 @@ export async function getArtistNameServer(id: string) {
 
     return data?.name
 }
+
+export async function getArtistIdFromSlug(slug: string): Promise<string | null> {
+    console.log('Getting artist ID for slug:', slug);
+    const supabase = await createClient();
+    const { data, error } = await supabase
+        .from('artists')
+        .select('id')
+        .eq('slug', slug)
+        .single();
+
+    if (error || !data) {
+        console.error('Error fetching artist ID:', error);
+        return null;
+    }
+
+    console.log('Found artist ID:', data.id);
+    return data.id;
+}

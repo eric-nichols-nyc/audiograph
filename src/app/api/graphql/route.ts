@@ -111,11 +111,12 @@ const resolvers = {
       if (error) throw new Error('Failed to fetch artists by slugs');
       if (!artists || artists.length === 0) return [];
 
-      // Get metrics for all artists
+      // Get metrics for all artists, filtering for Spotify metrics
       const { data: metrics, error: metricsError } = await supabase
         .from('artist_metrics')
         .select('*')
-        .in('artist_id', artists.map(a => a.id));
+        .in('artist_id', artists.map(a => a.id))
+        .eq('platform', 'spotify');
 
       console.log('GraphQL Resolver - Metrics query result:', metrics);
       console.log('GraphQL Resolver - Metrics query error:', metricsError);
@@ -125,7 +126,7 @@ const resolvers = {
       // Map metrics to artists
       const result = artists.map(artist => ({
         ...artist,
-        metrics: metrics.filter(m => m.artist_id === artist.id)
+        metrics: metrics?.filter(m => m.artist_id === artist.id) || []
       }));
 
       console.log('GraphQL Resolver - Final result:', result);
