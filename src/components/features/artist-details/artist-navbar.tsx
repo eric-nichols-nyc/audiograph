@@ -10,6 +10,11 @@ import { ChevronRight } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
 export function ArtistNavbar() {
+  const getFlagPath = (country: string | null) => {
+    if (!country) return null;
+    return `/images/flags/${country.toLowerCase()}.svg`;
+  };
+
   const pathname = usePathname();
   const slug = pathname.split("/")[2]; // Get the slug from the URL
 
@@ -77,7 +82,7 @@ export function ArtistNavbar() {
             {artist?.country && (
               <Image
                 className="w-4 h-4"
-                src={`/images/flags/${artist.country.toLowerCase()}.svg`}
+                src={getFlagPath(artist.country)}
                 alt={artist.country}
                 width={16}
                 height={16}
