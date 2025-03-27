@@ -1,10 +1,9 @@
-'use client';
+"use client";
 
 import { Card } from "@/components/ui/card";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { useSearchParams } from 'next/navigation';
 import { formatNumber } from "@/utils/number-format";
+import { useMostViewedVideos } from "@/hooks/graphql/use-most-viewed-videos";
 
 interface VideoData {
   title: string;
@@ -61,46 +60,11 @@ function ViewComparisonBar({ videos }: { videos: VideoData[] }) {
 }
 
 export function MostViewedVideos() {
-  const [videos, setVideos] = useState<VideoData[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const searchParams = useSearchParams();
+  const { videos, isLoading, error } = useMostViewedVideos();
 
-  const artist1 = searchParams.get('artist1');
-  const artist2 = searchParams.get('artist2');
-
-  useEffect(() => {
-    const fetchMostViewedVideos = async () => {
-      if (!artist1 || !artist2) return;
-
-      setIsLoading(true);
-      setError(null);
-      try {
-        const response = await fetch(`/api/compare/youtube?artist1=${encodeURIComponent(artist1)}&artist2=${encodeURIComponent(artist2)}`);
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || 'Failed to fetch videos');
-        }
-
-        if (!Array.isArray(data)) {
-          throw new Error('Invalid response format');
-        }
-
-        setVideos(data);
-      } catch (error) {
-        console.error('Error fetching videos:', error);
-        setError(error instanceof Error ? error.message : 'Failed to fetch videos');
-        setVideos([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchMostViewedVideos();
-  }, [artist1, artist2]);
-
-  if (!artist1 || !artist2) return null;
+  if (videos.length === 0 && !isLoading && !error) {
+    return null;
+  }
 
   if (isLoading) {
     return (
@@ -112,10 +76,6 @@ export function MostViewedVideos() {
 
   if (error) {
     return <div className="text-red-500 p-4 text-center">{error}</div>;
-  }
-
-  if (videos.length === 0) {
-    return null;
   }
 
   return (
@@ -141,7 +101,11 @@ export function MostViewedVideos() {
               <div className="absolute inset-0 bg-black/20 rounded-md" />
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-10 h-10 rounded-full bg-red-600/90 flex items-center justify-center">
-                  <svg className="w-6 h-6 text-white ml-0.5" viewBox="0 0 24 24" fill="currentColor">
+                  <svg
+                    className="w-6 h-6 text-white ml-0.5"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
                     <path d="M8 5v14l11-7z" />
                   </svg>
                 </div>
@@ -149,7 +113,10 @@ export function MostViewedVideos() {
             </div>
 
             <div className="flex-grow min-w-0">
-              <h3 className="font-medium text-base line-clamp-1 mb-1" title={video.title}>
+              <h3
+                className="font-medium text-base line-clamp-1 mb-1"
+                title={video.title}
+              >
                 {video.title}
               </h3>
               <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -169,4 +136,4 @@ export function MostViewedVideos() {
       </div>
     </Card>
   );
-} 
+}

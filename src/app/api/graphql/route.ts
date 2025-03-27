@@ -281,6 +281,24 @@ const resolvers = {
       return result;
     },
   },
+  Artist: {
+    videos: async (parent: { id: string }) => {
+      const supabase = await createClient();
+      const { data: videos, error } = await supabase
+        .from('videos')
+        .select('id, title, thumbnail_url, view_count')
+        .eq('artist_id', parent.id)
+        .order('view_count', { ascending: false })
+        .limit(10);
+
+      if (error) {
+        console.error('Error fetching videos:', error);
+        throw new Error('Failed to fetch videos');
+      }
+
+      return videos || [];
+    }
+  }
 };
 
 // Create Apollo Server instance
