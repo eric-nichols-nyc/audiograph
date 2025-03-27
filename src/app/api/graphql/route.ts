@@ -418,13 +418,32 @@ const resolvers = {
   }
 };
 
-// Create Apollo Server instance
+// 1. Create Apollo Server instance
+// This sets up a new GraphQL server with our schema and resolvers
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
+  typeDefs,  // The GraphQL schema
+  resolvers, // The functions that resolve the schema fields
 });
 
-// Create and export the API route handler
+// 2. Create the Next.js API route handler
+// startServerAndCreateNextHandler does several things:
+// - Initializes the Apollo Server
+// - Creates a handler compatible with Next.js Edge Runtime
+// - Sets up proper request/response handling
+// - Handles CORS and other HTTP concerns
 const handler = startServerAndCreateNextHandler(server);
 
-export { handler as GET, handler as POST }; 
+// 3. Export the handler for both GET and POST methods
+// This allows the GraphQL endpoint to handle:
+// - GET requests (typically for introspection queries)
+// - POST requests (for actual GraphQL operations)
+// The endpoint will be available at /api/graphql
+export { handler as GET, handler as POST };
+
+// Flow of a GraphQL request:
+// 1. Client sends request to /api/graphql
+// 2. Next.js routes the request to this handler
+// 3. startServerAndCreateNextHandler processes the request
+// 4. Apollo Server executes the GraphQL operation
+// 5. Resolvers fetch data from Supabase/Redis
+// 6. Results are sent back to the client 
