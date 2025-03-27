@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useMemo, memo } from "react";
+import React, { useState, useMemo, memo, useEffect } from "react";
 import { AdminSidebar } from "./admin-sidebar";
 import { cn } from "@/lib/utils";
+import { useWindowSize } from "react-use";
 
 interface AdminLayoutProps {
   title?: string;
@@ -16,6 +17,16 @@ const MemoizedSidebar = memo(AdminSidebar);
 export function AdminLayout({ title, children, className }: AdminLayoutProps) {
   console.log("admin layout title", title);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const { width } = useWindowSize();
+
+  // Automatically toggle sidebar based on window width
+  useEffect(() => {
+    if (width < 700) {
+      setSidebarOpen(false);
+    } else {
+      setSidebarOpen(true);
+    }
+  }, [width]);
 
   // Create memoized handlers to ensure stable references
   const handleCloseSidebar = useMemo(
@@ -27,7 +38,10 @@ export function AdminLayout({ title, children, className }: AdminLayoutProps) {
   const layoutStructure = useMemo(
     () => (
       <div className="flex h-screen">
-        <MemoizedSidebar open={sidebarOpen} onClose={handleCloseSidebar} />
+        <MemoizedSidebar
+          open={sidebarOpen}
+          onClose={width < 700 ? handleCloseSidebar : undefined}
+        />
         <div className="flex flex-col h-full w-full overflow-hidden">
           <main
             className={cn(
@@ -40,7 +54,7 @@ export function AdminLayout({ title, children, className }: AdminLayoutProps) {
         </div>
       </div>
     ),
-    [sidebarOpen, handleCloseSidebar, className, children]
+    [sidebarOpen, handleCloseSidebar, width, className, children]
   );
 
   return layoutStructure;

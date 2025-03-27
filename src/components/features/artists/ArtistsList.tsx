@@ -54,7 +54,7 @@ export function ArtistsList() {
           placeholder="Search artists..."
         />
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 place-items-center gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 place-items-center gap-3">
         {filteredArtists?.map((artist) => (
           <ArtistListItem key={artist.id} artist={artist} />
         ))}

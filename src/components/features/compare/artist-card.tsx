@@ -141,7 +141,7 @@ export function ArtistCard({
               {artist.rank && (
                 <div
                   className={cn(
-                    "flex items-baseline gap-1 mt-3",
+                    "flex items-baseline gap-4 mt-3",
                     position === 2 && "flex-row-reverse"
                   )}
                 >
