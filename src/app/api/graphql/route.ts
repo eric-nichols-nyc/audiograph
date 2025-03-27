@@ -97,13 +97,29 @@ const resolvers = {
   Query: {
     artistsBySlugs: async (parent: unknown, { slugs }: { slugs: string[] }) => {
       const supabase = await createClient();
+
+      // First get the artists by slugs
       const { data: artists, error } = await supabase
         .from('artists')
         .select('*')
         .in('slug', slugs);
 
       if (error) throw new Error('Failed to fetch artists by slugs');
-      return artists;
+      if (!artists || artists.length === 0) return [];
+
+      // Get metrics for all artists
+      const { data: metrics, error: metricsError } = await supabase
+        .from('artist_metrics')
+        .select('*')
+        .in('artist_id', artists.map(a => a.id));
+
+      if (metricsError) throw new Error('Failed to fetch metrics');
+
+      // Map metrics to artists
+      return artists.map(artist => ({
+        ...artist,
+        metrics: metrics.filter(m => m.artist_id === artist.id)
+      }));
     },
 
     artists: async (parent: unknown, { ids }: { ids: string[] }) => {
