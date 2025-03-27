@@ -96,6 +96,7 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     artistsBySlugs: async (parent: unknown, { slugs }: { slugs: string[] }) => {
+      console.log('GraphQL Resolver - Received slugs:', slugs);
       const supabase = await createClient();
 
       // First get the artists by slugs
@@ -103,6 +104,9 @@ const resolvers = {
         .from('artists')
         .select('*')
         .in('slug', slugs);
+
+      console.log('GraphQL Resolver - Artists query result:', artists);
+      console.log('GraphQL Resolver - Artists query error:', error);
 
       if (error) throw new Error('Failed to fetch artists by slugs');
       if (!artists || artists.length === 0) return [];
@@ -113,13 +117,19 @@ const resolvers = {
         .select('*')
         .in('artist_id', artists.map(a => a.id));
 
+      console.log('GraphQL Resolver - Metrics query result:', metrics);
+      console.log('GraphQL Resolver - Metrics query error:', metricsError);
+
       if (metricsError) throw new Error('Failed to fetch metrics');
 
       // Map metrics to artists
-      return artists.map(artist => ({
+      const result = artists.map(artist => ({
         ...artist,
         metrics: metrics.filter(m => m.artist_id === artist.id)
       }));
+
+      console.log('GraphQL Resolver - Final result:', result);
+      return result;
     },
 
     artists: async (parent: unknown, { ids }: { ids: string[] }) => {

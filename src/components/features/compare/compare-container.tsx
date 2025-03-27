@@ -8,7 +8,7 @@ import { VideoContainer } from "./video-container";
 import { SpotifyPerformance } from "./spotify-performance";
 import { cn } from "@/lib/utils";
 import { TopConnections } from "./top-connections";
-import { HorizontalStackedBarChart } from "../charts/horizontal-stacked-chart";
+import { HorizontalStackedChartGraphQL } from "./horizontal-stacked-chart-graphql";
 
 export function CompareContainer() {
   const searchParams = useSearchParams();
@@ -108,7 +108,7 @@ export function CompareContainer() {
       {firstArtistId && secondArtistId ? (
         <div className="relative space-y-8">
           <div className="rounded-lg overflow-hidden">
-            <HorizontalStackedBarChart />
+            <HorizontalStackedChartGraphQL />
 
             {/* <FanbaseChart /> */}
           </div>

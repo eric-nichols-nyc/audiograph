@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
-export const COMPARE_ARTIST_METRICS = gql`
+export const COMPARE_METRICS = gql`
     query CompareArtistMetrics($slugs: [String!]!) {
-        artistsBySlug(slugs: $slugs) {
+        artistsBySlugs(slugs: $slugs) {
             id
             name
             metrics {
@@ -15,8 +15,8 @@ export const COMPARE_ARTIST_METRICS = gql`
     }
 `;
 
-export interface CompareArtistMetricsData {
-    artistsBySlug: Array<{
+export interface CompareMetricsData {
+    artistsBySlugs: Array<{
         id: string;
         name: string;
         metrics: Array<{
@@ -28,6 +28,6 @@ export interface CompareArtistMetricsData {
     }>;
 }
 
-export interface CompareArtistMetricsVars {
+export interface CompareMetricsVars {
     slugs: string[];
 } 

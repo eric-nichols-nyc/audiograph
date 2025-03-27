@@ -1,22 +1,21 @@
-import { useQuery } from "@apollo/client";
-import { useSearchParams } from "next/navigation";
-import { COMPARE_ARTIST_METRICS } from "@/graphql/queries/compare-metrics";
+import { useQuery } from '@apollo/client';
+import { COMPARE_METRICS, CompareMetricsData, CompareMetricsVars } from '@/graphql/queries/compare-metrics';
 
-export function useCompareArtistsGraphQL() {
-    const searchParams = useSearchParams();
-    const entity1Slug = searchParams.get("entity1");
-    const entity2Slug = searchParams.get("entity2");
+export function useCompareArtistsGraphQL(slugs: string[] = []) {
+    // Skip if no slugs or if any slug is empty/undefined
+    const shouldSkip = !slugs.length || slugs.some(slug => !slug);
 
-    const slugs = [entity1Slug, entity2Slug].filter(Boolean) as string[];
-
-    const { data, loading, error } = useQuery(COMPARE_ARTIST_METRICS, {
-        variables: { slugs },
-        skip: slugs.length === 0
-    });
+    const { data, loading, error } = useQuery<CompareMetricsData, CompareMetricsVars>(
+        COMPARE_METRICS,
+        {
+            variables: { slugs },
+            skip: shouldSkip
+        }
+    );
 
     return {
-        artists: data?.artistsBySlug || [],
         loading,
-        error
+        error: shouldSkip ? new Error("No artists selected") : error,
+        artists: data?.artistsBySlugs || [],
     };
 } 
