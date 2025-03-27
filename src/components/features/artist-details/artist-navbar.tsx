@@ -77,7 +77,7 @@ export function ArtistNavbar() {
             {artist?.country && (
               <Image
                 className="w-4 h-4"
-                src={`/images/flags/${artist.country}.svg`}
+                src={`/images/flags/${artist.country.toLowerCase()}.svg`}
                 alt={artist.country}
                 width={16}
                 height={16}
