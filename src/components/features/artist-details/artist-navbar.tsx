@@ -129,7 +129,7 @@ export function ArtistNavbar() {
           })}
           <div className="flex items-center ml-auto">
             <Link
-              href="/compare"
+              href={`/compare?entity1=${slug}`}
               className="text-sm font-medium text-muted-foreground hover:text-foreground"
             >
               <Button size="sm">
