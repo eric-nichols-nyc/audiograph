@@ -69,15 +69,12 @@ export function TopConnections() {
               <div className="font-medium text-blue-200/90 truncate">
                 {artist.name}
               </div>
-              {artist.genres.length > 0 && (
-                <div className="text-xs text-blue-200/60 truncate">
-                  {artist.genres.join(", ")}
-                </div>
-              )}
             </div>
-            <div className="text-xs text-blue-200/60">
-              {Math.round(artist.similarity_score * 100)}% match
-            </div>
+            {artist.genres.length > 0 && (
+              <div className="px-2 py-1 text-xs rounded-full bg-blue-500/20 text-blue-200/90">
+                {artist.genres[0]}
+              </div>
+            )}
           </div>
         ))}
       </div>

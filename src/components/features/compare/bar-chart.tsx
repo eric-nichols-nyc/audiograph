@@ -61,7 +61,6 @@ export function CompareBarChart({
             data={data}
             height={100}
             width={800}
-            barSize={15}
             barGap={2}
             layout="vertical"
             margin={{

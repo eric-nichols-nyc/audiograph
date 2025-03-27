@@ -78,7 +78,7 @@ export function CompareContainer() {
       <div
         ref={stickyRef}
         className={cn(
-          "flex gap-4 sticky top-[24px] z-10 transition-all duration-300",
+          "flex gap-4 sticky top-0 z-10 transition-all duration-300",
           isSticky &&
             "bg-background/80 backdrop-blur-sm shadow-lg rounded-lg p-4"
         )}
