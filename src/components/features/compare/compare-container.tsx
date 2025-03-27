@@ -9,49 +9,48 @@ import { SpotifyPerformance } from "./spotify-performance";
 import { cn } from "@/lib/utils";
 import { TopConnections } from "./top-connections";
 import { HorizontalStackedChartGraphQL } from "./horizontal-stacked-chart-graphql";
+import MultipleSelector, { Option } from "@/components/ui/multiple-selector";
+import { useMediaQuery } from "react-responsive";
 
 export function CompareContainer() {
-  const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-
-  const stickyRef = useRef<HTMLDivElement>(null);
-  const sentinelRef = useRef<HTMLDivElement>(null);
+  const searchParams = useSearchParams();
   const [firstArtistId, setFirstArtistId] = useState<string>();
   const [secondArtistId, setSecondArtistId] = useState<string>();
   const [isSticky, setIsSticky] = useState(false);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
+
+  const isMobileDevice = useMediaQuery({
+    query: "(max-width: 500px) and (hover: none) and (pointer: coarse)",
+  });
 
   // Initialize artist IDs from URL params
   useEffect(() => {
     const entity1 = searchParams.get("entity1");
     const entity2 = searchParams.get("entity2");
-    console.log("URL Params Read:", { entity1, entity2 });
     if (entity1) setFirstArtistId(entity1);
     if (entity2) setSecondArtistId(entity2);
   }, [searchParams]);
 
   // Update URL when artist IDs change
   useEffect(() => {
-    console.log("State Changed:", { firstArtistId, secondArtistId });
     const params = new URLSearchParams();
     if (firstArtistId) params.set("entity1", firstArtistId);
     if (secondArtistId) params.set("entity2", secondArtistId);
-    const newUrl = `${pathname}?${params.toString()}`;
-    console.log("Updating URL to:", newUrl);
-    router.replace(newUrl);
+    router.replace(`${pathname}?${params.toString()}`);
   }, [firstArtistId, secondArtistId, pathname, router]);
 
-  // Log when artist is selected
-  const handleFirstArtistSelect = (artistSlug: string) => {
-    console.log("First Artist Selected:", artistSlug);
-    setFirstArtistId(artistSlug);
+  const handleFirstArtistSelect = (artistId: string) => {
+    setFirstArtistId(artistId);
   };
 
-  const handleSecondArtistSelect = (artistSlug: string) => {
-    console.log("Second Artist Selected:", artistSlug);
-    setSecondArtistId(artistSlug);
+  const handleSecondArtistSelect = (artistId: string) => {
+    setSecondArtistId(artistId);
   };
 
+  // Setup intersection observer for sticky header
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -83,26 +82,50 @@ export function CompareContainer() {
             "bg-background/80 backdrop-blur-sm shadow-lg rounded-lg p-4"
         )}
       >
-        <div className="flex-1">
-          <ArtistSelect
-            position={1}
-            selectedId={firstArtistId}
-            otherSelectedId={secondArtistId}
-            onSelect={handleFirstArtistSelect}
-            onClear={() => setFirstArtistId(undefined)}
-            sticky={isSticky}
+        {isMobileDevice ? (
+          <MultipleSelector
+            options={[
+              ...(firstArtistId
+                ? [{ label: firstArtistId, value: firstArtistId }]
+                : []),
+              ...(secondArtistId
+                ? [{ label: secondArtistId, value: secondArtistId }]
+                : []),
+            ]}
+            value={[
+              ...(firstArtistId
+                ? [{ label: firstArtistId, value: firstArtistId }]
+                : []),
+              ...(secondArtistId
+                ? [{ label: secondArtistId, value: secondArtistId }]
+                : []),
+            ]}
+            onChange={(selected) => {
+              const values = selected as Option[];
+              setFirstArtistId(values[0]?.value);
+              setSecondArtistId(values[1]?.value);
+            }}
+            placeholder="Select artists to compare..."
+            maxSelected={2}
           />
-        </div>
-        <div className="flex-1">
-          <ArtistSelect
-            position={2}
-            selectedId={secondArtistId}
-            otherSelectedId={firstArtistId}
-            onSelect={handleSecondArtistSelect}
-            onClear={() => setSecondArtistId(undefined)}
-            sticky={isSticky}
-          />
-        </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-4">
+            <ArtistSelect
+              position={1}
+              selectedId={firstArtistId}
+              otherSelectedId={secondArtistId}
+              onSelect={handleFirstArtistSelect}
+              onClear={() => setFirstArtistId(undefined)}
+            />
+            <ArtistSelect
+              position={2}
+              selectedId={secondArtistId}
+              otherSelectedId={firstArtistId}
+              onSelect={handleSecondArtistSelect}
+              onClear={() => setSecondArtistId(undefined)}
+            />
+          </div>
+        )}
       </div>
 
       {firstArtistId && secondArtistId ? (
