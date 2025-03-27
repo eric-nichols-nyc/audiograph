@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import * as redis from '@/lib/redis'
+import { CACHE_TTL } from '@/lib/redis';
 import { Artist } from "@/types/artist";
 
 interface SimilarArtistResponse {
@@ -49,21 +50,26 @@ export async function getArtist(slug: string) {
  * @returns {Promise<Array>} - Array of similar artists with similarity data
  */
 export async function getSimilarArtists(artistId: string, limit = 10): Promise<SimilarArtist[]> {
+    console.log('getSimilarArtists called with artistId:', artistId, 'limit:', limit);
+
     const cacheKey = `artist:${artistId}:similar:${limit}`;
+    console.log('Checking cache with key:', cacheKey);
     const cachedData = await redis.get<SimilarArtist[]>(cacheKey);
 
     if (cachedData) {
-        console.log('Cache hit: Returning cached similar artists for artist:', artistId);
+        console.log('Cache hit: Returning cached similar artists:', cachedData);
         return cachedData;
     }
 
-    console.log('Cache miss: Fetching similar artists from database for artist:', artistId);
+    console.log('Cache miss: Fetching from database for artist:', artistId);
     const supabase = createBrowserSupabase();
+
+    console.log('Executing Supabase query...');
     const { data, error } = await supabase
-        .from('artist_similarities')
+        .from('similar_artists')
         .select(`
             similarity_score,
-            similar_artist:artists!artist_similarities_artist2_id_fkey (
+            similar_artist:artists!similar_artists_artist2_id_fkey (
                 id,
                 name,
                 image_url,
@@ -75,18 +81,28 @@ export async function getSimilarArtists(artistId: string, limit = 10): Promise<S
         .limit(limit);
 
     if (error) {
-        console.error('Error fetching similar artists:', error);
+        console.error('Database error:', error);
         return [];
     }
 
+    console.log('Raw database response:', data);
+
     // Transform the result to a more convenient format
-    return (data as unknown as SimilarArtistResponse[]).map((item: SimilarArtistResponse): SimilarArtist => ({
+    const similarArtists = (data as unknown as SimilarArtistResponse[]).map((item: SimilarArtistResponse): SimilarArtist => ({
         id: item.similar_artist.id,
         name: item.similar_artist.name,
         image_url: item.similar_artist.image_url,
         genres: item.similar_artist.genres,
         similarity_score: item.similarity_score
     }));
+
+    console.log('Transformed similar artists:', similarArtists);
+
+    // Cache the results
+    console.log('Caching results...');
+    await redis.set(cacheKey, similarArtists, CACHE_TTL.ARTIST);
+
+    return similarArtists;
 }
 
 /**

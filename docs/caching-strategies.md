@@ -46,7 +46,7 @@ export const getSimilarArtists = unstable_cache(
   async (artistId: string, limit = 10): Promise<SimilarArtist[]> => {
     const supabase = createBrowserSupabase();
     const { data, error } = await supabase
-      .from("artist_similarities")
+      .from("similar_artists")
       .select(/* ... */);
 
     if (error) return [];

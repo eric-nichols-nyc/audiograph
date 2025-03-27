@@ -18,6 +18,8 @@ export function ArtistCard({
   compact = false,
   position = 1,
 }: ArtistCardProps) {
+  console.log("ArtistCard received:", { artist, position });
+
   // Function to get flag image path
   const getFlagPath = (country: string | null) => {
     if (!country) return null;

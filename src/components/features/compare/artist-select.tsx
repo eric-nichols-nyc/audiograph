@@ -9,6 +9,7 @@ import { ArtistCard } from "./artist-card";
 import { Artist } from "@/types/artist";
 import { cn } from "@/lib/utils";
 import { useArtists } from "@/hooks/use-artists";
+import { Button } from "@/components/ui/button";
 
 interface ArtistSelectProps {
   position: 1 | 2;
@@ -32,14 +33,14 @@ export function ArtistSelect({
   const { data: artists, isLoading } = useArtists();
 
   const selectedArtist = selectedId
-    ? artists?.find((a) => a.id.toLowerCase() === selectedId.toLowerCase())
+    ? artists?.find((a) => a.slug.toLowerCase() === selectedId.toLowerCase())
     : null;
 
   const availableArtists =
     artists?.filter(
       (artist) =>
         !otherSelectedId ||
-        artist.id.toLowerCase() !== otherSelectedId.toLowerCase()
+        artist.slug.toLowerCase() !== otherSelectedId.toLowerCase()
     ) || [];
 
   const filteredArtists = searchQuery
@@ -54,7 +55,8 @@ export function ArtistSelect({
     : availableArtists;
 
   const handleArtistSelect = (artist: Artist) => {
-    onSelect(artist.id);
+    console.log("Artist selected:", { artist });
+    onSelect(artist.slug);
     setIsFocused(false);
     setSearchQuery("");
   };
@@ -62,11 +64,16 @@ export function ArtistSelect({
   return (
     <div className="flex-1">
       {selectedArtist ? (
-        <ArtistCard
-          artist={selectedArtist}
-          onChangeClick={onClear}
-          position={position}
-        />
+        <>
+          <ArtistCard
+            artist={selectedArtist}
+            onChangeClick={onClear}
+            position={position}
+          />
+          <Button variant="secondary" onClick={onClear}>
+            Clear
+          </Button>
+        </>
       ) : (
         <ArtistCard
           artist={null}

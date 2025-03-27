@@ -16,19 +16,24 @@ type MetricRecord = {
     date: string;
 }
 
-export async function getSpotifyData(artistId: string): Promise<SpotifyMetrics | null> {
+export async function getSpotifyData(slug: string): Promise<SpotifyMetrics | null> {
     const supabase = createBrowserSupabase();
 
-    // First get the artist name
+    // First get the artist details using the slug
     const { data: artistData, error: artistError } = await supabase
         .from('artists')
-        .select('name')
-        .eq('id', artistId)
+        .select('id, name')
+        .eq('slug', slug)
         .single();
 
     if (artistError) {
         console.error('Error fetching artist:', artistError);
         throw artistError;
+    }
+
+    if (!artistData) {
+        console.error('Artist not found with slug:', slug);
+        return null;
     }
 
     const { data, error } = await supabase
@@ -38,7 +43,7 @@ export async function getSpotifyData(artistId: string): Promise<SpotifyMetrics |
             metric_type,
             date
         `)
-        .eq('artist_id', artistId)
+        .eq('artist_id', artistData.id)
         .eq('platform', 'spotify')
         .in('metric_type', ['popularity', 'monthly_listeners', 'followers', 'total_streams'])
         .order('date', { ascending: false });

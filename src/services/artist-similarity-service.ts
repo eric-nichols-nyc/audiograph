@@ -235,7 +235,7 @@ export class ArtistSimilarityService {
     staleThreshold.setDate(staleThreshold.getDate() - daysThreshold);
 
     const { data: staleScores } = await this.supabase
-      .from('artist_similarities')
+      .from('similar_artists')
       .select('artist1_id, artist2_id')
       .lt('last_updated', staleThreshold.toISOString());
 

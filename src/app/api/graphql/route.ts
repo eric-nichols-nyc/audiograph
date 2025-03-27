@@ -78,6 +78,7 @@ const typeDefs = gql`
   type Artist {
     id: ID!
     name: String!
+    slug: String!
     metrics: [Metric!]
     topTracks: [Track!]
     videos: [Video!]
@@ -86,12 +87,49 @@ const typeDefs = gql`
 
   type Query {
     artist(id: ID!): Artist
+    artistsBySlugs(slugs: [String!]!): [Artist!]!
+    artists(ids: [ID!]!): [Artist!]!
   }
 `;
 
 // Define your resolvers
 const resolvers = {
   Query: {
+    artistsBySlugs: async (parent: unknown, { slugs }: { slugs: string[] }) => {
+      const supabase = await createClient();
+      const { data: artists, error } = await supabase
+        .from('artists')
+        .select('*')
+        .in('slug', slugs);
+
+      if (error) throw new Error('Failed to fetch artists by slugs');
+      return artists;
+    },
+
+    artists: async (parent: unknown, { ids }: { ids: string[] }) => {
+      const supabase = await createClient();
+      const { data: artists, error } = await supabase
+        .from('artists')
+        .select('*')
+        .in('id', ids);
+
+      if (error) throw new Error('Failed to fetch artists by ids');
+
+      // Get metrics for all artists
+      const { data: metrics, error: metricsError } = await supabase
+        .from('artist_metrics')
+        .select('*')
+        .in('artist_id', ids);
+
+      if (metricsError) throw new Error('Failed to fetch metrics');
+
+      // Map metrics to artists
+      return artists.map(artist => ({
+        ...artist,
+        metrics: metrics.filter(m => m.artist_id === artist.id)
+      }));
+    },
+
     artist: async (parent: unknown, { id }: { id: string }) => {
       // Try to get complete artist data from cache
       const cachedArtist = await getCachedData<ArtistData>(getCacheKey.artist(id));

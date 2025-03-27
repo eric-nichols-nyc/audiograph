@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { formatNumber } from "@/utils/number-format";
+import { getArtistId } from "@/actions/artist";
 
 interface Video {
   id: string;
@@ -21,12 +22,29 @@ export function VideoContainer() {
   const [isLoading, setIsLoading] = useState(true);
   const searchParams = useSearchParams();
 
-  const entity1 = searchParams.get("entity1");
-  const entity2 = searchParams.get("entity2");
+  const entity1Slug = searchParams.get("entity1");
+  const entity2Slug = searchParams.get("entity2");
+  const [artist1Id, setArtist1Id] = useState<string>();
+  const [artist2Id, setArtist2Id] = useState<string>();
+
+  // First, get artist IDs from slugs
+  useEffect(() => {
+    async function fetchIds() {
+      if (entity1Slug) {
+        const id = await getArtistId(entity1Slug);
+        setArtist1Id(id || undefined);
+      }
+      if (entity2Slug) {
+        const id = await getArtistId(entity2Slug);
+        setArtist2Id(id || undefined);
+      }
+    }
+    fetchIds();
+  }, [entity1Slug, entity2Slug]);
 
   useEffect(() => {
     async function fetchVideos() {
-      if (!entity1 || !entity2) return;
+      if (!artist1Id || !artist2Id) return;
 
       setIsLoading(true);
       const supabase = createBrowserSupabase();
@@ -47,7 +65,7 @@ export function VideoContainer() {
               )
             `
             )
-            .eq("artist_videos.artist_id", entity1)
+            .eq("artist_videos.artist_id", artist1Id)
             .order("view_count", { ascending: false })
             .limit(1)
             .single(),
@@ -64,7 +82,7 @@ export function VideoContainer() {
               )
             `
             )
-            .eq("artist_videos.artist_id", entity2)
+            .eq("artist_videos.artist_id", artist2Id)
             .order("view_count", { ascending: false })
             .limit(1)
             .single(),
@@ -89,9 +107,9 @@ export function VideoContainer() {
     }
 
     fetchVideos();
-  }, [entity1, entity2]);
+  }, [artist1Id, artist2Id]);
 
-  if (!entity1 || !entity2) return null;
+  if (!entity1Slug || !entity2Slug) return null;
 
   if (isLoading) {
     return (

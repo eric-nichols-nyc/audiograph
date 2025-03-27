@@ -25,17 +25,32 @@ export function CompareContainer() {
   useEffect(() => {
     const entity1 = searchParams.get("entity1");
     const entity2 = searchParams.get("entity2");
+    console.log("URL Params Read:", { entity1, entity2 });
     if (entity1) setFirstArtistId(entity1);
     if (entity2) setSecondArtistId(entity2);
   }, [searchParams]);
 
   // Update URL when artist IDs change
   useEffect(() => {
+    console.log("State Changed:", { firstArtistId, secondArtistId });
     const params = new URLSearchParams();
     if (firstArtistId) params.set("entity1", firstArtistId);
     if (secondArtistId) params.set("entity2", secondArtistId);
-    router.replace(`${pathname}?${params.toString()}`);
+    const newUrl = `${pathname}?${params.toString()}`;
+    console.log("Updating URL to:", newUrl);
+    router.replace(newUrl);
   }, [firstArtistId, secondArtistId, pathname, router]);
+
+  // Log when artist is selected
+  const handleFirstArtistSelect = (artistSlug: string) => {
+    console.log("First Artist Selected:", artistSlug);
+    setFirstArtistId(artistSlug);
+  };
+
+  const handleSecondArtistSelect = (artistSlug: string) => {
+    console.log("Second Artist Selected:", artistSlug);
+    setSecondArtistId(artistSlug);
+  };
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -73,7 +88,7 @@ export function CompareContainer() {
             position={1}
             selectedId={firstArtistId}
             otherSelectedId={secondArtistId}
-            onSelect={setFirstArtistId}
+            onSelect={handleFirstArtistSelect}
             onClear={() => setFirstArtistId(undefined)}
             sticky={isSticky}
           />
@@ -83,7 +98,7 @@ export function CompareContainer() {
             position={2}
             selectedId={secondArtistId}
             otherSelectedId={firstArtistId}
-            onSelect={setSecondArtistId}
+            onSelect={handleSecondArtistSelect}
             onClear={() => setSecondArtistId(undefined)}
             sticky={isSticky}
           />
