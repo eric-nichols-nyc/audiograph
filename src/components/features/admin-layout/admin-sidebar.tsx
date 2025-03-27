@@ -78,21 +78,31 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
         )}
       >
         <Button
-          className="w-full justify-start text-2xl font-bold"
+          className={cn(
+            "w-full text-2xl font-bold",
+            open ? "justify-start" : "justify-center px-0"
+          )}
           variant="ghost"
         >
-          <div className="flex items-center gap-4">
+          <div className={cn("flex items-center", open ? "gap-4" : "")}>
             <div>🎧</div>
-            <div>Audiograph</div>
+            {open && <div>Audiograph</div>}
           </div>
         </Button>
-        <Link href="/search">
-          <Button variant="ghost" className="w-full justify-start">
+        <Button
+          variant="ghost"
+          className={cn(
+            "w-full",
+            open ? "justify-start" : "justify-center px-0"
+          )}
+          asChild
+        >
+          <Link href="/search">
             <Search className="h-5 w-5" />
             {open && <span className="ml-3">Search</span>}
-          </Button>
-        </Link>
-        <div className={cn("space-y-4", open ? "p-4" : "p-2")}>
+          </Link>
+        </Button>
+        <div className={cn("space-y-4", open ? "px-4" : "px-0")}>
           {open ? (
             <Accordion type="single" collapsible className="border-none">
               <AccordionItem value="discover" className="border-none">
@@ -129,40 +139,54 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
               </AccordionItem>
             </Accordion>
           ) : (
-            <Link href="/discover" className="flex justify-center py-2">
-              <Compass className="h-5 w-5" />
-            </Link>
+            <div className="flex justify-center">
+              <Link href="/discover" className="p-2">
+                <Compass className="h-5 w-5" />
+              </Link>
+            </div>
           )}
         </div>
-
-        <Accordion type="single" defaultValue="tools">
-          <AccordionItem value="tools">
-            <AccordionTrigger className={cn("px-3", !open && "justify-center")}>
-              {open ? "Tools" : <BarChart className="h-5 w-5" />}
-            </AccordionTrigger>
-            <AccordionContent>
-              <div className="flex flex-col gap-1">
-                <SidebarItem
-                  href="/compare"
-                  icon={<Users className="h-5 w-5" />}
-                  title="Compare"
-                  active={pathname === "/compare"}
-                  sidebarOpen={open}
-                />
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+        <div className={cn("space-y-4", open ? "px-4" : "px-0")}>
+          {open ? (
+            <Accordion type="single" defaultValue="tools" collapsible>
+              <AccordionItem value="tools">
+                <AccordionContent>
+                  <AccordionTrigger className="py-2 hover:no-underline">
+                    <div className="flex items-center gap-3">
+                      <span>Tools</span>
+                    </div>
+                  </AccordionTrigger>
+                  <div className="flex flex-col gap-1">
+                    <SidebarItem
+                      href="/compare"
+                      icon={<Users className="h-5 w-5" />}
+                      title="Compare"
+                      active={pathname === "/compare"}
+                      sidebarOpen={open}
+                    />
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          ) : (
+            <div className="flex justify-center">
+              <Link href="/compare" className="p-2">
+                <BarChart className="h-5 w-5" />
+              </Link>
+            </div>
+          )}
+        </div>
       </aside>
 
-      {open && onClose && (
-        <button
+      {onClose && (
+        <Button
           onClick={handleClose}
-          className="h-12 w-6 absolute -right-6 top-10 -translate-y-1/2 flex items-center justify-center bg-blue-100 hover:bg-blue-200 dark:bg-blue-900 dark:hover:bg-blue-800 rounded-r-md z-50"
+          className="h-6 w-4 absolute -right-3 top-10 -translate-y-1/2 flex items-center justify-center bg-blue-100 hover:bg-blue-200 dark:bg-blue-900 dark:hover:bg-blue-800 rounded-r-md z-50"
           aria-label="Close sidebar"
+          variant="ghost"
         >
           <ChevronLeft className="h-4 w-4" />
-        </button>
+        </Button>
       )}
     </div>
   );

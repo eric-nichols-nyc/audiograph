@@ -117,7 +117,7 @@ export default function useDebouncedCallback<
 >(func: T, wait?: number, options?: Options): DebouncedState<T> {
     const lastCallTime = useRef<number | null>(null);
     const lastInvokeTime = useRef<number>(0);
-    const timerId = useRef<number | NodeJS.Timeout | null>(null);
+    const timerId = useRef<number | ReturnType<typeof setTimeout> | null>(null);
     const lastArgs = useRef<unknown[]>([]);
     const lastThis = useRef<unknown>(undefined);
     const result = useRef<ReturnType<T> | undefined>(undefined);
@@ -172,7 +172,9 @@ export default function useDebouncedCallback<
         };
 
         const startTimer = (pendingFunc: () => void, wait: number) => {
-            if (useRAF) cancelAnimationFrame(timerId.current);
+            if (useRAF && typeof timerId.current === 'number') {
+                cancelAnimationFrame(timerId.current);
+            }
             timerId.current = useRAF
                 ? requestAnimationFrame(pendingFunc)
                 : setTimeout(pendingFunc, wait);
@@ -262,8 +264,11 @@ export default function useDebouncedCallback<
 
         func.cancel = () => {
             if (timerId.current) {
-                const clear = useRAF ? cancelAnimationFrame : clearTimeout;
-                clear(timerId.current as number & NodeJS.Timeout);
+                if (useRAF && typeof timerId.current === 'number') {
+                    cancelAnimationFrame(timerId.current);
+                } else if (!useRAF && typeof timerId.current !== 'number') {
+                    clearTimeout(timerId.current);
+                }
             }
             lastInvokeTime.current = 0;
             lastArgs.current =
