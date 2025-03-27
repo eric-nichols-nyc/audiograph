@@ -38,6 +38,31 @@ interface ArtistData {
   }>;
 }
 
+interface SimilarArtistRaw {
+  similar_artist_id: string;
+  similarity_score: number;
+  similar_artist: {
+    id: string;
+    name: string;
+    image_url: string | null;
+    genres: string[];
+  };
+}
+
+interface ArtistConnection {
+  artist: {
+    id: string;
+    name: string;
+    [key: string]: unknown;
+  };
+  similarArtists: Array<{
+    id: string;
+    name: string;
+    image_url: string | null;
+    genres: string[];
+    similarity_score: number;
+  }>;
+}
 
 // Define your GraphQL schema
 const typeDefs = gql`
@@ -73,6 +98,7 @@ const typeDefs = gql`
     name: String!
     similarity_score: Float!
     image_url: String
+    genres: [String!]!
   }
 
   type Artist {
@@ -82,13 +108,19 @@ const typeDefs = gql`
     metrics: [Metric!]
     topTracks: [Track!]
     videos: [Video!]
-    similarArtists: [SimilarArtist!]
+    similarArtists(limit: Int): [SimilarArtist!]
+  }
+
+  type ArtistConnection {
+    artist: Artist!
+    similarArtists: [SimilarArtist!]!
   }
 
   type Query {
     artist(id: ID!): Artist
     artistsBySlugs(slugs: [String!]!): [Artist!]!
     artists(ids: [ID!]!): [Artist!]!
+    artistConnections(ids: [ID!]!): [ArtistConnection!]!
   }
 `;
 
@@ -280,6 +312,89 @@ const resolvers = {
       await setCachedData(getCacheKey.artist(id), result, CACHE_TTL.ARTIST);
 
       return result;
+    },
+
+    artistConnections: async (_parent: unknown, { ids }: { ids: string[] }): Promise<ArtistConnection[]> => {
+      console.log('GraphQL Resolver - artistConnections called with ids:', ids);
+      const supabase = await createClient();
+
+      // Get the artists first
+      const { data: artists, error: artistsError } = await supabase
+        .from('artists')
+        .select('*')
+        .in('id', ids);
+
+      if (artistsError) {
+        console.error('Failed to fetch artists:', artistsError);
+        throw new Error('Failed to fetch artists');
+      }
+
+      if (!artists) {
+        return [];
+      }
+
+      // For each artist, get their similar artists
+      const connections = await Promise.all(artists.map(async (artist) => {
+        // Try to get from cache first
+        const cacheKey = `similar_artists:${artist.id}`;
+        const cachedSimilarArtists = await getCachedData<ArtistConnection['similarArtists']>(cacheKey);
+
+        if (cachedSimilarArtists) {
+          return {
+            artist,
+            similarArtists: cachedSimilarArtists
+          };
+        }
+
+        // If not in cache, fetch from database
+        const { data: similarArtists, error: similarError } = await supabase
+          .from('artist_similarities')
+          .select(`
+            similar_artist_id,
+            similarity_score,
+            similar_artist:artists!inner(
+              id,
+              name,
+              image_url,
+              genres
+            )
+          `)
+          .eq('artist_id', artist.id)
+          .order('similarity_score', { ascending: false })
+          .limit(5);
+
+        if (similarError) {
+          console.error('Failed to fetch similar artists:', similarError);
+          throw new Error('Failed to fetch similar artists');
+        }
+
+        if (!similarArtists) {
+          return {
+            artist,
+            similarArtists: []
+          };
+        }
+
+        // Transform the data to match our schema
+        const transformedSimilarArtists = (similarArtists as unknown as SimilarArtistRaw[]).map(sa => ({
+          id: sa.similar_artist.id,
+          name: sa.similar_artist.name,
+          image_url: sa.similar_artist.image_url,
+          genres: sa.similar_artist.genres || [],
+          similarity_score: sa.similarity_score
+        }));
+
+        // Cache the results
+        await setCachedData(cacheKey, transformedSimilarArtists, CACHE_TTL.ARTIST);
+
+        return {
+          artist,
+          similarArtists: transformedSimilarArtists
+        };
+      }));
+
+      console.log('GraphQL Resolver - artistConnections returning connections:', connections);
+      return connections;
     },
   },
   Artist: {
