@@ -2,13 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import { QueryProvider } from "@/providers/query-provider";
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from "@tanstack/react-query";
+import { dehydrate, QueryClient } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/sonner";
-import { getArtists } from "@/actions/artists/artist";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Inter } from "next/font/google";
@@ -42,12 +37,6 @@ export default async function RootLayout({
 }>) {
   const queryClient = new QueryClient();
 
-  // Prefetch artists data
-  await queryClient.prefetchQuery({
-    queryKey: ["artists"],
-    queryFn: async () => await getArtists({}),
-  });
-
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -63,18 +52,16 @@ export default async function RootLayout({
       >
         <Providers>
           <QueryProvider dehydratedState={dehydrate(queryClient)}>
-            <HydrationBoundary state={dehydrate(queryClient)}>
-              <ThemeProvider
-                attribute="class"
-                defaultTheme="dark"
-                enableSystem
-                disableTransitionOnChange
-              >
-                {children}
-                <Toaster />
-                <YouTubePlayer />
-              </ThemeProvider>
-            </HydrationBoundary>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="dark"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}
+              <Toaster />
+              <YouTubePlayer />
+            </ThemeProvider>
           </QueryProvider>
         </Providers>
       </body>

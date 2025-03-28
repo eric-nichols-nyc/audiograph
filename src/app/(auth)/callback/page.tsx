@@ -1,10 +1,10 @@
 // app/auth/callback/page.tsx
-'use client';
+"use client";
 
-import { Suspense } from 'react';
-import { useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { Suspense } from "react";
+import { useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { handleAuthCallback } from "@/actions/auth/actions";
 
 // Main page component that doesn't directly use useSearchParams
 export default function AuthCallbackPage() {
@@ -32,33 +32,32 @@ function LoadingSpinner() {
 function CallbackHandler() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const supabase = createClientComponentClient();
-  
+
   useEffect(() => {
     const handleCallback = async () => {
-      const code = searchParams.get('code');
-      
+      const code = searchParams.get("code");
+
       if (code) {
         try {
-          // Exchange the code for a session
-          await supabase.auth.exchangeCodeForSession(code);
-          
+          // Use the server action to exchange the code for a session
+          await handleAuthCallback(code);
+
           // Get redirect path or default to dashboard
-          const redirectTo = searchParams.get('redirectTo') || '/dashboard';
+          const redirectTo = searchParams.get("redirectTo") || "/dashboard";
           router.push(redirectTo);
         } catch (error) {
-          console.error('Error exchanging code for session:', error);
-          router.push('/auth/signin?error=Authentication%20failed');
+          console.error("Error exchanging code for session:", error);
+          router.push("/auth/signin?error=Authentication%20failed");
         }
       } else {
         // If no code is present, redirect to sign in
-        router.push('/auth/signin');
+        router.push("/auth/signin");
       }
     };
-    
+
     handleCallback();
-  }, [router, searchParams, supabase.auth]);
-  
+  }, [router, searchParams]);
+
   return (
     <div className="flex flex-col items-center gap-2">
       <div className="h-8 w-8 rounded-full border-4 border-t-blue-500 animate-spin"></div>

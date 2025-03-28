@@ -226,6 +226,104 @@ flowchart TD
     end
 ```
 
+## GraphQL Architecture
+
+AudioGraph uses GraphQL for efficient data fetching, implementing a clean architecture that can be understood through a restaurant analogy:
+
+```mermaid
+graph TD
+    A[Component<br>👤 THE CUSTOMER] -->|Uses| B["useQuery Hook<br>🧑‍🍳 THE WAITER"]
+    B -->|Takes order from| C["query.ts files<br>📜 THE MENU"]
+    B -->|Sends order through| D["ApolloProvider<br>🏠 THE RESTAURANT"]
+    D -->|Manages orders with| E["Apollo Client<br>💻 MANAGEMENT SYSTEM"]
+    E -->|Sends to kitchen| F["/api/graphql<br>👨‍🍳 THE KITCHEN"]
+    F -->|Gets ingredients from| G["Supabase<br>🏪 THE PANTRY"]
+    G -->|Returns ingredients| F
+    F -->|Prepares meal| E
+    E -->|Tracks order status| D
+    D -->|Delivers through| B
+    B -->|Serves data| A
+```
+
+### The Restaurant Analogy
+
+1. **Customer (React Component)**
+
+   - Places orders for data
+   - Receives the prepared data when ready
+   - Displays the data to the user
+
+2. **Menu (GraphQL Queries in .ts files)**
+
+   - Defines what data can be ordered
+   - Located in `src/graphql/queries/*.ts`
+   - Specifies the structure of requests
+
+3. **Waiter (useQuery Hook)**
+
+   - Takes orders using the menu
+   - Delivers data back to the component
+   - Handles loading and error states
+
+4. **Restaurant (ApolloProvider)**
+
+   - Set up in `src/app/providers.tsx`
+   - Manages the overall data flow
+   - Wraps the entire application
+
+5. **Management System (Apollo Client)**
+
+   - Processes all orders
+   - Manages caching
+   - Optimizes data fetching
+
+6. **Kitchen (/api/graphql Endpoint)**
+
+   - Processes GraphQL queries
+   - Coordinates with the database
+   - Prepares the requested data
+
+7. **Pantry (Supabase Database)**
+   - Stores all the raw data
+   - Provides data when requested
+   - Maintains data integrity
+
+### Example Usage
+
+```typescript
+// 1. Define the menu item (query)
+const GET_ARTIST_TRACKS = gql`
+  query GetArtistTracks($id: ID!) {
+    artist(id: $id) {
+      topTracks {
+        id
+        title
+      }
+    }
+  }
+`;
+
+// 2. Place an order (in your component)
+function MusicStreaming() {
+  const { data, loading, error } = useQuery(GET_ARTIST_TRACKS, {
+    variables: { id: artistId }
+  });
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error!</div>;
+
+  return <div>{data.artist.topTracks.map(track => ...)}</div>;
+}
+```
+
+This architecture provides:
+
+- Efficient data fetching
+- Automatic caching
+- Real-time loading states
+- Type-safe queries
+- Optimized performance
+
 ## Artist Comparison
 
 The application includes a feature to compare metrics between two artists using a horizontal stacked bar chart. This visualization shows the distribution of fanbases across different platforms (YouTube, Spotify, Deezer, Genius, Last.fm) for each artist.

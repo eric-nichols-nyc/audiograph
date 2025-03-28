@@ -1,3 +1,4 @@
+"use server";
 // Import the helper function to create a Supabase client 
 // that is pre-configured for server-side rendering.
 import { createServerClient } from "@supabase/ssr";

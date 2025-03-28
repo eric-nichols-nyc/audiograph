@@ -4,6 +4,20 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getArtists } from '@/actions/artists/artist';
 
+interface Artist {
+  id: string;
+  name: string;
+  slug: string;
+  image_url?: string;
+  genres?: string[];
+}
+
+interface ArtistsResponse {
+  data: Artist[];
+  count: number;
+  hasMore: boolean;
+}
+
 export function useArtists() {
   const queryClient = useQueryClient();
 
