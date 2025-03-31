@@ -8,6 +8,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import {
+  useResponsiveStore,
+  useNavbarScroll,
+} from "@/hooks/use-responsive-store";
+import { cn } from "@/lib/utils";
 
 export function ArtistNavbar() {
   const getFlagPath = (country: string | null) => {
@@ -43,6 +48,14 @@ export function ArtistNavbar() {
   // Get first letter of artist name for fallback
   const artistInitial = artist?.name?.charAt(0) || "A";
 
+  // Get current scroll position and handle scroll behavior
+  const scrollY = useNavbarScroll();
+
+  // Get the shouldHideNavbar helper from store
+  const shouldHideNavbar = useResponsiveStore(
+    (state) => state.shouldHideNavbar
+  );
+
   if (isLoading) {
     return (
       <div className="z-20 bg-background w-full border-b sticky top-0">
@@ -58,7 +71,14 @@ export function ArtistNavbar() {
   }
 
   return (
-    <div className="z-20 bg-background w-full border-b sticky top-0">
+    <div
+      className={cn(
+        "z-20 bg-background w-full border-b sticky top-0",
+        "transition-transform duration-300",
+        // Use the helper to determine if we should hide
+        shouldHideNavbar(scrollY) && "-translate-y-full"
+      )}
+    >
       <div className="flex ">
         <div className="flex items-center gap-4 px-6 py-3">
           <div className="relative flex flex-col items-center gap-2">
@@ -106,31 +126,33 @@ export function ArtistNavbar() {
             </div>
           </div>
         </div>
-        <nav className="flex justify-between gap-6 px-6 pb-2 w-full">
-          {navItems.map((item) => {
-            // Check if this nav item matches the current path
-            const isActive = pathname.includes(
-              item.href.split("/").pop() || ""
-            );
+        <nav className="flex overflow-x-auto scrollbar-hide pb-2 w-full">
+          <div className="flex gap-6 px-6 min-w-max">
+            {navItems.map((item) => {
+              // Check if this nav item matches the current path
+              const isActive = pathname.includes(
+                item.href.split("/").pop() || ""
+              );
 
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`text-sm font-medium p-2 ${
-                  isActive
-                    ? "text-primary/90 bg-primary/20"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
-          <div className="flex items-center ml-auto">
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`text-sm font-medium p-2 whitespace-nowrap ${
+                    isActive
+                      ? "text-primary/90 bg-primary/20"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </div>
+          <div className="flex items-center px-6">
             <Link
               href={`/compare?entity1=${slug}`}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground whitespace-nowrap"
             >
               <Button size="sm">
                 Compare this artist

@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { Inter } from "next/font/google";
 import { YouTubePlayer } from "@/components/features/youtube/youtube-player";
 import { Providers } from "./providers";
+import { ResponsiveProvider } from "@/components/providers/responsive-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,7 +31,7 @@ export const metadata: Metadata = {
   description: "Discover music trends and artist analytics with AudioGPraph",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -58,9 +59,11 @@ export default async function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
-              {children}
-              <Toaster />
-              <YouTubePlayer />
+              <ResponsiveProvider>
+                {children}
+                <Toaster />
+                <YouTubePlayer />
+              </ResponsiveProvider>
             </ThemeProvider>
           </QueryProvider>
         </Providers>
