@@ -54,8 +54,8 @@ export const getVideosByArtist = async (artistId: string, limit: number = 10): P
             }) as Video[]
 
         // Sort by view_count in descending order (highest views first)
-        const sortedVideos = videos.sort((a, b) =>
-            (b.view_count || 0) - (a.view_count || 0)
+        const sortedVideos = videos.sort((a: Video, b: Video) =>
+            parseInt(b.view_count || '0') - parseInt(a.view_count || '0')
         )
 
         // Take only the requested number of videos

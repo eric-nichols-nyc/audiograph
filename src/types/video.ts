@@ -2,8 +2,8 @@ export interface Video {
     id: string;
     video_id: string;
     title: string;
-    view_count: number;
-    daily_view_count: number;
+    view_count: string;
+    daily_view_count: string;
     published_at: string;
     thumbnail_url: string;
     platform: string;

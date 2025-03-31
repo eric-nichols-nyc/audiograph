@@ -1,26 +1,21 @@
 import { gql } from '@apollo/client';
+import { Video } from '@/types/video';
 
-export interface Video {
-    id: string;
-    title: string;
-    video_id: string;
-    platform: string;
-    view_count: string;
-    daily_view_count?: string;
-    thumbnail_url: string;
-    published_at?: string;
+export interface ArtistVideoJoin {
+  video_id: string;
+  videos: Video;
 }
 
 export interface GetArtistVideosData {
-    artist: {
-        id: string;
-        name: string;
-        videos: Video[];
-    };
+  artist: {
+    id: string;
+    name: string;
+    artist_videos: ArtistVideoJoin[];
+  };
 }
 
 export interface GetArtistVideosVars {
-    id: string;
+  id: string;
 }
 
 export const GET_ARTIST_VIDEOS = gql`
@@ -28,16 +23,19 @@ export const GET_ARTIST_VIDEOS = gql`
     artist(id: $id) {
       id
       name
-      videos {
-        id
-        title
+      artist_videos {
         video_id
-        platform
-        view_count
-        daily_view_count
-        thumbnail_url
-        published_at
+        videos {
+          id
+          title
+          video_id
+          platform
+          view_count
+          daily_view_count
+          thumbnail_url
+          published_at
+        }
       }
     }
   }
-`; 
+`;

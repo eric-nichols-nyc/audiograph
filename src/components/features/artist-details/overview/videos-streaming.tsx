@@ -23,6 +23,11 @@ export function VideosStreaming() {
     skip: !artist?.id,
   });
 
+  console.log("videos data = ", data);
+  console.log("Artist ID:", artist?.id);
+  console.log("Raw GraphQL Response:", data);
+  console.log("Query Variables:", { id: artist?.id });
+
   if (!artist?.id) return null;
 
   if (isLoading) {
@@ -42,19 +47,21 @@ export function VideosStreaming() {
   }
 
   // Transform GraphQL data to match the expected Video type
-  const videos: Video[] = (data?.artist?.videos || []).map((video) => ({
-    id: video.id,
-    video_id: video.video_id,
-    title: video.title,
-    view_count: parseInt(video.view_count, 10),
-    daily_view_count: video.daily_view_count
-      ? parseInt(video.daily_view_count, 10)
-      : 0,
-    published_at: video.published_at || "",
-    thumbnail_url: video.thumbnail_url,
-    platform: video.platform,
-    artist_name: data.artist.name,
-  }));
+  const videos: Video[] = (data?.artist?.artist_videos || [])
+    .map((av) => av.videos)
+    .sort((a, b) => parseInt(b.view_count) - parseInt(a.view_count))
+    .slice(0, 3)
+    .map((video) => ({
+      id: video.id,
+      video_id: video.video_id,
+      title: video.title,
+      view_count: video.view_count,
+      daily_view_count: video.daily_view_count || "0",
+      published_at: video.published_at || "",
+      thumbnail_url: video.thumbnail_url,
+      platform: video.platform,
+      artist_name: data.artist.name,
+    }));
 
   if (videos.length === 0) {
     return (

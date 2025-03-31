@@ -34,9 +34,9 @@ export function SimilarArtists() {
     skip: !artistId,
   });
 
-  console.log("Artist ID:", artistId);
-  console.log("GraphQL response:", data);
-  console.log("GraphQL error:", error);
+  // console.log("Artist ID:", artistId);
+  // console.log("GraphQL response:", data);
+  // console.log("GraphQL error:", error);
 
   if (!artistId || loading) {
     return (
@@ -59,7 +59,7 @@ export function SimilarArtists() {
   }
 
   const similarArtists = data?.artist?.similarArtists || [];
-  console.log("Similar artists in component:", similarArtists);
+  // console.log("Similar artists in component:", similarArtists);
 
   return (
     <div className="w-full bg-[#141e3c] text-white p-6 rounded-lg">

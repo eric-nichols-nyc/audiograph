@@ -90,13 +90,18 @@ const typeDefs = gql`
     genres: [String!]!
   }
 
+  type ArtistVideo {
+    video_id: String!
+    videos: Video!
+  }
+
   type Artist {
     id: ID!
     name: String!
     slug: String!
     metrics: [Metric!]
     topTracks: [Track!]
-    videos: [Video!]
+    artist_videos: [ArtistVideo!]
     similarArtists(limit: Int): [SimilarArtist!]
   }
 
@@ -117,7 +122,7 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     artistsBySlugs: async (parent: unknown, { slugs }: { slugs: string[] }) => {
-      console.log('GraphQL Resolver - Received slugs:', slugs);
+      // console.log('GraphQL Resolver - Received slugs:', slugs);
       const supabase = await createClient();
 
       // First get the artists by slugs
@@ -126,8 +131,8 @@ const resolvers = {
         .select('*')
         .in('slug', slugs);
 
-      console.log('GraphQL Resolver - Artists query result:', artists);
-      console.log('GraphQL Resolver - Artists query error:', error);
+      // console.log('GraphQL Resolver - Artists query result:', artists);
+      // console.log('GraphQL Resolver - Artists query error:', error);
 
       if (error) throw new Error('Failed to fetch artists by slugs');
       if (!artists || artists.length === 0) return [];
@@ -139,8 +144,8 @@ const resolvers = {
         .in('artist_id', artists.map(a => a.id))
         .eq('platform', 'spotify');
 
-      console.log('GraphQL Resolver - Metrics query result:', metrics);
-      console.log('GraphQL Resolver - Metrics query error:', metricsError);
+      // console.log('GraphQL Resolver - Metrics query result:', metrics);
+      // console.log('GraphQL Resolver - Metrics query error:', metricsError);
 
       if (metricsError) throw new Error('Failed to fetch metrics');
 
@@ -150,7 +155,7 @@ const resolvers = {
         metrics: metrics?.filter(m => m.artist_id === artist.id) || []
       }));
 
-      console.log('GraphQL Resolver - Final result:', result);
+      // console.log('GraphQL Resolver - Final result:', result);
       return result;
     },
 
@@ -239,6 +244,8 @@ const resolvers = {
 
       if (videosError) throw new Error('Failed to fetch videos');
 
+      // console.log('DEBUG - Raw artist_videos query result:', artistVideos);
+
       // Get similar artists
       const { data: similarArtists, error: similarArtistsError } = await supabase
         .from('similar_artists')
@@ -256,10 +263,10 @@ const resolvers = {
         .order('similarity_score', { ascending: false })
         .limit(5);
 
-      console.log('DEBUG - Raw similar artists query result:', JSON.stringify(similarArtists, null, 2));
+      // console.log('DEBUG - Raw similar artists query result:', JSON.stringify(similarArtists, null, 2));
 
       if (similarArtistsError) {
-        console.error('Similar artists error:', similarArtistsError);
+        // console.error('Similar artists error:', similarArtistsError);
         throw new Error('Failed to fetch similar artists');
       }
 
@@ -281,7 +288,7 @@ const resolvers = {
         similarity_score: sa.similarity_score
       }));
 
-      console.log('Mapped similar artists:', JSON.stringify(transformedSimilarArtists, null, 2));
+      // console.log('Mapped similar artists:', JSON.stringify(transformedSimilarArtists, null, 2));
 
       // Map the joined data
       const topTracks = artistTracks?.map(at => at.track) || [];
@@ -307,7 +314,7 @@ const resolvers = {
     },
 
     artistConnections: async (_parent: unknown, { ids }: { ids: string[] }): Promise<ArtistConnection[]> => {
-      console.log('GraphQL Resolver - artistConnections called with ids:', ids);
+      // console.log('GraphQL Resolver - artistConnections called with ids:', ids);
       const supabase = await createClient();
 
       // Get the artists first
@@ -317,7 +324,7 @@ const resolvers = {
         .in('id', ids);
 
       if (artistsError) {
-        console.error('Failed to fetch artists:', artistsError);
+        // console.error('Failed to fetch artists:', artistsError);
         throw new Error('Failed to fetch artists');
       }
 
@@ -356,7 +363,7 @@ const resolvers = {
           .limit(5);
 
         if (similarError) {
-          console.error('Failed to fetch similar artists:', similarError);
+          // console.error('Failed to fetch similar artists:', similarError);
           throw new Error('Failed to fetch similar artists');
         }
 
@@ -394,26 +401,37 @@ const resolvers = {
         };
       }));
 
-      console.log('GraphQL Resolver - artistConnections returning connections:', connections);
+      // console.log('GraphQL Resolver - artistConnections returning connections:', connections);
       return connections;
     },
   },
   Artist: {
-    videos: async (parent: { id: string }) => {
+    artist_videos: async (parent: { id: string }) => {
       const supabase = await createClient();
-      const { data: videos, error } = await supabase
-        .from('videos')
-        .select('id, title, thumbnail_url, view_count')
+      const { data: artistVideos, error } = await supabase
+        .from('artist_videos')
+        .select(`
+          video_id,
+          videos (
+            id,
+            title,
+            video_id,
+            platform,
+            view_count,
+            daily_view_count,
+            thumbnail_url,
+            published_at
+          )
+        `)
         .eq('artist_id', parent.id)
-        .order('view_count', { ascending: false })
-        .limit(10);
+        .order('view_count', { foreignTable: 'videos', ascending: false });
 
       if (error) {
-        console.error('Error fetching videos:', error);
+        // console.error('Error fetching videos:', error);
         throw new Error('Failed to fetch videos');
       }
 
-      return videos || [];
+      return artistVideos || [];
     }
   }
 };
