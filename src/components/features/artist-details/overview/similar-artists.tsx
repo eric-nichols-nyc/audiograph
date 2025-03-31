@@ -4,6 +4,28 @@ import Image from "next/image";
 import { useArtistStore } from "@/stores/artist-slug-store";
 import { useQuery } from "@apollo/client";
 import { gql } from "@apollo/client";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination, Navigation } from "swiper/modules";
+import type { SwiperOptions } from "swiper/types";
+
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
+
+const swiperOptions: SwiperOptions = {
+  modules: [Pagination, Navigation],
+  spaceBetween: 20,
+  slidesPerView: 2.2,
+  breakpoints: {
+    640: { slidesPerView: 3.2 },
+    768: { slidesPerView: 4 },
+    1024: { slidesPerView: 5 },
+  },
+  pagination: { clickable: true },
+  navigation: true,
+  watchSlidesProgress: true,
+};
 
 const GET_SIMILAR_ARTISTS = gql`
   query GetSimilarArtists($id: ID!) {
@@ -68,11 +90,10 @@ export function SimilarArtists() {
         Performance against similar artists in the last 28 days
       </p>
 
-      <div className="flex flex-wrap justify-between gap-4">
-        {similarArtists.map((artist: SimilarArtist) => {
-          console.log("Rendering artist:", artist);
-          return (
-            <div key={artist.id} className="flex flex-col items-center">
+      <Swiper {...swiperOptions} className="w-full">
+        {similarArtists.map((artist: SimilarArtist) => (
+          <SwiperSlide key={artist.id}>
+            <div className="flex flex-col items-center">
               <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-2 border-white mb-3">
                 <Image
                   src={artist.image_url || "/placeholder.svg"}
@@ -82,13 +103,16 @@ export function SimilarArtists() {
                   className="w-full h-full object-cover"
                 />
               </div>
-              <span className="text-sm md:text-base text-center">
+              <span className="text-sm md:text-base text-center whitespace-nowrap overflow-hidden text-ellipsis max-w-full">
                 {artist.name}
               </span>
+              <span className="text-xs text-gray-400">
+                {Math.round(artist.similarity_score * 100)}% match
+              </span>
             </div>
-          );
-        })}
-      </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
     </div>
   );
 }
