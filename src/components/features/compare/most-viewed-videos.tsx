@@ -88,10 +88,10 @@ export function MostViewedVideos() {
         <h2 className="text-xl font-semibold">Most Viewed Music Videos</h2>
       </div>
 
-      <div className="space-y-6">
+      <div className="grid grid-cols-2 gap-6">
         {videos.map((video, index) => (
-          <div key={index} className="flex gap-4 items-center">
-            <div className="relative w-48 aspect-video flex-shrink-0">
+          <div key={index} className="flex flex-col">
+            <div className="relative aspect-video w-full">
               <Image
                 src={video.thumbnailUrl}
                 alt={video.title}
@@ -113,9 +113,9 @@ export function MostViewedVideos() {
               </div>
             </div>
 
-            <div className="flex-grow min-w-0">
+            <div className="mt-3">
               <h3
-                className="font-medium text-base line-clamp-1 mb-1"
+                className="font-medium text-base line-clamp-1"
                 title={video.title}
               >
                 {video.title}
@@ -123,10 +123,6 @@ export function MostViewedVideos() {
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 {video.artistName}
               </p>
-            </div>
-
-            <div className="flex-shrink-0 text-sm font-medium">
-              {formatNumber(video.views)} views
             </div>
           </div>
         ))}

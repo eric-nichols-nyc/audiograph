@@ -4,7 +4,6 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { ArtistSelect } from "./artist-select";
 //import { FanbaseChart } from "./fanbase-charts";
 import { useEffect, useRef, useState } from "react";
-import { VideoContainer } from "./video-container";
 import { SpotifyPerformance } from "./spotify-performance";
 import { cn } from "@/lib/utils";
 import { TopConnections } from "./top-connections";
@@ -12,6 +11,7 @@ import { HorizontalStackedChartGraphQL } from "./horizontal-stacked-chart-graphq
 import MultipleSelector, { Option } from "@/components/ui/multiple-selector";
 import { useMediaQuery } from "react-responsive";
 import { MostViewedVideos } from "./most-viewed-videos";
+
 export function CompareContainer() {
   const router = useRouter();
   const pathname = usePathname();
