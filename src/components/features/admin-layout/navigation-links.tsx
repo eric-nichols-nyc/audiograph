@@ -15,6 +15,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
 
 interface NavigationItemProps {
   href: string;
@@ -129,14 +130,10 @@ export function NavigationLinks({
             {showLabels ? "Tools" : <BarChart className="h-5 w-5" />}
           </AccordionTrigger>
           <AccordionContent>
-            <div className="flex flex-col gap-1">
-              <NavigationItem
-                href="/compare"
-                icon={<Users className="h-5 w-5" />}
-                title="Compare"
-                active={pathname === "/compare"}
-                showLabels={showLabels}
-              />
+            <div className="flex flex-col gap-1 px-2">
+              <Button>
+                <Link href="/compare">Compare Artists</Link>
+              </Button>
             </div>
           </AccordionContent>
         </AccordionItem>

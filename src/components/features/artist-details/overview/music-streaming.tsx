@@ -1,9 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
-import { Bookmark } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ScrollableGallery } from "@/components/features/scrollable-gallery/scrollablegallery";
 import { useArtistStore } from "@/stores/artist-slug-store";
 import { HeadphonesLoader } from "@/components/headphones-loader";
@@ -15,7 +13,6 @@ import {
 } from "@/graphql/queries/tracks";
 
 export function MusicStreaming() {
-  const [saved, setSaved] = useState(false);
   const artist = useArtistStore((state) => state.artist);
 
   const {
@@ -40,18 +37,6 @@ export function MusicStreaming() {
   return (
     <div className="w-full h-[600px]">
       <Card className="bg-[#0a1929] text-white">
-        <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-xl font-medium text-gray-300">
-            Top Tracks And Video
-          </CardTitle>
-          <button
-            onClick={() => setSaved(!saved)}
-            className="flex items-center gap-1 text-sm text-blue-400 hover:text-blue-300"
-          >
-            Save
-            <Bookmark className={`h-4 w-4 ${saved ? "fill-blue-400" : ""}`} />
-          </button>
-        </CardHeader>
         <CardContent>
           {isLoading && (
             <div className="flex items-center justify-center h-[400px]">

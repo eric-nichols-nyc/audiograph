@@ -1,6 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import { Video } from "@/types/video";
+import { formatNumber } from "@/utils/formatNumber";
+
 interface VideoCardProps {
   video: Video;
 }
@@ -24,7 +26,7 @@ export function VideoCard({ video }: VideoCardProps) {
         <div className="flex justify-between mt-2 text-sm text-muted-foreground">
           <span>{new Date(video.published_at).toLocaleDateString()}</span>
           <div className="flex gap-3">
-            <span>{video.view_count.toLocaleString()} views</span>
+            <span>{formatNumber(parseInt(video.view_count))} views</span>
           </div>
         </div>
       </CardContent>
