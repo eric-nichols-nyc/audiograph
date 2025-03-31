@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import * as redis from '@/lib/redis'
 
 export async function getArtistMetrics(id: string) {
-    console.log('getArtistMetrics', id);
+    // console.log('getArtistMetrics', id);
     const supabase = await createClient();
     const { data, error } = await supabase
         .from('artist_metrics')

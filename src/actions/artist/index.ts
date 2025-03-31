@@ -25,7 +25,7 @@ interface SimilarArtist {
 }
 
 export async function getArtist(slug: string) {
-    console.log('getArtist', slug);
+    // console.log('getArtist', slug);
     const supabase = await createClient();
     const { data, error } = await supabase
         .from('artists')
@@ -33,7 +33,7 @@ export async function getArtist(slug: string) {
         .eq('slug', slug)
         .single();
 
-    console.log('artist/actions = ', data);
+    // console.log('artist/actions = ', data);
 
     if (error) {
         console.error('there was an error fetching the artist', error);
@@ -50,7 +50,7 @@ export async function getArtist(slug: string) {
  * @returns {Promise<Array>} - Array of similar artists with similarity data
  */
 export async function getSimilarArtists(artistId: string, limit = 10): Promise<SimilarArtist[]> {
-    console.log('getSimilarArtists called with artistId:', artistId, 'limit:', limit);
+    // console.log('getSimilarArtists called with artistId:', artistId, 'limit:', limit);
 
     const cacheKey = `artist:${artistId}:similar:${limit}`;
     console.log('Checking cache with key:', cacheKey);
@@ -64,7 +64,7 @@ export async function getSimilarArtists(artistId: string, limit = 10): Promise<S
     console.log('Cache miss: Fetching from database for artist:', artistId);
     const supabase = createBrowserSupabase();
 
-    console.log('Executing Supabase query...');
+    // console.log('Executing Supabase query...');
     const { data, error } = await supabase
         .from('similar_artists')
         .select(`
@@ -85,7 +85,7 @@ export async function getSimilarArtists(artistId: string, limit = 10): Promise<S
         return [];
     }
 
-    console.log('Raw database response:', data);
+    // console.log('Raw database response:', data);
 
     // Transform the result to a more convenient format
     const similarArtists = (data as unknown as SimilarArtistResponse[]).map((item: SimilarArtistResponse): SimilarArtist => ({
@@ -96,10 +96,10 @@ export async function getSimilarArtists(artistId: string, limit = 10): Promise<S
         similarity_score: item.similarity_score
     }));
 
-    console.log('Transformed similar artists:', similarArtists);
+    // console.log('Transformed similar artists:', similarArtists);
 
     // Cache the results
-    console.log('Caching results...');
+    // console.log('Caching results...');
     await redis.set(cacheKey, similarArtists, CACHE_TTL.ARTIST);
 
     return similarArtists;
