@@ -11,7 +11,7 @@ import { TopConnections } from "./top-connections";
 import { HorizontalStackedChartGraphQL } from "./horizontal-stacked-chart-graphql";
 import MultipleSelector, { Option } from "@/components/ui/multiple-selector";
 import { useMediaQuery } from "react-responsive";
-
+import { MostViewedVideos } from "./most-viewed-videos";
 export function CompareContainer() {
   const router = useRouter();
   const pathname = usePathname();
@@ -130,13 +130,14 @@ export function CompareContainer() {
 
       {firstArtistId && secondArtistId ? (
         <div className="relative space-y-8">
-          <div className="rounded-lg overflow-hidden">
-            <HorizontalStackedChartGraphQL />
-
-            {/* <FanbaseChart /> */}
-          </div>
-
           <section className="space-y-8">
+            <section className="space-y-4">
+              <div className="flex items-center gap-2">
+                <div className="h-8 w-1 bg-blue-500/30 rounded-full" />
+                <h2 className="text-2xl font-semibold">Metrics Comparison</h2>
+              </div>
+              <HorizontalStackedChartGraphQL />
+            </section>
             <section className="space-y-4">
               <div className="flex items-center gap-2">
                 <div className="h-8 w-1 bg-blue-500/30 rounded-full" />
@@ -144,7 +145,7 @@ export function CompareContainer() {
                   Most Viewed YouTube Video Alltime
                 </h2>
               </div>
-              <VideoContainer />
+              <MostViewedVideos />
             </section>
 
             {/* Fanbase section */}

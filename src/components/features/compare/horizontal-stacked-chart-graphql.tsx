@@ -40,7 +40,6 @@ export function HorizontalStackedChartGraphQL() {
   return (
     <Card className="p-6">
       <div className="space-y-6">
-        <h3 className="text-lg font-medium">Metrics Comparison</h3>
         <div className="space-y-4">
           {Object.entries(metrics).map(([metricKey, data]) => {
             const total = data.artist1.value + data.artist2.value;

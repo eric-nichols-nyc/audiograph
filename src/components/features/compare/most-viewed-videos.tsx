@@ -61,6 +61,7 @@ function ViewComparisonBar({ videos }: { videos: VideoData[] }) {
 
 export function MostViewedVideos() {
   const { videos, isLoading, error } = useMostViewedVideos();
+  console.log("videos ", videos);
 
   if (videos.length === 0 && !isLoading && !error) {
     return null;
