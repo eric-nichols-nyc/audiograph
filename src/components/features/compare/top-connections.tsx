@@ -4,18 +4,34 @@ import { Card } from "@/components/ui/card";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { useArtistConnections } from "@/hooks/graphql/use-artist-connections";
+import { useEffect } from "react";
 
 export function TopConnections() {
   const searchParams = useSearchParams();
   const entity1Slug = searchParams.get("entity1");
   const entity2Slug = searchParams.get("entity2");
-  console.log("URL Parameters:", { entity1Slug, entity2Slug });
+
+  // Debug mount and updates
+  useEffect(() => {
+    console.log("TopConnections mounted/updated with params:", {
+      entity1Slug,
+      entity2Slug,
+      rawParams: Object.fromEntries(searchParams.entries()),
+    });
+  }, [searchParams, entity1Slug, entity2Slug]);
 
   const { connections, isLoading, error } = useArtistConnections({
     entity1Slug,
     entity2Slug,
   });
-  console.log("Hook Response:", { connections, isLoading, error });
+
+  // Debug render state
+  console.log("TopConnections render state:", {
+    hasConnections: connections.length > 0,
+    isLoading,
+    error,
+    slugs: { entity1Slug, entity2Slug },
+  });
 
   const renderConnections = (artistId: string) => {
     console.log("Rendering connections for artist:", artistId);
