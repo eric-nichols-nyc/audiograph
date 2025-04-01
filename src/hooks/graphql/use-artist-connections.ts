@@ -1,5 +1,4 @@
 import { useQuery } from '@apollo/client';
-import { useSearchParams } from 'next/navigation';
 import { getArtistIdFromSlug } from '@/actions/artist';
 import { useEffect, useState } from 'react';
 import {
@@ -8,8 +7,12 @@ import {
     GetArtistConnectionsVars
 } from '@/graphql/queries/artist-connections';
 
-export function useArtistConnections() {
-    const searchParams = useSearchParams();
+interface UseArtistConnectionsProps {
+    entity1Slug: string | null;
+    entity2Slug: string | null;
+}
+
+export function useArtistConnections({ entity1Slug, entity2Slug }: UseArtistConnectionsProps) {
     const [artistIds, setArtistIds] = useState<string[]>([]);
     const [isLoadingIds, setIsLoadingIds] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -20,18 +23,15 @@ export function useArtistConnections() {
             setIsLoadingIds(true);
             setError(null);
 
-            const entity1 = searchParams.get('entity1');
-            const entity2 = searchParams.get('entity2');
-
-            if (!entity1 && !entity2) {
+            if (!entity1Slug && !entity2Slug) {
                 setIsLoadingIds(false);
                 return;
             }
 
             try {
                 const ids = await Promise.all([
-                    entity1 ? getArtistIdFromSlug(entity1) : null,
-                    entity2 ? getArtistIdFromSlug(entity2) : null
+                    entity1Slug ? getArtistIdFromSlug(entity1Slug) : null,
+                    entity2Slug ? getArtistIdFromSlug(entity2Slug) : null
                 ]);
 
                 const validIds = ids.filter((id): id is string => id !== null);
@@ -45,7 +45,7 @@ export function useArtistConnections() {
         }
 
         fetchArtistIds();
-    }, [searchParams]);
+    }, [entity1Slug, entity2Slug]);
 
     const {
         data,

@@ -11,7 +11,10 @@ export function TopConnections() {
   const entity2Slug = searchParams.get("entity2");
   console.log("URL Parameters:", { entity1Slug, entity2Slug });
 
-  const { connections, isLoading, error } = useArtistConnections();
+  const { connections, isLoading, error } = useArtistConnections({
+    entity1Slug,
+    entity2Slug,
+  });
   console.log("Hook Response:", { connections, isLoading, error });
 
   const renderConnections = (artistId: string) => {
