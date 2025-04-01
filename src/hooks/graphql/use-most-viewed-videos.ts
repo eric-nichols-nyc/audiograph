@@ -20,21 +20,29 @@ export function useMostViewedVideos() {
 
     // Convert slugs to IDs
     useEffect(() => {
-
         let isMounted = true;
 
-        if (!isMounted) return;
         async function fetchIds() {
-            if (entity1Slug) {
-                const id = await getArtistId(entity1Slug);
-                setArtist1Id(id || undefined);
-            }
-            if (entity2Slug) {
-                const id = await getArtistId(entity2Slug);
-                setArtist2Id(id || undefined);
+            try {
+                if (entity1Slug) {
+                    const id = await getArtistId(entity1Slug);
+                    if (isMounted) {
+                        setArtist1Id(id || undefined);
+                    }
+                }
+                if (entity2Slug) {
+                    const id = await getArtistId(entity2Slug);
+                    if (isMounted) {
+                        setArtist2Id(id || undefined);
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching artist IDs:', error);
             }
         }
+
         fetchIds();
+
         return () => {
             isMounted = false;
         };
