@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { useArtists } from "@/hooks/use-artists";
 import { Button } from "@/components/ui/button";
 import { RefreshCcwIcon } from "lucide-react";
+
 interface ArtistSelectProps {
   position: 1 | 2;
   selectedId?: string;
@@ -62,7 +63,7 @@ export function ArtistSelect({
   };
 
   return (
-    <div className="flex-1">
+    <div className="w-full min-w-[300px]">
       {selectedArtist ? (
         <div className="relative pb-2">
           <ArtistCard
@@ -86,7 +87,7 @@ export function ArtistSelect({
         />
       )}
 
-      <div className="flex flex-col gap-2 flex-1">
+      <div className="flex flex-col gap-2">
         <div className="relative mb-8">
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-muted-foreground">
             <Search className="h-5 w-5" />

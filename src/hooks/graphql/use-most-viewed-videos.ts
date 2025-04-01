@@ -20,6 +20,10 @@ export function useMostViewedVideos() {
 
     // Convert slugs to IDs
     useEffect(() => {
+
+        let isMounted = true;
+
+        if (!isMounted) return;
         async function fetchIds() {
             if (entity1Slug) {
                 const id = await getArtistId(entity1Slug);
@@ -31,6 +35,9 @@ export function useMostViewedVideos() {
             }
         }
         fetchIds();
+        return () => {
+            isMounted = false;
+        };
     }, [entity1Slug, entity2Slug]);
 
     console.log('Artist IDs:', { artist1Id, artist2Id });
