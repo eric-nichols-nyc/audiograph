@@ -63,7 +63,7 @@ export function useMostViewedVideos() {
         fetchIds();
     }, [searchParams]);
 
-    console.log('Artist IDs:', { artist1Id, artist2Id });
+    console.log('Artist ID1s:', { artist1Id, artist2Id });
 
     // Query for first artist
     const { data: data1, loading: loading1 } = useQuery<GetArtistVideosData, GetArtistVideosVars>(
