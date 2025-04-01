@@ -15,33 +15,17 @@ export function useMostViewedVideos() {
     const searchParams = useSearchParams();
     const [artist1Id, setArtist1Id] = useState<string>();
     const [artist2Id, setArtist2Id] = useState<string>();
+    const [isClient, setIsClient] = useState(false);
 
-    // Get the initial params from the URL
+    // Handle hydration
     useEffect(() => {
-        const url = new URL(window.location.href);
-        const entity1Slug = url.searchParams.get('entity1');
-        const entity2Slug = url.searchParams.get('entity2');
-
-        async function fetchIds() {
-            try {
-                if (entity1Slug) {
-                    const id = await getArtistId(entity1Slug);
-                    setArtist1Id(id || undefined);
-                }
-                if (entity2Slug) {
-                    const id = await getArtistId(entity2Slug);
-                    setArtist2Id(id || undefined);
-                }
-            } catch (error) {
-                console.error('Error fetching artist IDs:', error);
-            }
-        }
-
-        fetchIds();
+        setIsClient(true);
     }, []);
 
-    // Update IDs when search params change
+    // Fetch artist IDs whenever searchParams change or we're hydrated
     useEffect(() => {
+        if (!isClient) return;
+
         const entity1Slug = searchParams.get('entity1');
         const entity2Slug = searchParams.get('entity2');
 
@@ -49,11 +33,18 @@ export function useMostViewedVideos() {
             try {
                 if (entity1Slug) {
                     const id = await getArtistId(entity1Slug);
+                    console.log('Fetched ID for entity1:', id);
                     setArtist1Id(id || undefined);
+                } else {
+                    setArtist1Id(undefined);
                 }
+
                 if (entity2Slug) {
                     const id = await getArtistId(entity2Slug);
+                    console.log('Fetched ID for entity2:', id);
                     setArtist2Id(id || undefined);
+                } else {
+                    setArtist2Id(undefined);
                 }
             } catch (error) {
                 console.error('Error fetching artist IDs:', error);
@@ -61,9 +52,17 @@ export function useMostViewedVideos() {
         }
 
         fetchIds();
-    }, [searchParams]);
+    }, [searchParams, isClient]);
 
-    console.log('Artist ID1s:', { artist1Id, artist2Id });
+    console.log('Current state:', {
+        artist1Id,
+        artist2Id,
+        isClient,
+        searchParams: {
+            entity1: searchParams.get('entity1'),
+            entity2: searchParams.get('entity2')
+        }
+    });
 
     // Query for first artist
     const { data: data1, loading: loading1 } = useQuery<GetArtistVideosData, GetArtistVideosVars>(
@@ -145,7 +144,9 @@ export function useMostViewedVideos() {
 
     return {
         videos,
-        isLoading: loading1 || loading2 || (!artist1Id && !!window?.location.search.includes('entity1')) || (!artist2Id && !!window?.location.search.includes('entity2')),
+        isLoading: !isClient || loading1 || loading2 ||
+            (searchParams.get('entity1') && !artist1Id) ||
+            (searchParams.get('entity2') && !artist2Id),
         error: null
     };
 } 
