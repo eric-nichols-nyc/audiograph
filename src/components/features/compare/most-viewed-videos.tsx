@@ -4,12 +4,14 @@ import { Card } from "@/components/ui/card";
 import Image from "next/image";
 import { formatNumber } from "@/utils/number-format";
 import { useMostViewedVideos } from "@/hooks/graphql/use-most-viewed-videos";
+import { useYouTubePlayer } from "../youtube/youtube-player";
 
 interface VideoData {
   title: string;
   thumbnailUrl: string;
   views: number;
   artistName: string;
+  videoId?: string;
 }
 
 function ViewComparisonBar({ videos }: { videos: VideoData[] }) {
@@ -61,6 +63,7 @@ function ViewComparisonBar({ videos }: { videos: VideoData[] }) {
 
 export function MostViewedVideos() {
   const { videos, isLoading, error } = useMostViewedVideos();
+  const { setVideo } = useYouTubePlayer();
   console.log("videos ", videos);
 
   if (videos.length === 0 && !isLoading && !error) {
@@ -90,10 +93,14 @@ export function MostViewedVideos() {
 
       <div className="grid grid-cols-2 gap-6">
         {videos.map((video, index) => (
-          <div key={index} className="flex flex-col">
-            <div className="relative aspect-video w-full">
+          <button
+            key={index}
+            onClick={() => video.videoId && setVideo(video.videoId)}
+            className="flex flex-col text-left hover:opacity-90 hover:cursor-pointer transition-opacity"
+          >
+            <div className="relative aspect-video w-full group">
               <Image
-                src={video.thumbnailUrl}
+                src={`https://i.ytimg.com/vi/${video.videoId}/maxresdefault.jpg`}
                 alt={video.title}
                 fill
                 className="object-cover rounded-md"
@@ -101,7 +108,7 @@ export function MostViewedVideos() {
               />
               <div className="absolute inset-0 bg-black/20 rounded-md" />
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-10 h-10 rounded-full bg-red-600/90 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-red-600/90 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <svg
                     className="w-6 h-6 text-white ml-0.5"
                     viewBox="0 0 24 24"
@@ -124,7 +131,7 @@ export function MostViewedVideos() {
                 {video.artistName}
               </p>
             </div>
-          </div>
+          </button>
         ))}
       </div>
 

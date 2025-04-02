@@ -9,6 +9,7 @@ interface VideoData {
     thumbnailUrl: string;
     views: number;
     artistName: string;
+    videoId: string;
 }
 
 export function useMostViewedVideos() {
@@ -92,7 +93,7 @@ export function useMostViewedVideos() {
 
     // Process first artist's videos
     if (data1?.artist?.artist_videos?.length > 0) {
-        console.log('Processing artist 1 videos:', data1.artist.artist_videos);
+        // console.log('Processing artist 1 videos:', data1.artist.artist_videos);
 
         // Get all videos and sort them by view count
         const allVideos = data1.artist.artist_videos
@@ -100,7 +101,7 @@ export function useMostViewedVideos() {
             .filter(video => video && video.view_count) // Filter out any null videos
             .sort((a, b) => parseInt(b.view_count) - parseInt(a.view_count));
 
-        console.log('Sorted videos 1:', allVideos);
+        // console.log('Sorted videos 1:', allVideos);
 
         if (allVideos.length > 0) {
             const mostViewedVideo = allVideos[0];
@@ -108,7 +109,8 @@ export function useMostViewedVideos() {
                 title: mostViewedVideo.title,
                 thumbnailUrl: mostViewedVideo.thumbnail_url,
                 views: parseInt(mostViewedVideo.view_count),
-                artistName: data1.artist.name
+                artistName: data1.artist.name,
+                videoId: mostViewedVideo.video_id
             };
             videos.push(video);
             console.log('Added video for artist 1:', video);
@@ -117,7 +119,7 @@ export function useMostViewedVideos() {
 
     // Process second artist's videos
     if (data2?.artist?.artist_videos?.length > 0) {
-        console.log('Processing artist 2 videos:', data2.artist.artist_videos);
+        //console.log('Processing artist 2 videos:', data2.artist.artist_videos);
 
         // Get all videos and sort them by view count
         const allVideos = data2.artist.artist_videos
@@ -125,7 +127,7 @@ export function useMostViewedVideos() {
             .filter(video => video && video.view_count) // Filter out any null videos
             .sort((a, b) => parseInt(b.view_count) - parseInt(a.view_count));
 
-        console.log('Sorted videos 2:', allVideos);
+        //console.log('Sorted videos 2:', allVideos);
 
         if (allVideos.length > 0) {
             const mostViewedVideo = allVideos[0];
@@ -133,14 +135,15 @@ export function useMostViewedVideos() {
                 title: mostViewedVideo.title,
                 thumbnailUrl: mostViewedVideo.thumbnail_url,
                 views: parseInt(mostViewedVideo.view_count),
-                artistName: data2.artist.name
+                artistName: data2.artist.name,
+                videoId: mostViewedVideo.video_id
             };
             videos.push(video);
             console.log('Added video for artist 2:', video);
         }
     }
 
-    console.log('Final videos array:', videos);
+    // console.log('Final videos array:', videos);
 
     return {
         videos,
