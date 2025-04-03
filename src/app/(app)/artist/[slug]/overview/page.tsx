@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { MusicStreaming } from "@/components/features/artist-details/overview/music-streaming";
 import { VideosStreaming } from "@/components/features/artist-details/overview/videos-streaming";
 import { HeadphonesLoader } from "@/components/headphones-loader";
-import { ArtistMetricsGraphQLWrapper } from "@/components/features/artist-details/ArtistMetricsGraphQLWrapper";
+import { ArtistMetricsGraphQLWrapper } from "@/components/features/artist-details/overview/ArtistMetricsGraphQLWrapper";
 import { SimilarArtists } from "@/components/features/artist-details/overview/similar-artists";
 
 // This is a Server Component
