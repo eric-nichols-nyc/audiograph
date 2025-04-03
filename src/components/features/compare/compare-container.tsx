@@ -26,12 +26,21 @@ export function CompareContainer() {
     query: "(max-width: 500px) and (hover: none) and (pointer: coarse)",
   });
 
-  // Initialize artist IDs from URL params
+  // Initialize artist IDs from URL params and reset when params are empty
   useEffect(() => {
     const entity1 = searchParams.get("entity1");
     const entity2 = searchParams.get("entity2");
-    if (entity1) setFirstArtistId(entity1);
-    if (entity2) setSecondArtistId(entity2);
+
+    // Reset both artists if URL has no search params
+    if (!searchParams.has("entity1") && !searchParams.has("entity2")) {
+      setFirstArtistId(undefined);
+      setSecondArtistId(undefined);
+      return;
+    }
+
+    // Update artists based on URL params
+    setFirstArtistId(entity1 || undefined);
+    setSecondArtistId(entity2 || undefined);
   }, [searchParams]);
 
   // Update URL when artist IDs change
@@ -39,7 +48,11 @@ export function CompareContainer() {
     const params = new URLSearchParams();
     if (firstArtistId) params.set("entity1", firstArtistId);
     if (secondArtistId) params.set("entity2", secondArtistId);
-    router.replace(`${pathname}?${params.toString()}`);
+
+    const newUrl = params.toString()
+      ? `${pathname}?${params.toString()}`
+      : pathname;
+    router.replace(newUrl);
   }, [firstArtistId, secondArtistId, pathname, router]);
 
   const handleFirstArtistSelect = (artistId: string) => {

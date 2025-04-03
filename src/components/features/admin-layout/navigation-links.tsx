@@ -1,5 +1,7 @@
+"use client";
+
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import {
   Users,
   BarChart,
@@ -33,18 +35,17 @@ function NavigationItem({
   showLabels = true,
 }: NavigationItemProps) {
   return (
-    <Link
-      href={href}
-      className={cn(
-        "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
-        active
-          ? "bg-secondary text-secondary-foreground"
-          : "hover:bg-secondary/50",
-        !showLabels && "justify-center px-0"
-      )}
-    >
-      {icon}
-      {showLabels && <span>{title}</span>}
+    <Link href={href}>
+      <div
+        className={cn(
+          "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors hover:bg-secondary/50",
+          active && "bg-secondary",
+          !showLabels && "justify-center px-0"
+        )}
+      >
+        {icon}
+        {showLabels && <span>{title}</span>}
+      </div>
     </Link>
   );
 }
@@ -59,6 +60,11 @@ export function NavigationLinks({
   className,
 }: NavigationLinksProps) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleCompareClick = () => {
+    router.push("/compare");
+  };
 
   return (
     <div className={cn("space-y-4", className)}>
@@ -75,7 +81,7 @@ export function NavigationLinks({
       </Link>
 
       {showLabels ? (
-        <Accordion type="single" collapsible className="border-none">
+        <Accordion type="single" collapsible className="border-none px-3">
           <AccordionItem value="discover" className="border-none">
             <AccordionTrigger className="py-2 hover:no-underline">
               <div className="flex items-center gap-3">
@@ -131,9 +137,7 @@ export function NavigationLinks({
           </AccordionTrigger>
           <AccordionContent>
             <div className="flex flex-col gap-1 px-2">
-              <Button>
-                <Link href="/compare">Compare Artists</Link>
-              </Button>
+              <Button onClick={handleCompareClick}>Compare Artists</Button>
             </div>
           </AccordionContent>
         </AccordionItem>
