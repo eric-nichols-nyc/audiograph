@@ -56,17 +56,28 @@ export function ArtistMetricsGraphQL({ artistId }: ArtistMetricsProps) {
     {} as MetricsByType
   );
 
+  const formatMetricType = (metricType: string): string => {
+    return metricType
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {Object.values(latestMetrics).map((metric: Metric) => (
         <div key={metric.metric_type} className="p-4 rounded-lg border bg-card">
-          <Image
-            src={`/images/icons/platforms/${metric.platform}.svg`}
-            alt={metric.metric_type}
-            width={20}
-            height={20}
-          />
-          <h3 className="font-semibold">{metric.metric_type}</h3>
+          <div className="flex items-center gap-2 mb-2">
+            <Image
+              src={`/images/icons/platforms/${metric.platform}.svg`}
+              alt={metric.metric_type}
+              width={15}
+              height={15}
+            />
+            <h3 className="font-semibold">
+              {formatMetricType(metric.metric_type)}
+            </h3>
+          </div>
           <p className="text-2xl">{metric.value.toLocaleString()}</p>
           <p className="text-sm text-muted-foreground">
             Last updated: {new Date(metric.date).toLocaleDateString()}
