@@ -5,8 +5,6 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ChevronRight } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import {
   useResponsiveStore,
@@ -148,17 +146,6 @@ export function ArtistNavbar() {
                 </Link>
               );
             })}
-          </div>
-          <div className="flex items-center px-6">
-            <Link
-              href={`/compare?entity1=${slug}`}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground whitespace-nowrap"
-            >
-              <Button size="sm">
-                Compare this artist
-                <ChevronRight className="w-4 h-4" />
-              </Button>
-            </Link>
           </div>
         </nav>
       </div>
