@@ -5,7 +5,6 @@ import { useArtistStore } from "@/stores/artist-slug-store";
 import { SectionHeader } from "@/components/ui/section-header";
 export function ArtistMetricsGraphQLWrapper() {
   const artist = useArtistStore((state) => state.artist);
-  console.log(artist);
 
   if (!artist) return null;
 
