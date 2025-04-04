@@ -3,6 +3,7 @@
 import { VideoCard } from "@/components/video-card";
 import { useArtistStore } from "@/stores/artist-slug-store";
 import { useQuery } from "@apollo/client";
+import { SectionHeader } from "@/components/ui/section-header";
 import {
   GET_ARTIST_VIDEOS,
   GetArtistVideosData,
@@ -110,24 +111,27 @@ export function VideosStreaming() {
 
   return (
     <div className="w-full">
-      <Swiper
-        {...swiperOptions}
-        onSlideChange={(swiper) => {
-          const isNearEnd =
-            swiper.isEnd || swiper.activeIndex >= swiper.slides.length - 3;
+      <SectionHeader title="Popular Videos" />
+      <div className="mt-4">
+        <Swiper
+          {...swiperOptions}
+          onSlideChange={(swiper) => {
+            const isNearEnd =
+              swiper.isEnd || swiper.activeIndex >= swiper.slides.length - 3;
 
-          if (isNearEnd && displayCount < youtubeVideos.length) {
-            loadMoreVideos();
-          }
-        }}
-        className="w-full"
-      >
-        {displayedVideos.map((video) => (
-          <SwiperSlide key={video.id}>
-            <VideoCard video={video} />
-          </SwiperSlide>
-        ))}
-      </Swiper>
+            if (isNearEnd && displayCount < youtubeVideos.length) {
+              loadMoreVideos();
+            }
+          }}
+          className="w-full"
+        >
+          {displayedVideos.map((video) => (
+            <SwiperSlide key={video.id}>
+              <VideoCard video={video} />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
     </div>
   );
 }

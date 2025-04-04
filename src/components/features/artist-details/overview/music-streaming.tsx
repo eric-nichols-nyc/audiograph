@@ -6,6 +6,7 @@ import { ScrollableGallery } from "@/components/features/scrollable-gallery/scro
 import { useArtistStore } from "@/stores/artist-slug-store";
 import { HeadphonesLoader } from "@/components/headphones-loader";
 import { useQuery } from "@apollo/client";
+import { SectionHeader } from "@/components/ui/section-header";
 import {
   GET_ARTIST_TRACKS,
   GetArtistTracksData,
@@ -36,7 +37,8 @@ export function MusicStreaming() {
 
   return (
     <div className="w-full h-[600px]">
-      <Card className="bg-[#0a1929] text-white">
+      <SectionHeader title="Top Tracks" />
+      <Card className="bg-[#0a1929] text-white mt-4">
         <CardContent>
           {isLoading && (
             <div className="flex items-center justify-center h-[400px]">

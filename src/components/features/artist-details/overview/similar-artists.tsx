@@ -7,6 +7,7 @@ import { gql } from "@apollo/client";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation } from "swiper/modules";
 import type { SwiperOptions } from "swiper/types";
+import { SectionHeader } from "@/components/ui/section-header";
 
 // Import Swiper styles
 import "swiper/css";
@@ -63,7 +64,7 @@ export function SimilarArtists() {
   if (!artistId || loading) {
     return (
       <div className="w-full bg-[#141e3c] text-white p-6 rounded-lg">
-        <h1 className="text-2xl font-bold mb-1">Compare Artist</h1>
+        <SectionHeader title="Compare Artist" />
         <p className="text-sm text-gray-300 mb-8">Loading similar artists...</p>
       </div>
     );
@@ -72,7 +73,7 @@ export function SimilarArtists() {
   if (error) {
     return (
       <div className="w-full bg-[#141e3c] text-white p-6 rounded-lg">
-        <h1 className="text-2xl font-bold mb-1">Compare Artist</h1>
+        <SectionHeader title="Compare Artist" />
         <p className="text-sm text-red-300 mb-8">
           Error loading similar artists
         </p>
@@ -84,35 +85,33 @@ export function SimilarArtists() {
   // console.log("Similar artists in component:", similarArtists);
 
   return (
-    <div className="w-full bg-[#141e3c] text-white p-6 rounded-lg">
-      <h1 className="text-2xl font-bold mb-1">Compare Artist</h1>
-      <p className="text-sm text-gray-300 mb-8">
-        Performance against similar artists in the last 28 days
-      </p>
-
-      <Swiper {...swiperOptions} className="w-full">
-        {similarArtists.map((artist: SimilarArtist) => (
-          <SwiperSlide key={artist.id}>
-            <div className="flex flex-col items-center">
-              <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-2 border-white mb-3">
-                <Image
-                  src={artist.image_url || "/placeholder.svg"}
-                  alt={artist.name}
-                  width={112}
-                  height={112}
-                  className="w-full h-full object-cover"
-                />
+    <div className="w-full">
+      <SectionHeader title="Similar Artists" />
+      <div className="w-full bg-[#141e3c] text-white p-6 rounded-lg">
+        <Swiper {...swiperOptions} className="w-full">
+          {similarArtists.map((artist: SimilarArtist) => (
+            <SwiperSlide key={artist.id}>
+              <div className="flex flex-col items-center">
+                <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-2 border-white mb-3">
+                  <Image
+                    src={artist.image_url || "/placeholder.svg"}
+                    alt={artist.name}
+                    width={112}
+                    height={112}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <span className="text-sm md:text-base text-center whitespace-nowrap overflow-hidden text-ellipsis max-w-full">
+                  {artist.name}
+                </span>
+                <span className="text-xs text-gray-400">
+                  {Math.round(artist.similarity_score * 100)}% match
+                </span>
               </div>
-              <span className="text-sm md:text-base text-center whitespace-nowrap overflow-hidden text-ellipsis max-w-full">
-                {artist.name}
-              </span>
-              <span className="text-xs text-gray-400">
-                {Math.round(artist.similarity_score * 100)}% match
-              </span>
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
     </div>
   );
 }

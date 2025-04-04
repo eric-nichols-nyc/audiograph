@@ -11,6 +11,7 @@ import { HorizontalStackedChartGraphQL } from "./horizontal-stacked-chart-graphq
 import MultipleSelector, { Option } from "@/components/ui/multiple-selector";
 import { useMediaQuery } from "react-responsive";
 import { MostViewedVideos } from "./most-viewed-videos";
+import { SectionHeader } from "@/components/ui/section-header";
 
 export function CompareContainer() {
   const router = useRouter();
@@ -145,37 +146,23 @@ export function CompareContainer() {
         <div className="relative space-y-8">
           <section className="space-y-8">
             <section className="space-y-4">
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-1 bg-blue-500/30 rounded-full" />
-                <h2 className="text-2xl font-semibold">Metrics Comparison</h2>
-              </div>
+              <SectionHeader title="Metrics Comparison" />
               <HorizontalStackedChartGraphQL />
             </section>
             <section className="space-y-4">
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-1 bg-blue-500/30 rounded-full" />
-                <h2 className="text-2xl font-semibold">
-                  Most Viewed YouTube Video Alltime
-                </h2>
-              </div>
+              <SectionHeader title="Most Viewed YouTube Video Alltime" />
               <MostViewedVideos />
             </section>
 
             {/* Fanbase section */}
             <section className="space-y-4">
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-1 bg-blue-500/30 rounded-full" />
-                <h2 className="text-2xl font-semibold">Top Connections</h2>
-              </div>
+              <SectionHeader title="Top Connections" />
               <TopConnections />
             </section>
 
             {/* Size & Distribution section */}
             <section className="space-y-4">
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-1 bg-blue-500/30 rounded-full" />
-                <h2 className="text-2xl font-semibold">Spotify Performance</h2>
-              </div>
+              <SectionHeader title="Spotify Performance" />
               <div className="rounded-lg overflow-hidden">
                 <SpotifyPerformance />
               </div>
