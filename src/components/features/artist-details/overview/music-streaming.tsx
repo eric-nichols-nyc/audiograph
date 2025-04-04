@@ -8,6 +8,7 @@ import { HeadphonesLoader } from "@/components/headphones-loader";
 import { useQuery } from "@apollo/client";
 import { SectionHeader } from "@/components/ui/section-header";
 import { GET_ARTIST_DETAILS } from "@/graphql/queries/artist";
+import { ExternalLink } from "lucide-react";
 
 export function MusicStreaming() {
   const artist = useArtistStore((state) => state.artist);
@@ -29,7 +30,13 @@ export function MusicStreaming() {
       artist: data.artist.name,
       streams: track.stream_count_total,
       image: track.thumbnail_url,
+      track_id: track.track_id,
+      platform: track.platform,
     })) || [];
+
+  const getSpotifyUrl = (trackId: string) => {
+    return `https://open.spotify.com/track/${trackId}`;
+  };
 
   return (
     <div className="w-full h-[600px]">
@@ -77,7 +84,7 @@ export function MusicStreaming() {
                       <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60"></div>
                     </div>
                   </div>
-                  <CardContent className="p-3">
+                  <CardContent className="p-3 pb-12 relative">
                     <div>
                       <div className="text-sm font-bold truncate">
                         {track.title}
@@ -86,6 +93,17 @@ export function MusicStreaming() {
                         {track.artist}
                       </div>
                     </div>
+                    {track.platform === "spotify" && (
+                      <a
+                        href={getSpotifyUrl(track.track_id)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="absolute bottom-3 right-3 text-xs text-[#1DB954] hover:text-[#1ed760] font-medium flex items-center gap-1 transition-colors"
+                      >
+                        Spotify
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    )}
                   </CardContent>
                 </Card>
               ))}

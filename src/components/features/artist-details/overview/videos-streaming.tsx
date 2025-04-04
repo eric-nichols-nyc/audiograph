@@ -14,6 +14,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation } from "swiper/modules";
 import type { SwiperOptions } from "swiper/types";
 import { useState, useCallback, useMemo } from "react";
+import { useYouTubePlayer } from "@/components/features/youtube/youtube-player";
+import { PlayCircle } from "lucide-react";
 
 // Import Swiper styles
 import "swiper/css";
@@ -39,6 +41,7 @@ const swiperOptions: SwiperOptions = {
 export function VideosStreaming() {
   const artist = useArtistStore((state) => state.artist);
   const [displayCount, setDisplayCount] = useState(VIDEOS_PER_BATCH);
+  const { setVideo } = useYouTubePlayer();
 
   const {
     data,
@@ -85,6 +88,10 @@ export function VideosStreaming() {
     setDisplayCount((prev) => prev + VIDEOS_PER_BATCH);
   }, []);
 
+  const handleVideoClick = (videoId: string) => {
+    setVideo(videoId);
+  };
+
   if (!artist?.id) return null;
 
   if (isLoading) {
@@ -127,7 +134,15 @@ export function VideosStreaming() {
         >
           {displayedVideos.map((video) => (
             <SwiperSlide key={video.id}>
-              <VideoCard video={video} />
+              <div
+                onClick={() => handleVideoClick(video.video_id)}
+                className="cursor-pointer relative group"
+              >
+                <VideoCard video={video} />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <PlayCircle className="w-16 h-16 text-white" />
+                </div>
+              </div>
             </SwiperSlide>
           ))}
         </Swiper>

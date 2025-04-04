@@ -22,6 +22,8 @@ export const ARTIST_TRACKS_FRAGMENT = gql`
       title
       stream_count_total
       thumbnail_url
+      track_id
+      platform
     }
   }
 `;
