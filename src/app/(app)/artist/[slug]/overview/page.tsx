@@ -8,7 +8,7 @@ import { SimilarArtists } from "@/components/features/artist-details/overview/si
 // This is a Server Component
 export default async function ArtistOverviewPage() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-3">
       <Suspense fallback={<HeadphonesLoader />}>
         <ArtistMetricsGraphQLWrapper />
       </Suspense>

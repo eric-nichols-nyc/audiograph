@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useArtistStore } from "@/stores/artist-slug-store";
 import { useQuery } from "@apollo/client";
 import { gql } from "@apollo/client";
@@ -33,6 +34,7 @@ const GET_SIMILAR_ARTISTS = gql`
     artist(id: $id) {
       similarArtists {
         id
+        slug
         name
         similarity_score
         image_url
@@ -44,6 +46,7 @@ const GET_SIMILAR_ARTISTS = gql`
 interface SimilarArtist {
   id: string;
   name: string;
+  slug: string;
   similarity_score: number;
   image_url?: string;
 }
@@ -91,7 +94,10 @@ export function SimilarArtists() {
         <Swiper {...swiperOptions} className="w-full">
           {similarArtists.map((artist: SimilarArtist) => (
             <SwiperSlide key={artist.id}>
-              <div className="flex flex-col items-center">
+              <Link
+                href={`/artist/${artist.slug}/overview`}
+                className="flex flex-col items-center hover:opacity-80 transition-opacity"
+              >
                 <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-2 border-white mb-3">
                   <Image
                     src={artist.image_url || "/placeholder.svg"}
@@ -107,7 +113,7 @@ export function SimilarArtists() {
                 <span className="text-xs text-gray-400">
                   {Math.round(artist.similarity_score * 100)}% match
                 </span>
-              </div>
+              </Link>
             </SwiperSlide>
           ))}
         </Swiper>

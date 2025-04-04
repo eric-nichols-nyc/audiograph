@@ -85,6 +85,7 @@ const typeDefs = gql`
   type SimilarArtist {
     id: ID!
     name: String!
+    slug: String!
     similarity_score: Float!
     image_url: String
     genres: [String!]!
@@ -254,6 +255,7 @@ const resolvers = {
           similarity_score,
           similar_artist:artists!similar_artists_artist2_id_fkey(
             id,
+            slug,
             name,
             image_url,
             genres
@@ -276,12 +278,14 @@ const resolvers = {
         similarity_score: number;
         similar_artist: {
           id: string;
+          slug: string;
           name: string;
           image_url: string | null;
           genres: string[];
         };
       }>).map(sa => ({
         id: sa.similar_artist.id,
+        slug: sa.similar_artist.slug,
         name: sa.similar_artist.name,
         image_url: sa.similar_artist.image_url,
         genres: sa.similar_artist.genres || [],
@@ -353,6 +357,7 @@ const resolvers = {
             similarity_score,
             similar_artist:artists!similar_artists_artist2_id_fkey(
               id,
+              slug,
               name,
               image_url,
               genres
@@ -380,12 +385,14 @@ const resolvers = {
           similarity_score: number;
           similar_artist: {
             id: string;
+            slug: string;
             name: string;
             image_url: string | null;
             genres: string[];
           };
         }>).map(sa => ({
           id: sa.similar_artist.id,
+          slug: sa.similar_artist.slug,
           name: sa.similar_artist.name,
           image_url: sa.similar_artist.image_url,
           genres: sa.similar_artist.genres || [],
