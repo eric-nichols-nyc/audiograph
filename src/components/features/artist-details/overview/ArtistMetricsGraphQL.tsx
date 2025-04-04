@@ -1,34 +1,31 @@
 "use client";
 import Image from "next/image";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-
-const GET_ARTIST_METRICS = gql`
-  query GetArtist($id: ID!) {
-    artist(id: $id) {
-      name
-      metrics {
-        value
-        metric_type
-        platform
-        date
-      }
-    }
-  }
-`;
+import { GET_ARTIST_DETAILS } from "@/graphql/queries/artist";
 
 interface ArtistMetricsProps {
   artistId: string;
 }
 
 export function ArtistMetricsGraphQL({ artistId }: ArtistMetricsProps) {
-  const { loading, error, data } = useQuery(GET_ARTIST_METRICS, {
+  const { loading, error, data, networkStatus } = useQuery(GET_ARTIST_DETAILS, {
     variables: { id: artistId },
+    notifyOnNetworkStatusChange: true,
+    onCompleted: (data) => {
+      console.log("🔵 Query completed - Data from network or cache:", {
+        networkStatus,
+        data,
+      });
+    },
   });
 
   console.log("metrics data", data);
 
-  if (loading) return <LoadingSpinner />;
+  if (loading) {
+    console.log("🟡 Loading data...", { networkStatus });
+    return <LoadingSpinner />;
+  }
   if (error) return <div>Error: {error.message}</div>;
   if (!data?.artist) return <div>No artist found</div>;
 

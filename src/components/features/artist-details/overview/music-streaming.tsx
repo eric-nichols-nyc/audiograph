@@ -7,11 +7,7 @@ import { useArtistStore } from "@/stores/artist-slug-store";
 import { HeadphonesLoader } from "@/components/headphones-loader";
 import { useQuery } from "@apollo/client";
 import { SectionHeader } from "@/components/ui/section-header";
-import {
-  GET_ARTIST_TRACKS,
-  GetArtistTracksData,
-  GetArtistTracksVars,
-} from "@/graphql/queries/tracks";
+import { GET_ARTIST_DETAILS } from "@/graphql/queries/artist";
 
 export function MusicStreaming() {
   const artist = useArtistStore((state) => state.artist);
@@ -20,7 +16,7 @@ export function MusicStreaming() {
     data,
     loading: isLoading,
     error,
-  } = useQuery<GetArtistTracksData, GetArtistTracksVars>(GET_ARTIST_TRACKS, {
+  } = useQuery(GET_ARTIST_DETAILS, {
     variables: { id: artist?.id || "" },
     skip: !artist?.id,
   });
