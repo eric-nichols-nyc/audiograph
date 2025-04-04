@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { NavigationLinks } from "./navigation-links";
 
@@ -19,8 +20,10 @@ export function AdminSidebar({ open }: AdminSidebarProps) {
       <div className="flex flex-col h-full">
         <div className="flex items-center h-16 px-4">
           <div className="flex items-center gap-2">
-            <span>🎧</span>
-            {open && <span>Audiograph</span>}
+            <Link href="/" className="flex items-center gap-2">
+              <span>🎧</span>
+              {open && <span>Audiograph</span>}
+            </Link>
           </div>
         </div>
         <NavigationLinks showLabels={open} className="flex-1" />
