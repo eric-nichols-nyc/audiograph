@@ -3,10 +3,27 @@ import Image from "next/image";
 import { useQuery } from "@apollo/client";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { GET_ARTIST_DETAILS } from "@/graphql/queries/artist";
+import {
+  calculateSpotifyFollowersTrend,
+  type MetricPoint,
+  type TrendResult,
+} from "@/lib/trends";
+import { Badge } from "@/components/ui/badge";
 
 interface ArtistMetricsProps {
   artistId: string;
 }
+
+interface Metric {
+  value: number;
+  metric_type: string;
+  platform: string;
+  date: string;
+}
+
+type MetricsByType = {
+  [key: string]: Metric[];
+};
 
 export function ArtistMetricsGraphQL({ artistId }: ArtistMetricsProps) {
   const { loading, error, data, networkStatus } = useQuery(GET_ARTIST_DETAILS, {
@@ -29,28 +46,31 @@ export function ArtistMetricsGraphQL({ artistId }: ArtistMetricsProps) {
   if (error) return <div>Error: {error.message}</div>;
   if (!data?.artist) return <div>No artist found</div>;
 
-  interface Metric {
-    value: number;
-    metric_type: string;
-    platform: string;
-    date: string;
-  }
-
-  type MetricsByPlatformAndType = {
-    [key: string]: Metric;
-  };
-
-  const latestMetrics = data.artist.metrics.reduce(
-    (acc: MetricsByPlatformAndType, metric: Metric) => {
-      // Create a unique key combining platform and metric type
+  // Group metrics by platform and type
+  const metricsByType = data.artist.metrics.reduce(
+    (acc: MetricsByType, metric: Metric) => {
       const key = `${metric.platform}_${metric.metric_type}`;
-
-      if (!acc[key] || new Date(metric.date) > new Date(acc[key].date)) {
-        acc[key] = metric;
+      if (!acc[key]) {
+        acc[key] = [];
       }
+      acc[key].push(metric);
       return acc;
     },
-    {} as MetricsByPlatformAndType
+    {} as MetricsByType
+  );
+
+  // Calculate trends for each metric group
+  const trendsData = Object.entries(metricsByType).reduce(
+    (acc: { [key: string]: TrendResult }, [key, metrics]) => {
+      // Convert Metric[] to MetricPoint[]
+      const metricPoints: MetricPoint[] = (metrics as Metric[]).map((m) => ({
+        value: m.value,
+        date: m.date,
+      }));
+      acc[key] = calculateSpotifyFollowersTrend(metricPoints);
+      return acc;
+    },
+    {}
   );
 
   const formatMetricType = (metricType: string): string => {
@@ -60,16 +80,21 @@ export function ArtistMetricsGraphQL({ artistId }: ArtistMetricsProps) {
       .join(" ");
   };
 
-  // Sort metrics to group by platform
-  const sortedMetrics = Object.values(latestMetrics).sort(
-    (a: Metric, b: Metric) => {
+  // Get the most recent metric for each type and sort by platform
+  const sortedMetrics = Object.values(metricsByType)
+    .map((metrics: Metric[]) => {
+      // Sort by date descending and take the most recent
+      return [...metrics].sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+      )[0];
+    })
+    .sort((a: Metric, b: Metric) => {
       // First sort by platform
       if (a.platform < b.platform) return -1;
       if (a.platform > b.platform) return 1;
       // Then by metric type
       return a.metric_type.localeCompare(b.metric_type);
-    }
-  );
+    });
 
   return (
     <div className="space-y-8">
@@ -93,27 +118,45 @@ export function ArtistMetricsGraphQL({ artistId }: ArtistMetricsProps) {
               </h2>
             </div>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {platformMetrics.map((metric: Metric) => (
-                <div
-                  key={`${metric.platform}_${metric.metric_type}`}
-                  className="p-4 rounded-lg border bg-card"
-                >
-                  <div className="flex items-center gap-2 mb-2">
-                    <h3 className="font-semibold">
-                      {formatMetricType(metric.metric_type)}
-                    </h3>
+              {platformMetrics.map((metric: Metric) => {
+                const key = `${metric.platform}_${metric.metric_type}`;
+                const trendData = trendsData[key];
+                const trendValue = trendData?.trend || 0;
+                const isComplete = trendData?.isComplete || false;
+
+                return (
+                  <div key={key} className="p-4 rounded-lg border bg-card">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-semibold">
+                        {formatMetricType(metric.metric_type)}
+                      </h3>
+                      {trendValue !== 0 && (
+                        <Badge
+                          variant={trendValue > 0 ? "default" : "destructive"}
+                        >
+                          {trendValue > 0 ? "+" : ""}
+                          {trendValue.toLocaleString()}
+                        </Badge>
+                      )}
+                    </div>
+                    <p className="text-2xl">
+                      {metric.metric_type.includes("view") ||
+                      metric.platform === "genius"
+                        ? parseInt(metric.value.toString()).toLocaleString()
+                        : metric.value.toLocaleString()}
+                    </p>
+                    <div className="flex justify-between items-center mt-2">
+                      <p className="text-sm text-muted-foreground">
+                        Last updated:{" "}
+                        {new Date(metric.date).toLocaleDateString()}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {isComplete ? "28-day trend" : "Partial trend"}
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-2xl">
-                    {metric.metric_type.includes("view") ||
-                    metric.platform === "genius"
-                      ? parseInt(metric.value.toString()).toLocaleString()
-                      : metric.value.toLocaleString()}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Last updated: {new Date(metric.date).toLocaleDateString()}
-                  </p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         );

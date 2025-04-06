@@ -1,12 +1,12 @@
 /**
  * Basic structure for a single metric data point
  */
-interface MetricPoint {
+export interface MetricPoint {
     value: number;
     date: string;
 }
 
-interface TrendResult {
+export interface TrendResult {
     trend: number;
     startDate: string;
     endDate: string;
