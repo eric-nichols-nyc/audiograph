@@ -1,0 +1,3 @@
+tests/**/*.test.ts
+tests/**/*.spec.ts
+vitest.config.ts 
