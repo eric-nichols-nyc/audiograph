@@ -83,5 +83,8 @@
     "typescript": "^5",
     "vite": "^6.2.0",
     "vitest": "^3.0.7"
+  },
+  "overrides": {
+    "react-is": "^19.0.0-rc-69d4b800-20241021"
   }
 }
