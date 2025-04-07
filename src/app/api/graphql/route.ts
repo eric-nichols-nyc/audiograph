@@ -188,6 +188,7 @@ const resolvers = {
       // Try to get complete artist data from cache
       const cachedArtist = await getCachedData<ArtistData>(getCacheKey.artist(id));
       if (cachedArtist) {
+        console.log('GraphQL Resolver - Returning cached artist:');
         return cachedArtist;
       }
 
@@ -408,7 +409,7 @@ const resolvers = {
         };
       }));
 
-      // console.log('GraphQL Resolver - artistConnections returning connections:', connections);
+      console.log('GraphQL Resolver - artistConnections returning connections:', connections);
       return connections;
     },
   },

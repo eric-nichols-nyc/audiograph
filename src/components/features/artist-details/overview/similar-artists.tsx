@@ -58,11 +58,13 @@ export function SimilarArtists() {
   const { data, loading, error } = useQuery(GET_SIMILAR_ARTISTS, {
     variables: { id: artistId },
     skip: !artistId,
+    fetchPolicy: "network-only",
+    nextFetchPolicy: "cache-first",
   });
 
-  // console.log("Artist ID:", artistId);
-  // console.log("GraphQL response:", data);
-  // console.log("GraphQL error:", error);
+  console.log("Artist ID:", artistId);
+  console.log("GraphQL response:", data);
+  console.log("GraphQL error:", error);
 
   if (!artistId || loading) {
     return (
