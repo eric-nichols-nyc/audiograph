@@ -218,3 +218,23 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Custom scroll bar styles */
+.custom-scrollbar [data-radix-scroll-area-viewport] {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.custom-scrollbar [data-radix-scroll-area-scrollbar] {
+  background-color: var(--border);
+  transition: background-color 160ms ease-out;
+}
+
+.custom-scrollbar [data-radix-scroll-area-thumb] {
+  background-color: var(--primary);
+  opacity: 0.8;
+}
+
+.custom-scrollbar [data-radix-scroll-area-scrollbar]:hover {
+  background-color: var(--border);
+}
