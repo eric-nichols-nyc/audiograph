@@ -46,8 +46,13 @@ export function ArtistMetricsGraphQL({ artistId }: ArtistMetricsProps) {
   if (error) return <div>Error: {error.message}</div>;
   if (!data?.artist) return <div>No artist found</div>;
 
+  // Filter out total_views before grouping metrics
+  const filteredMetrics = data.artist.metrics.filter(
+    (metric: Metric) => metric.metric_type !== "total_views"
+  );
+
   // Group metrics by platform and type
-  const metricsByType = data.artist.metrics.reduce(
+  const metricsByType = filteredMetrics.reduce(
     (acc: MetricsByType, metric: Metric) => {
       const key = `${metric.platform}_${metric.metric_type}`;
       if (!acc[key]) {
@@ -105,8 +110,8 @@ export function ArtistMetricsGraphQL({ artistId }: ArtistMetricsProps) {
         if (platformMetrics.length === 0) return null;
 
         return (
-          <div key={platform}>
-            <div className="flex items-center gap-2 mb-4">
+          <div key={platform} className="space-y-4">
+            <div className="flex items-center gap-2">
               <Image
                 src={`/images/icons/platforms/${platform}.svg`}
                 alt={platform}
@@ -117,46 +122,51 @@ export function ArtistMetricsGraphQL({ artistId }: ArtistMetricsProps) {
                 {platform} Metrics
               </h2>
             </div>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {platformMetrics.map((metric: Metric) => {
-                const key = `${metric.platform}_${metric.metric_type}`;
-                const trendData = trendsData[key];
-                const trendValue = trendData?.trend || 0;
-                const isComplete = trendData?.isComplete || false;
+            <div className="w-full rounded-md border">
+              <div className="flex space-x-4 p-4 overflow-x-auto scrollbar-thin scrollbar-track-muted scrollbar-thumb-muted-foreground">
+                {platformMetrics.map((metric: Metric) => {
+                  const key = `${metric.platform}_${metric.metric_type}`;
+                  const trendData = trendsData[key];
+                  const trendValue = trendData?.trend || 0;
+                  const isComplete = trendData?.isComplete || false;
 
-                return (
-                  <div key={key} className="p-4 rounded-lg border bg-card">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-semibold">
-                        {formatMetricType(metric.metric_type)}
-                      </h3>
-                      {trendValue !== 0 && (
-                        <Badge
-                          variant={trendValue > 0 ? "default" : "destructive"}
-                        >
-                          {trendValue > 0 ? "+" : ""}
-                          {trendValue.toLocaleString()}
-                        </Badge>
-                      )}
-                    </div>
-                    <p className="text-2xl">
-                      {metric.metric_type.includes("view") ||
-                      metric.platform === "genius"
-                        ? parseInt(metric.value.toString()).toLocaleString()
-                        : metric.value.toLocaleString()}
-                    </p>
-                    <div className="flex justify-between items-center mt-2">
-                      <p className="text-sm text-muted-foreground">
-                        Last updated:{" "}
-                        {new Date(metric.date).toLocaleDateString()}
+                  return (
+                    <div
+                      key={key}
+                      className="w-[300px] flex-none p-4 rounded-lg border bg-card"
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="font-semibold">
+                          {formatMetricType(metric.metric_type)}
+                        </h3>
+                        {trendValue !== 0 && (
+                          <Badge
+                            variant={trendValue > 0 ? "default" : "destructive"}
+                          >
+                            {trendValue > 0 ? "+" : ""}
+                            {trendValue.toLocaleString()}
+                          </Badge>
+                        )}
+                      </div>
+                      <p className="text-2xl">
+                        {metric.metric_type.includes("view") ||
+                        metric.platform === "genius"
+                          ? parseInt(metric.value.toString()).toLocaleString()
+                          : metric.value.toLocaleString()}
                       </p>
-                      <p className="text-sm text-muted-foreground">
-                        {isComplete ? "28-day trend" : "Partial trend"}
-                      </p>
+                      <div className="flex justify-between items-center mt-2">
+                        <p className="text-sm text-muted-foreground">
+                          Last updated:{" "}
+                          {new Date(metric.date).toLocaleDateString()}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {isComplete ? "28-day trend" : "Partial trend"}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
           </div>
         );
