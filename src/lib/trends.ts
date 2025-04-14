@@ -26,7 +26,7 @@ export interface TrendResult {
  */
 export function calculateSpotifyFollowersTrend(
     dataPoints: MetricPoint[],
-    daysToAnalyze: number = 28
+    daysToAnalyze: number = 7
 ): TrendResult {
     // 1. Make sure we have at least 2 points to calculate a trend
     if (dataPoints.length < 2) {

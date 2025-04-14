@@ -150,3 +150,60 @@ export async function getFormattedArtistMetrics(artistId: string): Promise<Forma
         return []
     }
 }
+
+export async function calculateDailyViewCount(artistId: string, platform: string = 'youtube'): Promise<number> {
+    const supabase = await createClient();
+
+    // Get today's and yesterday's dates
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    // Format dates to match database format
+    const todayStr = today.toISOString().split('T')[0];
+    const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+    // Query for today's and yesterday's total views
+    const { data: metrics, error } = await supabase
+        .from('artist_metrics')
+        .select('value, date')
+        .eq('artist_id', artistId)
+        .eq('platform', platform)
+        .eq('metric_type', 'total_views')
+        .in('date', [todayStr, yesterdayStr])
+        .order('date', { ascending: false });
+
+    if (error) {
+        console.error('Error fetching view metrics:', error);
+        throw error;
+    }
+
+    if (!metrics || metrics.length < 2) {
+        console.log('Not enough data points to calculate daily views');
+        return 0;
+    }
+
+    // Calculate the difference between today's and yesterday's views
+    const todayViews = metrics.find(m => m.date.startsWith(todayStr))?.value || 0;
+    const yesterdayViews = metrics.find(m => m.date.startsWith(yesterdayStr))?.value || 0;
+
+    const dailyViews = todayViews - yesterdayViews;
+
+    // Insert the daily view count into the database
+    const { error: insertError } = await supabase
+        .from('artist_metrics')
+        .insert({
+            artist_id: artistId,
+            platform: platform,
+            metric_type: 'daily_view_count',
+            value: dailyViews,
+            date: new Date().toISOString()
+        });
+
+    if (insertError) {
+        console.error('Error inserting daily view count:', insertError);
+        throw insertError;
+    }
+
+    return dailyViews;
+}

@@ -38,9 +38,6 @@ export function ArtistNavbar() {
   const navItems = [
     { label: "Overview", href: `${basePath}/overview` },
     { label: "Audience", href: `${basePath}/audience` },
-    { label: "Spotify", href: `${basePath}/spotify` },
-    { label: "Youtube", href: `${basePath}/youtube` },
-    { label: "Deezer", href: `${basePath}/deezer` },
   ];
 
   // Get first letter of artist name for fallback
