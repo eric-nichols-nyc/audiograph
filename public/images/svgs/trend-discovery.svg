@@ -1,0 +1,43 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="90" fill="#1E293B" fill-opacity="0.1" />
+  
+  <!-- Trend line -->
+  <path d="M40,140 L80,100 L120,120 L160,60" stroke="#10B981" stroke-width="6" stroke-linecap="round" fill="none">
+    <animate 
+      attributeName="stroke-dasharray" 
+      from="0, 1000" 
+      to="1000, 0" 
+      dur="3s" 
+      repeatCount="indefinite" 
+    />
+  </path>
+  
+  <!-- Data points -->
+  <circle cx="80" cy="100" r="8" fill="#10B981">
+    <animate 
+      attributeName="r" 
+      values="8;10;8" 
+      dur="2s" 
+      repeatCount="indefinite" 
+    />
+  </circle>
+  <circle cx="120" cy="120" r="8" fill="#10B981">
+    <animate 
+      attributeName="r" 
+      values="8;10;8" 
+      dur="2s" 
+      begin="0.5s" 
+      repeatCount="indefinite" 
+    />
+  </circle>
+  <circle cx="160" cy="60" r="8" fill="#10B981">
+    <animate 
+      attributeName="r" 
+      values="8;10;8" 
+      dur="2s" 
+      begin="1s" 
+      repeatCount="indefinite" 
+    />
+  </circle>
+</svg> 

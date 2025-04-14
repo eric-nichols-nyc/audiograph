@@ -1,12 +1,31 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 export function HomeContent() {
   return (
     <div className="flex min-h-screen flex-col items-center">
-      <main className="flex-1">
-        <section className="space-y-6 pb-8 pt-6 md:pb-12 md:pt-10 lg:py-32 bg-gradient-to-b from-background to-secondary/20">
-          <div className="container flex max-w-[64rem] flex-col items-center gap-4 text-center">
+      <main className="flex-1 w-full">
+        <section className="space-y-6 pb-8 pt-6 md:pb-12 md:pt-10 lg:py-32 relative overflow-hidden w-full">
+          {/* Background Video - Bleeding left and right */}
+          <div className="absolute inset-0 w-screen h-full z-0 left-1/2 -translate-x-1/2">
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover opacity-30"
+            >
+              <source
+                src="/mp3/650353c69dde89c0fd6869c9_Nxt wav loop video 3-transcode.mp4"
+                type="video/mp4"
+              />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+
+          {/* Content overlay */}
+          <div className="container flex max-w-[64rem] flex-col items-center gap-4 text-center relative z-10 mx-auto">
             <div className="flex flex-col items-center gap-2">
               <span className="text-6xl md:text-7xl lg:text-8xl animate-pulse">
                 🎧
@@ -28,10 +47,19 @@ export function HomeContent() {
             </div>
           </div>
         </section>
-        <section className="container space-y-6 py-8 md:py-12 lg:py-24">
-          <div className="mx-auto grid max-w-[58rem] gap-4 md:grid-cols-3">
-            <div className="flex flex-col justify-between rounded-lg border p-6 hover:border-primary/50 transition-colors">
+        <section className="space-y-6 py-8 md:py-12 lg:py-24 w-full">
+          <div className="mx-auto grid max-w-[58rem] gap-4 md:grid-cols-3 place-items-center w-full">
+            <div className="flex flex-col justify-between rounded-lg border p-6 hover:border-primary/50 transition-colors w-full">
               <div className="space-y-2">
+                <div className="flex justify-center mb-4">
+                  <Image
+                    src="/images/svgs/loose-side-react.svg"
+                    alt="Loose Side React"
+                    width={120}
+                    height={120}
+                    className="text-primary"
+                  />
+                </div>
                 <h3 className="font-bold">Artist Analytics</h3>
                 <p className="text-sm text-muted-foreground">
                   Comprehensive performance metrics for artists across all major
@@ -39,16 +67,34 @@ export function HomeContent() {
                 </p>
               </div>
             </div>
-            <div className="flex flex-col justify-between rounded-lg border p-6 hover:border-primary/50 transition-colors">
+            <div className="flex flex-col justify-between rounded-lg border p-6 hover:border-primary/50 transition-colors w-full">
               <div className="space-y-2">
+                <div className="flex justify-center mb-4">
+                  <Image
+                    src="/images/svgs/trend-discovery.svg"
+                    alt="Trend Discovery"
+                    width={120}
+                    height={120}
+                    className="text-primary"
+                  />
+                </div>
                 <h3 className="font-bold">Trend Discovery</h3>
                 <p className="text-sm text-muted-foreground">
                   Identify emerging trends and patterns in the music industry
                 </p>
               </div>
             </div>
-            <div className="flex flex-col justify-between rounded-lg border p-6 hover:border-primary/50 transition-colors">
+            <div className="flex flex-col justify-between rounded-lg border p-6 hover:border-primary/50 transition-colors w-full">
               <div className="space-y-2">
+                <div className="flex justify-center mb-4">
+                  <Image
+                    src="/images/svgs/audience-insights.svg"
+                    alt="Audience Insights"
+                    width={120}
+                    height={120}
+                    className="text-primary"
+                  />
+                </div>
                 <h3 className="font-bold">Audience Insights</h3>
                 <p className="text-sm text-muted-foreground">
                   Understand audience demographics and engagement across
