@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     siteName: "AudioGPraph",
     images: [
       {
-        url: "/images/social/audiograph-social.png",
+        url: "https://audiograph.vercel.app/images/social/audiograph-social.png",
         width: 1200,
         height: 630,
         alt: "AudioGPraph - Music Analytics Platform",
