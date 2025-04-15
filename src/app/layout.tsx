@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "AudioGPraph | Music Analytics Platform",
     description: "Discover music trends and artist analytics with AudioGPraph",
-    url: "https://audiograph.com",
+    url: "https://audiograph.vercel.app/",
     siteName: "AudioGPraph",
     images: [
       {
