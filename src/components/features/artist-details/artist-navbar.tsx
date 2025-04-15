@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -32,13 +31,6 @@ export function ArtistNavbar() {
     },
     enabled: !!slug,
   });
-
-  const basePath = pathname.split("/").slice(0, 3).join("/");
-
-  const navItems = [
-    { label: "Overview", href: `${basePath}/overview` },
-    { label: "Audience", href: `${basePath}/audience` },
-  ];
 
   // Get first letter of artist name for fallback
   const artistInitial = artist?.name?.charAt(0) || "A";
@@ -121,30 +113,6 @@ export function ArtistNavbar() {
             </div>
           </div>
         </div>
-        <nav className="flex overflow-x-auto scrollbar-hide pb-2 w-full">
-          <div className="flex gap-6 px-6 min-w-max">
-            {navItems.map((item) => {
-              // Check if this nav item matches the current path
-              const isActive = pathname.includes(
-                item.href.split("/").pop() || ""
-              );
-
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`text-sm font-medium p-2 whitespace-nowrap ${
-                    isActive
-                      ? "text-primary/90 bg-primary/20"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
-          </div>
-        </nav>
       </div>
     </div>
   );
