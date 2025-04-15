@@ -22,7 +22,11 @@ export function AdminSidebar({ open }: AdminSidebarProps) {
           <div className="flex items-center gap-2">
             <Link href="/" className="flex items-center gap-2">
               <span>🎧</span>
-              {open && <span>Audiograph</span>}
+              {open && (
+                <span className="font-bold text-lg bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                  Audiograph
+                </span>
+              )}
             </Link>
           </div>
         </div>
