@@ -39,3 +39,35 @@ export const GET_ARTIST_VIDEOS = gql`
     }
   }
 `;
+
+export interface GetAllVideosData {
+  videos: {
+    id: string;
+    title: string;
+    thumbnail_url: string;
+    published_at: string;
+    artist: {
+      id: string;
+      name: string;
+      slug: string;
+      image_url: string;
+    };
+  }[];
+}
+
+export const GET_ALL_VIDEOS = gql`
+  query GetAllVideos {
+    videos {
+      id
+      title
+      thumbnail_url
+      published_at
+      artist {
+        id
+        name
+        slug
+        image_url
+      }
+    }
+  }
+`;
