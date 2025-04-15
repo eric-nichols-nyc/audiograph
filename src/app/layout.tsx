@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     siteName: "AudioGPraph",
     images: [
       {
-        url: "/images/svgs/audience-insights.svg",
+        url: "/images/social/audiograph-social.png",
         width: 1200,
         height: 630,
         alt: "AudioGPraph - Music Analytics Platform",
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "AudioGPraph | Music Analytics Platform",
     description: "Discover music trends and artist analytics with AudioGPraph",
-    images: ["/images/svgs/audience-insights.svg"],
+    images: ["/images/social/audiograph-social.png"],
   },
 };
 
