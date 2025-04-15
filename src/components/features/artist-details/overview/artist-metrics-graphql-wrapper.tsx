@@ -11,6 +11,7 @@ export function ArtistMetricsGraphQLWrapper() {
   return (
     <div className="space-y-4">
       <SectionHeader title="Metrics" />
+
       <ArtistMetricsGraphQL artistId={artist.id} />
     </div>
   );

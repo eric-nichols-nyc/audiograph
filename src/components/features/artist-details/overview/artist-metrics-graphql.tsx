@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
 import { useQuery } from "@apollo/client";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { GET_ARTIST_DETAILS } from "@/graphql/queries/artist";
 import {
   calculateSpotifyFollowersTrend,
@@ -11,7 +10,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { ResponsiveContainer, LineChart, Line } from "recharts";
 import { ArrowUp, ArrowDown } from "lucide-react";
-
+import { HeadphonesLoader } from "@/components/headphones-loader";
 interface ArtistMetricsProps {
   artistId: string;
 }
@@ -251,7 +250,7 @@ export function ArtistMetricsGraphQL({ artistId }: ArtistMetricsProps) {
 
   if (loading) {
     console.log("🟡 Loading data...", { networkStatus });
-    return <LoadingSpinner />;
+    return <HeadphonesLoader />;
   }
   if (error) return <div>Error: {error.message}</div>;
   if (!data?.artist) return <div>No artist found</div>;
