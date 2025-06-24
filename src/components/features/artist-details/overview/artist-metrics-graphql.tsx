@@ -53,6 +53,15 @@ function FilteredMetricsCard({
       .join(" ");
   };
 
+  // Add width class based on platform
+  const getCardWidthClass = (platform: string) => {
+    if (platform === "spotify") return "w-full md:w-1/3";
+    if (platform === "youtube") return "w-full md:w-1/2";
+    return "w-full";
+  };
+
+  console.log("platform: ", platform);
+
   // Calculate trend percentage
   const trendPercentage =
     metric.value > 0 ? (trendValue / metric.value) * 100 : 0;
@@ -67,7 +76,11 @@ function FilteredMetricsCard({
     }));
 
   return (
-    <div className="w-[300px] flex-none p-4 rounded-lg border bg-card">
+    <div
+      className={`${getCardWidthClass(
+        platform
+      )} flex-none p-4 rounded-lg border bg-card`}
+    >
       <div className="flex items-center gap-2">
         <Image
           src={`/images/icons/platforms/${platform}.svg`}
