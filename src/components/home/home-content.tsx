@@ -14,6 +14,14 @@ import {
 } from "lucide-react";
 
 export function HomeContent() {
+  // Sticky header navigation links
+  const navLinks = [
+    { href: "/", label: "Home" },
+    { href: "/artists", label: "Artists" },
+    { href: "/compare", label: "Compare" },
+    //{ href: "/sign-in", label: "Sign In" },
+  ];
+
   const features = [
     {
       icon: <BarChart3 className="h-8 w-8 text-blue-500" />,
@@ -73,6 +81,28 @@ export function HomeContent() {
 
   return (
     <div className="flex min-h-screen flex-col items-center">
+      {/* Sticky Header */}
+      <header className="sticky top-0 z-30 w-full bg-background/80 backdrop-blur border-b border-border/40 shadow-sm">
+        <div className="container mx-auto flex items-center justify-between h-16 px-4">
+          <Link href="/" className="flex items-center gap-2">
+            <span className="text-2xl">🎧</span>
+            <span className="font-bold text-lg bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              AudioGPragh
+            </span>
+          </Link>
+          <nav className="flex gap-4">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
+      </header>
       <main className="flex-1 w-full">
         {/* Hero Section */}
         <section className="space-y-6 pb-8 pt-6 md:pb-12 md:pt-10 lg:py-32 relative overflow-hidden w-full">
@@ -111,56 +141,6 @@ export function HomeContent() {
               <Link href="/artists">
                 <Button variant="outline" size="lg">
                   Explore Artists
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* Features Section */}
-        <section className="space-y-6 py-8 md:py-12 lg:py-24 w-full bg-background/50">
-          <div className="container mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
-                Everything You Need for Music Analytics
-              </h2>
-              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                Comprehensive tools and insights to understand artist
-                performance, track trends, and make data-driven decisions in the
-                music industry.
-              </p>
-            </div>
-
-            {/* Features Grid */}
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
-              {features.map((feature, index) => (
-                <div
-                  key={index}
-                  className="group relative overflow-hidden rounded-lg border bg-card p-6 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
-                >
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3">
-                      <div className="rounded-lg bg-muted p-2 group-hover:scale-110 transition-transform duration-300">
-                        {feature.icon}
-                      </div>
-                      <h3 className="font-semibold text-lg">{feature.title}</h3>
-                    </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      {feature.description}
-                    </p>
-                  </div>
-
-                  {/* Subtle gradient overlay on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                </div>
-              ))}
-            </div>
-
-            {/* Call to Action */}
-            <div className="text-center mt-12">
-              <Link href="/artists">
-                <Button size="lg" className="px-8">
-                  Get Started Today
                 </Button>
               </Link>
             </div>
@@ -222,6 +202,56 @@ export function HomeContent() {
                   </p>
                 </div>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Features Section */}
+        <section className="space-y-6 py-8 md:py-12 lg:py-24 w-full bg-background/50">
+          <div className="container mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
+                Everything You Need for Music Analytics
+              </h2>
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                Comprehensive tools and insights to understand artist
+                performance, track trends, and make data-driven decisions in the
+                music industry.
+              </p>
+            </div>
+
+            {/* Features Grid */}
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
+              {features.map((feature, index) => (
+                <div
+                  key={index}
+                  className="group relative overflow-hidden rounded-lg border bg-card p-6 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+                >
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="rounded-lg bg-muted p-2 group-hover:scale-110 transition-transform duration-300">
+                        {feature.icon}
+                      </div>
+                      <h3 className="font-semibold text-lg">{feature.title}</h3>
+                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {feature.description}
+                    </p>
+                  </div>
+
+                  {/* Subtle gradient overlay on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                </div>
+              ))}
+            </div>
+
+            {/* Call to Action */}
+            <div className="text-center mt-12">
+              <Link href="/artists">
+                <Button size="lg" className="px-8">
+                  Get Started Today
+                </Button>
+              </Link>
             </div>
           </div>
         </section>
