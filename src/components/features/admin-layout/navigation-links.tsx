@@ -81,7 +81,11 @@ export function NavigationLinks({
       </Link>
 
       {showLabels ? (
-        <Accordion type="single" collapsible className="border-none px-3">
+        <Accordion
+          type="single"
+          className="border-none px-3"
+          defaultValue="discover"
+        >
           <AccordionItem value="discover" className="border-none">
             <AccordionTrigger className="py-2 hover:no-underline">
               <div className="flex items-center gap-3">
