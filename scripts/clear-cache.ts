@@ -37,8 +37,8 @@ async function main() {
 
 // Log environment variables for debugging
 console.log('Redis Configuration:', {
-    url: process.env.UPSTASH_REDIS_REST_URL,
+    url: process.env.REDIS_URL,
     hasToken: !!process.env.UPSTASH_REDIS_REST_TOKEN
 });
 
-main(); 
+main();

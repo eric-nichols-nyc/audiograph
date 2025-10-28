@@ -17,7 +17,7 @@ The Spotify service provides a robust interface for interacting with the Spotify
 ```env
 SPOTIFY_CLIENT_ID=your_spotify_client_id
 SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
-UPSTASH_REDIS_REST_URL=redis://localhost:6379
+REDIS_URL=redis://localhost:6379
 ```
 
 ### Redis Caching

@@ -1,4 +1,4 @@
-import Redis from 'ioredis';
+import { Redis } from '@upstash/redis';
 
 // Cache TTL in seconds
 export const CACHE_TTL = {
@@ -12,20 +12,13 @@ let redisClient: Redis | null = null;
 
 // Initialize Redis client
 const getRedisClient = () => {
-    if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
-        throw new Error('Redis configuration is missing. Please set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN');
+    if (!process.env.KV_REST_API_URL || !process.env.KV_REST_API_TOKEN) {
+        throw new Error('Redis configuration is missing. Please set KV_REST_API_URL and KV_REST_API_TOKEN');
     }
 
-    // Extract host from REST URL
-    const host = process.env.UPSTASH_REDIS_REST_URL.replace('https://', '');
-
     return new Redis({
-        host,
-        port: 6379, // Default Redis port
-        password: process.env.UPSTASH_REDIS_REST_TOKEN,
-        tls: {
-            rejectUnauthorized: false
-        }
+        url: process.env.KV_REST_API_URL,
+        token: process.env.KV_REST_API_TOKEN,
     });
 };
 

@@ -222,7 +222,7 @@ interface ArtistData {
 
 Required environment variables:
 
-- `UPSTASH_REDIS_REST_URL`: Upstash Redis REST API URL
+- `REDIS_URL`: Upstash Redis REST API URL
 - `UPSTASH_REDIS_REST_TOKEN`: Upstash Redis authentication token
 
 ## Best Practices
