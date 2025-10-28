@@ -33,7 +33,7 @@ export const getRedis = () => {
 export async function getCachedData<T>(key: string): Promise<T | null> {
     const client = getRedis();
     const data = await client.get(key);
-    return data ? JSON.parse(data) : null;
+    return data && typeof data === 'string' ? JSON.parse(data) : null;
 }
 
 // Helper function to set cached data
@@ -53,8 +53,8 @@ export const getCacheKey = {
 export async function get<T>(key: string): Promise<T | null> {
     const client = getRedis();
     const value = await client.get(key);
-    if (!value) return null;
-    return JSON.parse(value) as T;
+    if (!value || typeof value !== 'string') return null;
+    return JSON.parse(value as string) as T;
 }
 
 export async function set<T>(key: string, value: T, ttl?: number): Promise<void> {
