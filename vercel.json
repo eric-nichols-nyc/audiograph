@@ -1,0 +1,9 @@
+{
+  "crons": [
+    {
+      "path": "/api/admin/update-monthly-listeners",
+      "schedule": "0 0 * * *"
+    }
+  ]
+}
+

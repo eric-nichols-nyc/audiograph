@@ -6,6 +6,7 @@ export const env = createEnv({
     NEXT_PUBLIC_SPOTIFY_SECRET: z.string().min(1),
     KV_REST_API_URL: z.string().url(),
     KV_REST_API_TOKEN: z.string().min(1),
+    CRON_SECRET: z.string().min(1),
   },
   client: {
     NEXT_PUBLIC_SPOTIFY_ID: z.string().min(1),
@@ -15,5 +16,6 @@ export const env = createEnv({
     NEXT_PUBLIC_SPOTIFY_SECRET: process.env.NEXT_PUBLIC_SPOTIFY_SECRET,
     KV_REST_API_URL: process.env.KV_REST_API_URL,
     KV_REST_API_TOKEN: process.env.KV_REST_API_TOKEN,
+    CRON_SECRET: process.env.CRON_SECRET,
   },
 });
