@@ -185,11 +185,15 @@ const resolvers = {
     },
 
     artist: async (parent: unknown, { id }: { id: string }) => {
-      // Try to get complete artist data from cache
-      const cachedArtist = await getCachedData<ArtistData>(getCacheKey.artist(id));
-      if (cachedArtist) {
-        console.log('GraphQL Resolver - Returning cached artist:');
-        return cachedArtist;
+      // Try to get complete artist data from cache (gracefully handle Redis failures)
+      try {
+        const cachedArtist = await getCachedData<ArtistData>(getCacheKey.artist(id));
+        if (cachedArtist) {
+          console.log('GraphQL Resolver - Returning cached artist');
+          return cachedArtist;
+        }
+      } catch (error) {
+        console.warn('Redis cache read failed, falling back to database:', error);
       }
 
       const supabase = await createClient();
@@ -312,8 +316,12 @@ const resolvers = {
         similarArtists: transformedSimilarArtists
       };
 
-      // Cache the complete result
-      await setCachedData(getCacheKey.artist(id), result, CACHE_TTL.ARTIST);
+      // Cache the complete result (gracefully handle Redis failures)
+      try {
+        await setCachedData(getCacheKey.artist(id), result, CACHE_TTL.ARTIST);
+      } catch (error) {
+        console.warn('Redis cache write failed, continuing without cache:', error);
+      }
 
       return result;
     },
@@ -339,15 +347,20 @@ const resolvers = {
 
       // For each artist, get their similar artists
       const connections = await Promise.all(artists.map(async (artist) => {
-        // Try to get from cache first
+        // Try to get from cache first (gracefully handle Redis failures)
         const cacheKey = `similar_artists:${artist.id}`;
-        const cachedSimilarArtists = await getCachedData<ArtistConnection['similarArtists']>(cacheKey);
+        let cachedSimilarArtists: ArtistConnection['similarArtists'] | null = null;
 
-        if (cachedSimilarArtists) {
-          return {
-            artist,
-            similarArtists: cachedSimilarArtists
-          };
+        try {
+          cachedSimilarArtists = await getCachedData<ArtistConnection['similarArtists']>(cacheKey);
+          if (cachedSimilarArtists) {
+            return {
+              artist,
+              similarArtists: cachedSimilarArtists
+            };
+          }
+        } catch (error) {
+          console.warn('Redis cache read failed for similar artists, falling back to database:', error);
         }
 
         // If not in cache, fetch from database
@@ -400,8 +413,12 @@ const resolvers = {
           similarity_score: sa.similarity_score
         }));
 
-        // Cache the results
-        await setCachedData(cacheKey, transformedSimilarArtists, CACHE_TTL.ARTIST);
+        // Cache the results (gracefully handle Redis failures)
+        try {
+          await setCachedData(cacheKey, transformedSimilarArtists, CACHE_TTL.ARTIST);
+        } catch (error) {
+          console.warn('Redis cache write failed for similar artists, continuing without cache:', error);
+        }
 
         return {
           artist,
@@ -472,4 +489,4 @@ export { handler as GET, handler as POST };
 // 3. startServerAndCreateNextHandler processes the request
 // 4. Apollo Server executes the GraphQL operation
 // 5. Resolvers fetch data from Supabase/Redis
-// 6. Results are sent back to the client 
+// 6. Results are sent back to the client
