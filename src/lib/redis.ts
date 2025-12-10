@@ -31,15 +31,25 @@ export const getRedis = () => {
 
 // Helper function to get cached data
 export async function getCachedData<T>(key: string): Promise<T | null> {
-    const client = getRedis();
-    const data = await client.get(key);
-    return data && typeof data === 'string' ? JSON.parse(data) : null;
+    try {
+        const client = getRedis();
+        const data = await client.get(key);
+        return data && typeof data === 'string' ? JSON.parse(data) : null;
+    } catch (error) {
+        console.error('❌ Redis GET failed for key:', key, error instanceof Error ? error.message : error);
+        throw error; // Re-throw so the caller can handle it
+    }
 }
 
 // Helper function to set cached data
 export async function setCachedData<T>(key: string, data: T, ttl: number): Promise<void> {
-    const client = getRedis();
-    await client.setex(key, ttl, JSON.stringify(data));
+    try {
+        const client = getRedis();
+        await client.setex(key, ttl, JSON.stringify(data));
+    } catch (error) {
+        console.error('❌ Redis SET failed for key:', key, error instanceof Error ? error.message : error);
+        throw error; // Re-throw so the caller can handle it
+    }
 }
 
 // Helper to generate cache keys

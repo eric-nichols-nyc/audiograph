@@ -12,6 +12,7 @@ import { ExternalLink } from "lucide-react";
 
 export function MusicStreaming() {
   const artist = useArtistStore((state) => state.artist);
+  console.log("artist from music streaming is", artist);
 
   const {
     data,

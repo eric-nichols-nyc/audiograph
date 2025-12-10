@@ -1,36 +1,82 @@
-# AudioGPraph Documentation
+# Documentation
 
-Welcome to the AudioGPraph documentation. This directory contains detailed information about various aspects of the project.
+## Table of Contents
 
-## Available Documentation
+### Getting Started
 
-### Architecture
+- [Main README](../README.md) - Project overview, setup, and architecture
 
-- [GraphQL Migration](./graphql-migration.md) - Details about our gradual migration from REST to GraphQL
+### Operations & Troubleshooting
 
-## Documentation Structure
+- **[Monitoring and Troubleshooting](./monitoring-and-troubleshooting.md)** ⭐ NEW
+  - Health checks and service monitoring
+  - Common issues and solutions (Redis, GraphQL, etc.)
+  - Error handling and graceful degradation
+  - Debugging checklist
 
-Each documentation file follows these principles:
+### Architecture & Development
 
-1. Clear and concise explanations
-2. Code examples where relevant
-3. Step-by-step guides when applicable
-4. Current status and future plans
+- [GraphQL Migration](./graphql-migration.md) - GraphQL implementation details
+- [GraphQL Overview](./graphql.md) - GraphQL architecture and usage
+- [Caching Strategies](./caching-strategies.md) - Redis caching implementation
+- [Tracking Strategy](./tracking-strategy.md) - Analytics and tracking
 
-## Contributing to Documentation
+### Features
 
-When adding new documentation:
+- [Most Viewed Videos Comparison](./features/most-viewed-videos-comparison.md)
+- [Compare Page GraphQL Migration](./compare-page-graphql-migration.md)
+- [Track GraphQL Migration](./track-graphql-migration.md)
 
-1. Create a new markdown file in this directory
-2. Add a link to it in this README
-3. Follow the existing documentation format
-4. Include practical examples
-5. Keep it up to date
+### Migrations
 
-## Documentation TODO
+- [Migration Guides](./migrations/) - Database and feature migrations
 
-- [ ] Project Overview
-- [ ] Development Setup Guide
-- [ ] API Documentation
-- [ ] Component Library
-- [ ] Deployment Guide
+## Quick Reference
+
+### Health Checks
+
+```bash
+# Check all services
+curl http://localhost:3000/api/health | jq
+
+# Check Redis only
+curl http://localhost:3000/api/health | jq '.services.redis'
+
+# Check database only
+curl http://localhost:3000/api/health | jq '.services.database'
+```
+
+### Common Commands
+
+```bash
+# Start development server
+pnpm dev
+
+# Run health check
+pnpm health  # (add to package.json)
+
+# Clear Redis cache
+pnpm cache:clear  # (if implemented)
+```
+
+### Important URLs
+
+- **Health Check**: `http://localhost:3000/api/health`
+- **GraphQL Playground**: `http://localhost:3000/api/graphql`
+- **Main App**: `http://localhost:3000`
+
+## Recent Updates
+
+### December 2025
+
+- ✅ Added Redis health monitoring
+- ✅ Implemented graceful degradation for Redis failures
+- ✅ Added health check endpoint (`/api/health`)
+- ✅ Improved error logging and terminal warnings
+- ✅ Fixed GraphQL queries to handle Redis downtime
+
+### Key Changes
+
+- **Redis is now optional**: App works without Redis (just slower)
+- **Better error messages**: Clear warnings when services are down
+- **Health monitoring**: Easy way to check service status

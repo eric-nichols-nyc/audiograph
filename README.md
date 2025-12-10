@@ -20,6 +20,24 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Health Checks and Monitoring
+
+Check the health of your services:
+
+```bash
+curl http://localhost:3000/api/health | jq
+```
+
+For detailed troubleshooting and monitoring information, see [Monitoring and Troubleshooting Guide](./docs/monitoring-and-troubleshooting.md).
+
+**Quick checks:**
+
+- 🔍 Health: `curl http://localhost:3000/api/health`
+- 📊 GraphQL: `curl -X POST http://localhost:3000/api/graphql -H "Content-Type: application/json" -d '{"query":"{ __typename }"}'`
+- 🗄️ Redis status: Check terminal for `⚠️ REDIS CONNECTION FAILED` warning boxes
+
+The app includes graceful degradation for Redis failures - it will continue to work without caching if Redis is unavailable.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

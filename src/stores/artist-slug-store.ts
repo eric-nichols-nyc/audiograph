@@ -16,7 +16,6 @@ export const useArtistStore = create<ArtistState>()(
         artist: null,
         isEditing: false,
         setArtist: (artist) => {
-            console.log('Artist Store - Setting artist:', artist);
             set({ artist });
         },
         setEditing: (isEditing) => set({ isEditing }),

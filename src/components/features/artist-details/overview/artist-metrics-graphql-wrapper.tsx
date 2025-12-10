@@ -6,7 +6,9 @@ import { SectionHeader } from "@/components/ui/section-header";
 export function ArtistMetricsGraphQLWrapper() {
   const artist = useArtistStore((state) => state.artist);
 
-  if (!artist) return null;
+  if (!artist || !artist.id) {
+    return null;
+  }
 
   return (
     <div className="space-y-4">
