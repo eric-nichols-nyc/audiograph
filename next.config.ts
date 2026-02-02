@@ -20,6 +20,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'pbs.twimg.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'viberate.ams3.cdn.digitaloceanspaces.com',
+      },
     ],
   },
   // typescript: {

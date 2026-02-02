@@ -106,21 +106,15 @@ export function HomeContent() {
       <main className="flex-1 w-full">
         {/* Hero Section */}
         <section className="space-y-6 pb-8 pt-6 md:pb-12 md:pt-10 lg:py-32 relative overflow-hidden w-full">
-          {/* Background Video - Bleeding left and right */}
+          {/* Background Image */}
           <div className="absolute inset-0 w-screen h-full z-0 left-1/2 -translate-x-1/2">
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full h-full object-cover opacity-30"
-            >
-              <source
-                src="/mp3/650353c69dde89c0fd6869c9_Nxt wav loop video 3-transcode.mp4"
-                type="video/mp4"
-              />
-              Your browser does not support the video tag.
-            </video>
+            <Image
+              src="https://viberate.ams3.cdn.digitaloceanspaces.com/com/bg-analytics-landing-v2-hero-mobile.webp"
+              alt=""
+              fill
+              className="object-cover opacity-30"
+              sizes="100vw"
+            />
           </div>
 
           {/* Content overlay */}
@@ -150,17 +144,6 @@ export function HomeContent() {
         {/* Artist Comparison Showcase */}
         <section className="py-12 md:py-16 lg:py-20 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-950/20 dark:to-indigo-950/20">
           <div className="container mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
-                Compare Artists Like Never Before
-              </h2>
-              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                Get detailed side-by-side comparisons of any two artists with
-                comprehensive metrics across all platforms. Discover competitive
-                insights and market positioning in seconds.
-              </p>
-            </div>
-
             <div className="max-w-6xl mx-auto">
               <div className="rounded-lg overflow-hidden shadow-2xl border">
                 <Image
@@ -173,6 +156,16 @@ export function HomeContent() {
                     background: `url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400"><rect width="1200" height="400" fill="%23000"/><text x="600" y="200" font-family="Arial" font-size="24" fill="%23fff" text-anchor="middle">Artist Comparison Screenshot</text></svg>') center/cover`,
                   }}
                 />
+              </div>
+              <div className="text-center mb-12 mt-4">
+                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
+                  Compare Artists Like Never Before
+                </h2>
+                <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                  Get detailed side-by-side comparisons of any two artists with
+                  comprehensive metrics across all platforms. Discover
+                  competitive insights and market positioning in seconds.
+                </p>
               </div>
 
               <div className="grid md:grid-cols-3 gap-6 mt-8">
