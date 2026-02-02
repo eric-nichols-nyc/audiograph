@@ -138,22 +138,22 @@ const resolvers = {
       if (error) throw new Error('Failed to fetch artists by slugs');
       if (!artists || artists.length === 0) return [];
 
-      // Get metrics for all artists, filtering for Spotify metrics
+      // Get metrics for all artists, filtering for Spotify (last 50 per artist, most recent first)
+      const artistIds = artists.map(a => a.id);
       const { data: metrics, error: metricsError } = await supabase
         .from('artist_metrics')
         .select('*')
-        .in('artist_id', artists.map(a => a.id))
-        .eq('platform', 'spotify');
-
-      // console.log('GraphQL Resolver - Metrics query result:', metrics);
-      // console.log('GraphQL Resolver - Metrics query error:', metricsError);
+        .in('artist_id', artistIds)
+        .eq('platform', 'spotify')
+        .order('date', { ascending: false })
+        .limit(50 * artistIds.length);
 
       if (metricsError) throw new Error('Failed to fetch metrics');
 
-      // Map metrics to artists
+      // Map metrics to artists (take up to 50 most recent per artist)
       const result = artists.map(artist => ({
         ...artist,
-        metrics: metrics?.filter(m => m.artist_id === artist.id) || []
+        metrics: (metrics?.filter(m => m.artist_id === artist.id) || []).slice(0, 50)
       }));
 
       // console.log('GraphQL Resolver - Final result:', result);
@@ -169,18 +169,20 @@ const resolvers = {
 
       if (error) throw new Error('Failed to fetch artists by ids');
 
-      // Get metrics for all artists
+      // Get metrics for all artists (last 50 per artist, most recent first)
       const { data: metrics, error: metricsError } = await supabase
         .from('artist_metrics')
         .select('*')
-        .in('artist_id', ids);
+        .in('artist_id', ids)
+        .order('date', { ascending: false })
+        .limit(50 * ids.length);
 
       if (metricsError) throw new Error('Failed to fetch metrics');
 
-      // Map metrics to artists
+      // Map metrics to artists (take up to 50 most recent per artist)
       return artists.map(artist => ({
         ...artist,
-        metrics: metrics.filter(m => m.artist_id === artist.id)
+        metrics: (metrics?.filter(m => m.artist_id === artist.id) || []).slice(0, 50)
       }));
     },
 
@@ -207,11 +209,13 @@ const resolvers = {
 
       if (artistError) throw new Error('Artist not found');
 
-      // Get artist metrics
+      // Get artist metrics (last 50 records, most recent first)
       const { data: metrics, error: metricsError } = await supabase
         .from('artist_metrics')
         .select('*')
-        .eq('artist_id', id);
+        .eq('artist_id', id)
+        .order('date', { ascending: false })
+        .limit(50);
 
       if (metricsError) throw new Error('Failed to fetch metrics');
 
